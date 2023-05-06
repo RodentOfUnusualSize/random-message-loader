@@ -17,4 +17,15 @@
  **********************************************************************/
 
 window.addEventListener('load', event => {
+	const attribute_src = 'data-saria-random-message-src';
+
+	const task_groups = new Map();
+	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
+		const url = element.getAttribute(data_attribute);
+
+		if (task_groups.has(url))
+			task_groups.get(url).push(element);
+		else
+			task_groups.set(url, new Array(element));
+	});
 });
