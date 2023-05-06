@@ -31,6 +31,23 @@ window.addEventListener('load', event => {
 
 	if (task_groups.size != 0) {
 		const tasks = new Array();
+		for (const [url, elems] of task_groups) {
+			tasks.push(
+				fetch(url)
+					.then(response => response.text())
+					.then(text => {
+						const messages = text.split('\n').filter(word => word.length > 0);
+						if (messages.length == 0)
+							throw Error('no messages');
+
+						for (const elem of elems) {
+							const index = Math.floor(Math.random() * messages.length);
+							elem.innerHTML = messages[index];
+						}
+					})
+					.catch((err) => console.error(`Random message loader error with url ${url}: ${err.message}`))
+			);
+		}
 
 		Promise.all(tasks)
 			.catch((err) => console.error(`Random message loader error: ${err.message}`));
