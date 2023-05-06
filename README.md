@@ -15,11 +15,12 @@ This program was written as a learning exercise.
 
 ## Table of Contents
 
-- [Security](#security)
-- [Install](#install)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+-   [Security](#security)
+    -   [Reporting vulnerabilities](#reporting-vulnerabilities)
+-   [Install](#install)
+-   [Usage](#usage)
+-   [Contributing](#contributing)
+-   [License](#license)
 
 
 ## Security
@@ -47,6 +48,13 @@ The following steps should always be taken to protect against exploits:
 
 *   Always serve both the host web page and the messages file securely.
 *   Use [Content Security Policy directives][csp] to protect against cross-site scripting or data-injection attacks.
+
+
+### Reporting vulnerabilities
+
+If you discover any security vulnerabilities or concerns, please use [the GitHub security vulnerability reporting utility][security-report-url].
+
+See also [the project security policy][security-policy-url].
 
 
 ## Install
@@ -147,11 +155,13 @@ There is **NO WARRANTY**, to the extent permitted by law.
 
 [repo-url]: https://github.com/RodentOfUnusualSize/random-message-loader
 [release-url]: https://github.com/RodentOfUnusualSize/random-message-loader/releases
+[security-report-url]: https://github.com/RodentOfUnusualSize/random-message-loader/security
 [release-shield]: https://img.shields.io/github/v/release/RodentOfUnusualSize/random-message-loader?include_prereleases&sort=semver
 [language-shield]: https://img.shields.io/github/languages/top/RodentOfUnusualSize/random-message-loader.svg
 [license-shield]: https://img.shields.io/github/license/RodentOfUnusualSize/random-message-loader.svg
 [std-readme-shield]: https://img.shields.io/badge/readme%20style-standard-brightgreen.svg
 [std-readme-url]: https://github.com/RichardLitt/standard-readme
 [license-url]: ../LICENSE
+[security-policy-url]: ../SECURITY.md
 [script]: ../random-message-loader.js
 [csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
