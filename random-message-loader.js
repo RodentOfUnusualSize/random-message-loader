@@ -21,11 +21,18 @@ window.addEventListener('load', event => {
 
 	const task_groups = new Map();
 	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
-		const url = element.getAttribute(data_attribute);
+		const url = element.getAttribute(attribute_src);
 
 		if (task_groups.has(url))
 			task_groups.get(url).push(element);
 		else
 			task_groups.set(url, new Array(element));
 	});
+
+	if (task_groups.size != 0) {
+		const tasks = new Array();
+
+		Promise.all(tasks)
+			.catch((err) => console.error(`Random message loader error: ${err.message}`));
+	}
 });
