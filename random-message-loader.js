@@ -56,6 +56,22 @@ window.addEventListener('load', event => {
 	});
 
 	// --- TEMPORARY ---
+	for (const [url, id_map] of task_groups_TEMPORARY) {
+		const element_groups = new Array();
+
+		if (id_map.has(''))
+			id_map.get('').forEach(element => { element_groups.push([element]); });
+
+		Array.from(id_map.keys())
+			.filter(key => !!key)
+			.forEach(id => { element_groups.push(id_map.get(id)); })
+		;
+
+		task_groups_TEMPORARY.set(url, element_groups);
+	}
+	// --- TEMPORARY ---
+
+	// --- TEMPORARY ---
 	console.log(JSON.stringify(task_groups_TEMPORARY, replacer));
 	// --- TEMPORARY ---
 
