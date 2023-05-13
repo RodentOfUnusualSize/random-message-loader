@@ -18,10 +18,12 @@
 
 window.addEventListener('load', event => {
 	const attribute_src = 'data-saria-random-message-src';
+	const attribute_id = 'data-saria-random-message-id';
 
 	const task_groups = new Map();
 	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
 		const url = element.getAttribute(attribute_src);
+		const id = (element.getAttribute(attribute_id) ?? '').trim();
 
 		if (task_groups.has(url))
 			task_groups.get(url).push(new Array(element));
