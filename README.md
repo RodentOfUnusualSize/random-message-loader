@@ -108,7 +108,7 @@ An example web page:
 </html>
 ```
 
-Once you have included the script in a page, you can generate as much randomly-selected content, from as many URLs as you like:
+Once you have included the script in a page, you can generate as much randomly-selected content from as many URLs as you like:
 
 ```html
 <!DOCTYPE html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -121,7 +121,7 @@ Once you have included the script in a page, you can generate as much randomly-s
   <h1>Example page</h1>
   <p>The following paragraph will have a randomly-selected message:</p>
   <p data-saria-random-message-src="/path/to/messages.txt"></p>
-  <p>The following paragraph another randomly-selected message from the same set of messages as above (it may produce the same message, or not; it’s random!):</p>
+  <p>The following paragraph will have another randomly-selected message from the same set of messages as above (it may produce the same message, or not; it’s random!):</p>
   <p data-saria-random-message-src="/path/to/messages.txt"></p>
   <p>The following paragraph will have a randomly-selected message from a different set of messages:</p>
   <p data-saria-random-message-src="/path/to/other-messages.txt"></p>
@@ -151,6 +151,8 @@ Copyright © 2023 Saria Mistry
 
 This is free software: you are free to change and redistribute it.
 There is **NO WARRANTY**, to the extent permitted by law.
+
+See [the project licence file][license-url] for details.
 
 
 [repo-url]: https://github.com/RodentOfUnusualSize/random-message-loader
