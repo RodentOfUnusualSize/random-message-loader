@@ -75,9 +75,9 @@ window.addEventListener('load', event => {
 	console.log(JSON.stringify(task_groups_TEMPORARY, replacer));
 	// --- TEMPORARY ---
 
-	if (task_groups.size != 0) {
+	if (task_groups_TEMPORARY.size != 0) {
 		const tasks = new Array();
-		for (const [url, element_groups] of task_groups) {
+		for (const [url, element_groups] of task_groups_TEMPORARY) {
 			tasks.push(
 				fetch(url)
 					.then(response => response.text())
