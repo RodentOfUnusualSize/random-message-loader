@@ -94,11 +94,12 @@ The value of the attribute is the URL you want to load the messages from.
 An example web page:
 
 ```html
-<!DOCTYPE html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 	<meta charset="utf-8"/>
 	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js" async=""></script>
+	<script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
   <h1>Example page</h1>
@@ -111,11 +112,12 @@ An example web page:
 Once you have included the script in a page, you can generate as much randomly-selected content from as many URLs as you like:
 
 ```html
-<!DOCTYPE html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 	<meta charset="utf-8"/>
 	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js" async=""></script>
+	<script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
   <h1>Example page</h1>
