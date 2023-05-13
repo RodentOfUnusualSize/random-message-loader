@@ -133,6 +133,74 @@ Any existing content will be replaced by the randomly-selected message.
 This means you can provide “default content” that will be displayed before the messages load, and in case they never do (for example, if there is a failure retriving the message file from the URL).
 
 
+### Optimizing
+
+There are several ways you can enhance the efficiency of this script, to make it use less resources, or to make it work more quickly.
+
+
+#### Asynchronous loading
+
+When you include a script in an (X)HTML page with a `<script>` element, by default it:
+
+1.  stops the page load
+2.  immediately starts downloading the script file
+3.  once it has the script, it executes it; then
+4.  continues loading the page.
+
+Delaying the main page load for what is likely to be ancillary content (random messages are unlikely to be core content) is not good.
+
+On the other hand, we need the entire page to be loaded before we can search through the tree looking for elements that want random content.
+
+The sweet spot is therefore:
+
+1.  definitely *after* the entire page is loaded and parsed
+2.  but possibly *before* extra stuff like stylesheets, images, or other scripts are loaded; and
+3.  *without* blocking the loading of anything.
+
+In the best case, then, all the random messages can be retrieved and inserted into the tree before anything is even visible to the user.
+In the worst case, the entire page is loaded and displayed, and *then* the random content is (belatedly) inserted.
+The worst case is not good (obviously), but for ancillary content, not so bad.
+
+Using the `defer` attribute on the `<script>` element gets us most of the way there.
+`defer` on a `<script>` element:
+
+*   does *not* stop the page load
+*   loads the script in parallel; and
+*   once the page is fully loaded, blocks until the script has loaded and run.
+
+This would be great if the script was producing *required*, core content.
+But randomly-selected messages are most likely to be optional, ancillary content.
+So it would be better if we blocked nothing at all.
+
+For that, there is the `async` attribute.
+`async` on a `<script>` element:
+
+*   does not stop the page load
+*   loads the script in parallel; and
+*   executes the script as soon as it is available, regardless of whether the page is finished loading or not.
+
+This is the mode that this program is designed to work with.
+It (currently) sets up an event that is only fired when the *entire* page, including all scripts, images, etc. are loaded.
+Example:
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Example page</title>
+	<script src="/path/to/random-message-loader.js" async=""></script>
+</head>
+<body>
+	…
+</body>
+</html>
+```
+
+This is not ideal, because it means the random content is inserted very late—much later than necessary—at more or less the very last step of a page loading.
+But at least it never fails.
+
+
 ## Contributing
 
 **Contributions are currently not being accepted.**
