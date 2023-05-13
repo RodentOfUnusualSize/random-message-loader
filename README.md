@@ -86,8 +86,6 @@ The <em>third</em> message (yes, messages can contain markup).
 ```
 
 Any web page that wants to use random messages must include the script file with a `<script>` tag.
-You might want to use the `async` attribute so that loading the script does not delay loading the page.
-
 Once a web page has included the script, you may use the `data-saria-random-message-src` attribute for any element you wish to include randomly-selected content.
 The value of the attribute is the URL you want to load the messages from.
 
