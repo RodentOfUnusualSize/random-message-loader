@@ -100,9 +100,9 @@ An example web page:
 	<script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-  <h1>Example page</h1>
-  <p>The following paragraph will have a randomly-selected message:</p>
-  <p data-saria-random-message-src="/path/to/messages.txt"></p>
+	<h1>Example page</h1>
+	<p>The following paragraph will have a randomly-selected message:</p>
+	<p data-saria-random-message-src="/path/to/messages.txt"></p>
 </body>
 </html>
 ```
@@ -118,13 +118,13 @@ Once you have included the script in a page, you can generate as much randomly-s
 	<script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-  <h1>Example page</h1>
-  <p>The following paragraph will have a randomly-selected message:</p>
-  <p data-saria-random-message-src="/path/to/messages.txt"></p>
-  <p>The following paragraph will have another randomly-selected message from the same set of messages as above (it may produce the same message, or not; it’s random!):</p>
-  <p data-saria-random-message-src="/path/to/messages.txt"></p>
-  <p>The following paragraph will have a randomly-selected message from a different set of messages:</p>
-  <p data-saria-random-message-src="/path/to/other-messages.txt"></p>
+	<h1>Example page</h1>
+	<p>The following paragraph will have a randomly-selected message:</p>
+	<p data-saria-random-message-src="/path/to/messages.txt"></p>
+	<p>The following paragraph will have another randomly-selected message from the same set of messages as above (it may produce the same message, or not; it’s random!):</p>
+	<p data-saria-random-message-src="/path/to/messages.txt"></p>
+	<p>The following paragraph will have a randomly-selected message from a different set of messages:</p>
+	<p data-saria-random-message-src="/path/to/other-messages.txt"></p>
 </body>
 </html>
 ```
