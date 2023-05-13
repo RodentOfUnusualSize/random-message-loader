@@ -201,6 +201,34 @@ This is not ideal, because it means the random content is inserted very late—m
 But at least it never fails.
 
 
+#### Preloading messages
+
+By default, the message file(s) is not fetched until the script actually starts inserting the randomly-selected content.
+This means the entire page has to load, plus the script, and then the script has to be executed, before the messages are fetched.
+
+There is no need to wait this long.
+You know what message file(s) you are going to need for a page, so you can preload them, either with a `<link>` element in the page’s (X)HTML, or as part of the HTTP response.
+
+For example:
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Example page</title>
+	<script src="/path/to/random-message-loader.js" async=""></script>
+	<link rel="preload" href="/path/to/messages.txt" as="fetch" crossorigin="anonymous"/>
+</head>
+<body>
+	<p data-saria-random-message-src="/path/to/messages.txt"></p>
+</body>
+</html>
+```
+
+In this case, the messages will be loaded (possibly) in parallel with the page and the script, so there will be minimal delay when they are actually needed.
+
+
 ## Contributing
 
 **Contributions are currently not being accepted.**
