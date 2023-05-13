@@ -20,22 +20,22 @@ window.addEventListener('load', event => {
 	const attribute_src = 'data-saria-random-message-src';
 	const attribute_id = 'data-saria-random-message-id';
 
-	const task_groups_TEMPORARY = new Map();
+	const task_groups = new Map();
 	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
 		const url = element.getAttribute(attribute_src);
 		const id = (element.getAttribute(attribute_id) ?? '').trim();
 
-		if (!task_groups_TEMPORARY.has(url))
-			task_groups_TEMPORARY.set(url, new Map());
+		if (!task_groups.has(url))
+			task_groups.set(url, new Map());
 
-		const task_group = task_groups_TEMPORARY.get(url);
+		const task_group = task_groups.get(url);
 		if (!task_group.has(id))
 			task_group.set(id, []);
 
 		task_group.get(id).push(element);
 	});
 
-	for (const [url, id_map] of task_groups_TEMPORARY) {
+	for (const [url, id_map] of task_groups) {
 		const element_groups = new Array();
 
 		if (id_map.has(''))
@@ -46,12 +46,12 @@ window.addEventListener('load', event => {
 			.forEach(id => { element_groups.push(id_map.get(id)); })
 		;
 
-		task_groups_TEMPORARY.set(url, element_groups);
+		task_groups.set(url, element_groups);
 	}
 
-	if (task_groups_TEMPORARY.size != 0) {
+	if (task_groups.size != 0) {
 		const tasks = new Array();
-		for (const [url, element_groups] of task_groups_TEMPORARY) {
+		for (const [url, element_groups] of task_groups) {
 			tasks.push(
 				fetch(url)
 					.then(response => response.text())
