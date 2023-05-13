@@ -16,34 +16,15 @@
  *                                                                     *
  **********************************************************************/
 
-// --- TEMPORARY ---
-function replacer(key, value) {
-	if (value instanceof Map) {
-		return Array.from(value.entries());
-	} else if (value instanceof Element) {
-		return value.outerHTML;
-	} else {
-		return value;
-	}
-}
-// --- TEMPORARY ---
-
 window.addEventListener('load', event => {
 	const attribute_src = 'data-saria-random-message-src';
 	const attribute_id = 'data-saria-random-message-id';
 
-	const task_groups = new Map();
 	const task_groups_TEMPORARY = new Map();
 	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
 		const url = element.getAttribute(attribute_src);
 		const id = (element.getAttribute(attribute_id) ?? '').trim();
 
-		if (task_groups.has(url))
-			task_groups.get(url).push(new Array(element));
-		else
-			task_groups.set(url, new Array(new Array(element)));
-
-		// --- TEMPORARY ---
 		if (!task_groups_TEMPORARY.has(url))
 			task_groups_TEMPORARY.set(url, new Map());
 
@@ -52,10 +33,8 @@ window.addEventListener('load', event => {
 			task_group.set(id, []);
 
 		task_group.get(id).push(element);
-		// --- TEMPORARY ---
 	});
 
-	// --- TEMPORARY ---
 	for (const [url, id_map] of task_groups_TEMPORARY) {
 		const element_groups = new Array();
 
@@ -69,11 +48,6 @@ window.addEventListener('load', event => {
 
 		task_groups_TEMPORARY.set(url, element_groups);
 	}
-	// --- TEMPORARY ---
-
-	// --- TEMPORARY ---
-	console.log(JSON.stringify(task_groups_TEMPORARY, replacer));
-	// --- TEMPORARY ---
 
 	if (task_groups_TEMPORARY.size != 0) {
 		const tasks = new Array();
