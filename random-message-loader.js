@@ -31,7 +31,7 @@ window.addEventListener('load', event => {
 
 	if (task_groups.size != 0) {
 		const tasks = new Array();
-		for (const [url, elems] of task_groups) {
+		for (const [url, element_groups] of task_groups) {
 			tasks.push(
 				fetch(url)
 					.then(response => response.text())
@@ -40,7 +40,7 @@ window.addEventListener('load', event => {
 						if (messages.length == 0)
 							throw Error('no messages');
 
-						for (const elem of elems) {
+						for (const elem of element_groups) {
 							const index = Math.floor(Math.random() * messages.length);
 							elem.innerHTML = messages[index];
 						}
