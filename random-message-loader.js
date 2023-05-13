@@ -40,9 +40,9 @@ window.addEventListener('load', event => {
 						if (messages.length == 0)
 							throw Error('no messages');
 
-						for (const elem of element_groups) {
+						for (const element_group of element_groups) {
 							const index = Math.floor(Math.random() * messages.length);
-							elem.innerHTML = messages[index];
+							element_group.innerHTML = messages[index];
 						}
 					})
 					.catch((err) => console.error(`Random message loader error with url ${url}: ${err.message}`))
