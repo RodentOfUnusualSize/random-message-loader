@@ -24,9 +24,9 @@ window.addEventListener('load', event => {
 		const url = element.getAttribute(attribute_src);
 
 		if (task_groups.has(url))
-			task_groups.get(url).push(element);
+			task_groups.get(url).push(new Array(element));
 		else
-			task_groups.set(url, new Array(element));
+			task_groups.set(url, new Array(new Array(element)));
 	});
 
 	if (task_groups.size != 0) {
@@ -42,7 +42,9 @@ window.addEventListener('load', event => {
 
 						for (const element_group of element_groups) {
 							const index = Math.floor(Math.random() * messages.length);
-							element_group.innerHTML = messages[index];
+
+							for (const element of element_group)
+								element.innerHTML = messages[index];
 						}
 					})
 					.catch((err) => console.error(`Random message loader error with url ${url}: ${err.message}`))
