@@ -133,6 +133,8 @@ If the random messages are loaded quickly enough, the default content will never
 This makes it a good fallback, but don’t rely on it ever being seen.
 
 
+### Multiple messages
+
 Once you have included the script in a page, you can generate as much randomly-selected content from as many URLs as you like:
 
 ```html
@@ -144,19 +146,33 @@ Once you have included the script in a page, you can generate as much randomly-s
 	<script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-	<h1>Example page</h1>
-	<p>The following paragraph will have a randomly-selected message:</p>
-	<p data-saria-random-message-src="/path/to/messages.txt"></p>
-	<p>The following paragraph will have another randomly-selected message from the same set of messages as above (it may produce the same message, or not; it’s random!):</p>
-	<p data-saria-random-message-src="/path/to/messages.txt"></p>
-	<p>The following paragraph will have a randomly-selected message from a different set of messages:</p>
-	<p data-saria-random-message-src="/path/to/other-messages.txt"></p>
+	<!--
+		Every element in this list will have a random message from the
+		URL displayed. The three messages may all be different, or there
+		may be duplicates; possibly even with all three showing the same
+		message. It’s random!
+	-->
+	<ul>
+		<li data-saria-random-message-src="messages.txt"></li>
+		<li data-saria-random-message-src="messages.txt"></li>
+		<li data-saria-random-message-src="messages.txt"></li>
+	</ul>
+	<!--
+		Every element in this list will have a random message from the
+		URL displayed… which is different from the URL above, and so
+		might be a different set of messages.
+	-->
+	<ul>
+		<li data-saria-random-message-src="other-messages.txt"></li>
+		<li data-saria-random-message-src="other-messages.txt"></li>
+		<li data-saria-random-message-src="other-messages.txt"></li>
+	</ul>
 </body>
 </html>
 ```
 
-Any existing content will be replaced by the randomly-selected message.
-This means you can provide “default content” that will be displayed before the messages load, and in case they never do (for example, if there is a failure retriving the message file from the URL).
+The script is optimized so that each unique URL is only fetched once.
+In the example above, `messages.txt` is fetched only once for all three uses, and `other-messages.txt` is also fetched only once.
 
 
 ### Optimizing
