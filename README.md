@@ -175,6 +175,67 @@ The script is optimized so that each unique URL is only fetched once.
 In the example above, `messages.txt` is fetched only once for all three uses, and `other-messages.txt` is also fetched only once.
 
 
+### Repeating messages
+
+Normally, every element set to be filled with a random message from a URL will get a different randomly-selected message (which might be the same as a previously-selected message; it’s random!).
+However, sometimes you might want the randomly-selected message in an element repeated in another element.
+That is, you want two or more elements to have the *same* randomly-selected message.
+
+To do this, both elements must have the same messages URL (with the `data-saria-random-message-src` attribute), and the same message ID using the `data-saria-random-message-id` attribute.
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Example page</title>
+	<script src="/path/to/random-message-loader.js"></script>
+</head>
+<body>
+	<!--
+		Every element in this list will have THE SAME randomly-selected message.
+	-->
+	<ul>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+	</ul>
+	<!--
+		Every element in this list will have THE SAME randomly-selected message.
+		It MAY be the same message as in the previous list, or not.
+		It’s random!
+	-->
+	<ul>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+	</ul>
+	<!--
+		Every element in the next two lists will have a (possibly)
+		DIFFERENT randomly-selected message.
+	-->
+	<ul>
+		<li data-saria-random-message-src="messages.txt"></li>
+		<li data-saria-random-message-src="messages.txt"></li>
+		<li data-saria-random-message-src="messages.txt"></li>
+	</ul>
+	<ul>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+	</ul>
+</body>
+</html>
+```
+
+Setting `data-saria-random-message-id` to nothing (the empty string) is equivalent to not using it at all.
+That is, it reverts to the default behaviour, which means the element will get its own randomly-selected message (which may or may not be duplicated in other elements; it’s random!).
+
+The content of `data-saria-random-message-id` can be any string.
+Leading and trailing whitespace is stripped.
+Comparison is done case-sensitively, with no regard to locale.
+
+
 ### Optimizing
 
 There are several ways you can enhance the efficiency of this script, to make it use less resources, or to make it work more quickly.
