@@ -107,6 +107,32 @@ An example web page:
 </html>
 ```
 
+
+### Default content
+
+The randomly-selected message will replace any existing content in an element.
+That makes it possible to include default content, that will be displayed in the event that the random messages take a long time to load, or fail to load completely.
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Example page</title>
+	<script src="/path/to/random-message-loader.js"></script>
+</head>
+<body>
+	<p data-saria-random-message-src="/path/to/messages.txt">
+		This content will be displayed until the randomly-selected message is loaded.
+	</p>
+</body>
+</html>
+```
+
+If the random messages are loaded quickly enough, the default content will never be visible.
+This makes it a good fallback, but don’t rely on it ever being seen.
+
+
 Once you have included the script in a page, you can generate as much randomly-selected content from as many URLs as you like:
 
 ```html
