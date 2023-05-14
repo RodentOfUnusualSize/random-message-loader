@@ -97,11 +97,11 @@ An example web page:
 <head>
 	<meta charset="utf-8"/>
 	<title>Example page</title>
+	<!-- Loading the program: -->
 	<script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-	<h1>Example page</h1>
-	<p>The following paragraph will have a randomly-selected message:</p>
+	<!-- The element that will contain the message: -->
 	<p data-saria-random-message-src="/path/to/messages.txt"></p>
 </body>
 </html>
