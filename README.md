@@ -101,14 +101,14 @@ An example web page:
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<!-- Loading the program: -->
-	<script src="/path/to/random-message-loader.js"></script>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <!-- Loading the program: -->
+  <script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-	<!-- The element that will contain the message: -->
-	<p data-saria-random-message-src="/path/to/messages.txt"></p>
+  <!-- The element that will contain the message: -->
+  <p data-saria-random-message-src="/path/to/messages.txt"></p>
 </body>
 </html>
 ```
@@ -123,14 +123,14 @@ That makes it possible to include default content, that will be displayed in the
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js"></script>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-	<p data-saria-random-message-src="/path/to/messages.txt">
-		This content will be displayed until the randomly-selected message is loaded.
-	</p>
+  <p data-saria-random-message-src="/path/to/messages.txt">
+    This content will be displayed until the randomly-selected message is loaded.
+  </p>
 </body>
 </html>
 ```
@@ -147,32 +147,32 @@ Once you have included the script in a page, you can generate as much randomly-s
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js"></script>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-	<!--
-		Every element in this list will have a random message from the
-		URL displayed. The three messages may all be different, or there
-		may be duplicates; possibly even with all three showing the same
-		message. It’s random!
-	-->
-	<ul>
-		<li data-saria-random-message-src="messages.txt"></li>
-		<li data-saria-random-message-src="messages.txt"></li>
-		<li data-saria-random-message-src="messages.txt"></li>
-	</ul>
-	<!--
-		Every element in this list will have a random message from the
-		URL displayed… which is different from the URL above, and so
-		might be a different set of messages.
-	-->
-	<ul>
-		<li data-saria-random-message-src="other-messages.txt"></li>
-		<li data-saria-random-message-src="other-messages.txt"></li>
-		<li data-saria-random-message-src="other-messages.txt"></li>
-	</ul>
+  <!--
+    Every element in this list will have a random message from the
+    URL displayed. The three messages may all be different, or there
+    may be duplicates; possibly even with all three showing the same
+    message. It’s random!
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+  </ul>
+  <!--
+    Every element in this list will have a random message from the
+    URL displayed… which is different from the URL above, and so
+    might be a different set of messages.
+  -->
+  <ul>
+    <li data-saria-random-message-src="other-messages.txt"></li>
+    <li data-saria-random-message-src="other-messages.txt"></li>
+    <li data-saria-random-message-src="other-messages.txt"></li>
+  </ul>
 </body>
 </html>
 ```
@@ -193,43 +193,43 @@ To do this, both elements must have the same messages URL (with the `data-saria-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js"></script>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-	<!--
-		Every element in this list will have THE SAME randomly-selected message.
-	-->
-	<ul>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
-	</ul>
-	<!--
-		Every element in this list will have THE SAME randomly-selected message.
-		It MAY be the same message as in the previous list, or not.
-		It’s random!
-	-->
-	<ul>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
-	</ul>
-	<!--
-		Every element in the next two lists will have a (possibly)
-		DIFFERENT randomly-selected message.
-	-->
-	<ul>
-		<li data-saria-random-message-src="messages.txt"></li>
-		<li data-saria-random-message-src="messages.txt"></li>
-		<li data-saria-random-message-src="messages.txt"></li>
-	</ul>
-	<ul>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
-		<li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
-	</ul>
+  <!--
+    Every element in this list will have THE SAME randomly-selected message.
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+  </ul>
+  <!--
+    Every element in this list will have THE SAME randomly-selected message.
+    It MAY be the same message as in the previous list, or not.
+    It’s random!
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+  </ul>
+  <!--
+    Every element in the next two lists will have a (possibly)
+    DIFFERENT randomly-selected message.
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+  </ul>
+  <ul>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+  </ul>
 </body>
 </html>
 ```
@@ -296,12 +296,12 @@ Example:
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js" async=""></script>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js" async=""></script>
 </head>
 <body>
-	…
+  …
 </body>
 </html>
 ```
@@ -324,13 +324,13 @@ For example:
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js" async=""></script>
-	<link rel="preload" href="/path/to/messages.txt" as="fetch" crossorigin="anonymous"/>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js" async=""></script>
+  <link rel="preload" href="/path/to/messages.txt" as="fetch" crossorigin="anonymous"/>
 </head>
 <body>
-	<p data-saria-random-message-src="/path/to/messages.txt"></p>
+  <p data-saria-random-message-src="/path/to/messages.txt"></p>
 </body>
 </html>
 ```
