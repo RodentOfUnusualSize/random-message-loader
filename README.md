@@ -19,6 +19,12 @@ This program was written as a learning exercise.
     -   [Reporting vulnerabilities](#reporting-vulnerabilities)
 -   [Install](#install)
 -   [Usage](#usage)
+    -   [Default content](#default-content)
+    -   [Multiple messages](#multiple-messages)
+    -   [Repeating messages](#repeating-messages)
+    -   [Optimizing](#optimizing)
+        -   [Asynchronous loading](#asynchronous-loading)
+        -   [Preloading messages](#preloading-messages)
 -   [Contributing](#contributing)
 -   [License](#license)
 
