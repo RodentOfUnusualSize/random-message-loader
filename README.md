@@ -19,6 +19,12 @@ This program was written as a learning exercise.
     -   [Reporting vulnerabilities](#reporting-vulnerabilities)
 -   [Install](#install)
 -   [Usage](#usage)
+    -   [Default content](#default-content)
+    -   [Multiple messages](#multiple-messages)
+    -   [Repeating messages](#repeating-messages)
+    -   [Optimizing](#optimizing)
+        -   [Asynchronous loading](#asynchronous-loading)
+        -   [Preloading messages](#preloading-messages)
 -   [Contributing](#contributing)
 -   [License](#license)
 
@@ -86,51 +92,250 @@ The <em>third</em> message (yes, messages can contain markup).
 ```
 
 Any web page that wants to use random messages must include the script file with a `<script>` tag.
-You might want to use the `async` attribute so that loading the script does not delay loading the page.
-
 Once a web page has included the script, you may use the `data-saria-random-message-src` attribute for any element you wish to include randomly-selected content.
 The value of the attribute is the URL you want to load the messages from.
 
 An example web page:
 
 ```html
-<!DOCTYPE html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js" async=""></script>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <!-- Loading the program: -->
+  <script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-  <h1>Example page</h1>
-  <p>The following paragraph will have a randomly-selected message:</p>
+  <!-- The element that will contain the message: -->
   <p data-saria-random-message-src="/path/to/messages.txt"></p>
 </body>
 </html>
 ```
 
-Once you have included the script in a page, you can generate as much randomly-selected content, from as many URLs as you like:
+
+### Default content
+
+The randomly-selected message will replace any existing content in an element.
+That makes it possible to include default content, that will be displayed in the event that the random messages take a long time to load, or fail to load completely.
 
 ```html
-<!DOCTYPE html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Example page</title>
-	<script src="/path/to/random-message-loader.js" async=""></script>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js"></script>
 </head>
 <body>
-  <h1>Example page</h1>
-  <p>The following paragraph will have a randomly-selected message:</p>
-  <p data-saria-random-message-src="/path/to/messages.txt"></p>
-  <p>The following paragraph another randomly-selected message from the same set of messages as above (it may produce the same message, or not; it’s random!):</p>
-  <p data-saria-random-message-src="/path/to/messages.txt"></p>
-  <p>The following paragraph will have a randomly-selected message from a different set of messages:</p>
-  <p data-saria-random-message-src="/path/to/other-messages.txt"></p>
+  <p data-saria-random-message-src="/path/to/messages.txt">
+    This content will be displayed until the randomly-selected message is loaded.
+  </p>
 </body>
 </html>
 ```
 
-Any existing content will be replaced by the randomly-selected message.
-This means you can provide “default content” that will be displayed before the messages load, and in case they never do (for example, if there is a failure retriving the message file from the URL).
+If the random messages are loaded quickly enough, the default content will never be visible.
+This makes it a good fallback, but don’t rely on it ever being seen.
+
+
+### Multiple messages
+
+Once you have included the script in a page, you can generate as much randomly-selected content from as many URLs as you like:
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js"></script>
+</head>
+<body>
+  <!--
+    Every element in this list will have a random message from the
+    URL displayed. The three messages may all be different, or there
+    may be duplicates; possibly even with all three showing the same
+    message. It’s random!
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+  </ul>
+  <!--
+    Every element in this list will have a random message from the
+    URL displayed… which is different from the URL above, and so
+    might be a different set of messages.
+  -->
+  <ul>
+    <li data-saria-random-message-src="other-messages.txt"></li>
+    <li data-saria-random-message-src="other-messages.txt"></li>
+    <li data-saria-random-message-src="other-messages.txt"></li>
+  </ul>
+</body>
+</html>
+```
+
+The script is optimized so that each unique URL is only fetched once.
+In the example above, `messages.txt` is fetched only once for all three uses, and `other-messages.txt` is also fetched only once.
+
+
+### Repeating messages
+
+Normally, every element set to be filled with a random message from a URL will get a different randomly-selected message (which might be the same as a previously-selected message; it’s random!).
+However, sometimes you might want the randomly-selected message in an element repeated in another element.
+That is, you want two or more elements to have the *same* randomly-selected message.
+
+To do this, both elements must have the same messages URL (with the `data-saria-random-message-src` attribute), and the same message ID using the `data-saria-random-message-id` attribute.
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js"></script>
+</head>
+<body>
+  <!--
+    Every element in this list will have THE SAME randomly-selected message.
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="foo"></li>
+  </ul>
+  <!--
+    Every element in this list will have THE SAME randomly-selected message.
+    It MAY be the same message as in the previous list, or not.
+    It’s random!
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id="bar"></li>
+  </ul>
+  <!--
+    Every element in the next two lists will have a (possibly)
+    DIFFERENT randomly-selected message.
+  -->
+  <ul>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+    <li data-saria-random-message-src="messages.txt"></li>
+  </ul>
+  <ul>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+    <li data-saria-random-message-src="messages.txt" data-saria-random-message-id=""></li>
+  </ul>
+</body>
+</html>
+```
+
+Setting `data-saria-random-message-id` to nothing (the empty string) is equivalent to not using it at all.
+That is, it reverts to the default behaviour, which means the element will get its own randomly-selected message (which may or may not be duplicated in other elements; it’s random!).
+
+The content of `data-saria-random-message-id` can be any string.
+Leading and trailing whitespace is stripped.
+Comparison is done case-sensitively, with no regard to locale.
+
+
+### Optimizing
+
+There are several ways you can enhance the efficiency of this script, to make it use less resources, or to make it work more quickly.
+
+
+#### Asynchronous loading
+
+When you include a script in an (X)HTML page with a `<script>` element, by default it:
+
+1.  stops the page load
+2.  immediately starts downloading the script file
+3.  once it has the script, it executes it; then
+4.  continues loading the page.
+
+Delaying the main page load for what is likely to be ancillary content (random messages are unlikely to be core content) is not good.
+
+On the other hand, we need the entire page to be loaded before we can search through the tree looking for elements that want random content.
+
+The sweet spot is therefore:
+
+1.  definitely *after* the entire page is loaded and parsed
+2.  but possibly *before* extra stuff like stylesheets, images, or other scripts are loaded; and
+3.  *without* blocking the loading of anything.
+
+In the best case, then, all the random messages can be retrieved and inserted into the tree before anything is even visible to the user.
+In the worst case, the entire page is loaded and displayed, and *then* the random content is (belatedly) inserted.
+The worst case is not good (obviously), but for ancillary content, not so bad.
+
+Using the `defer` attribute on the `<script>` element gets us most of the way there.
+`defer` on a `<script>` element:
+
+*   does *not* stop the page load
+*   loads the script in parallel; and
+*   once the page is fully loaded, blocks until the script has loaded and run.
+
+This would be great if the script was producing *required*, core content.
+But randomly-selected messages are most likely to be optional, ancillary content.
+So it would be better if we blocked nothing at all.
+
+For that, there is the `async` attribute.
+`async` on a `<script>` element:
+
+*   does not stop the page load
+*   loads the script in parallel; and
+*   executes the script as soon as it is available, regardless of whether the page is finished loading or not.
+
+This is the mode that this program is designed to work with.
+It (currently) sets up an event that is only fired when the *entire* page, including all scripts, images, etc. are loaded.
+Example:
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js" async=""></script>
+</head>
+<body>
+  …
+</body>
+</html>
+```
+
+This is not ideal, because it means the random content is inserted very late—much later than necessary—at more or less the very last step of a page loading.
+But at least it never fails.
+
+
+#### Preloading messages
+
+By default, the message file(s) is not fetched until the script actually starts inserting the randomly-selected content.
+This means the entire page has to load, plus the script, and then the script has to be executed, before the messages are fetched.
+
+There is no need to wait this long.
+You know what message file(s) you are going to need for a page, so you can preload them, either with a `<link>` element in the page’s (X)HTML, or as part of the HTTP response.
+
+For example:
+
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Example page</title>
+  <script src="/path/to/random-message-loader.js" async=""></script>
+  <link rel="preload" href="/path/to/messages.txt" as="fetch" crossorigin="anonymous"/>
+</head>
+<body>
+  <p data-saria-random-message-src="/path/to/messages.txt"></p>
+</body>
+</html>
+```
+
+In this case, the messages will be loaded (possibly) in parallel with the page and the script, so there will be minimal delay when they are actually needed.
 
 
 ## Contributing
@@ -151,6 +356,8 @@ Copyright © 2023 Saria Mistry
 
 This is free software: you are free to change and redistribute it.
 There is **NO WARRANTY**, to the extent permitted by law.
+
+See [the project licence file][license-url] for details.
 
 
 [repo-url]: https://github.com/RodentOfUnusualSize/random-message-loader
