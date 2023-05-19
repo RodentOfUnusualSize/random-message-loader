@@ -42,7 +42,7 @@ window.addEventListener('load', event => {
 			id_map.get('').forEach(element => { element_groups.push([element]); });
 
 		Array.from(id_map.keys())
-			.filter(key => !!key)
+			.filter(key => key != '')
 			.forEach(id => { element_groups.push(id_map.get(id)); })
 		;
 
