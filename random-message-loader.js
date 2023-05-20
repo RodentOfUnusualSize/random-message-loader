@@ -55,14 +55,9 @@ function createTaskGroups(doc) {
 		const url = element.getAttribute(ATTRIBUTE_SRC);
 		const id = (element.getAttribute(ATTRIBUTE_ID) ?? DEFAULT_ID).trim();
 
-		if (!task_groups.has(url))
-			task_groups.set(url, new Map());
+		const task_group = getFromMapWithDefault(task_groups, url, () => new Map());
 
-		const task_group = task_groups.get(url);
-		if (!task_group.has(id))
-			task_group.set(id, []);
-
-		task_group.get(id).push(element);
+		getFromMapWithDefault(task_group, id, () => []).push(element);
 	});
 
 	// Partially flatten the task group structure, to
@@ -169,6 +164,13 @@ function selectRandomItem(items) {
 
 	const index = Math.floor(Math.random() * items.length);
 	return items[index];
+}
+
+function getFromMapWithDefault(map, id, make_default) {
+	if (!map.has(id))
+		map.set(id, make_default());
+
+	return map.get(id);
 }
 
 // Program /////////////////////////////////////////////////////////////
