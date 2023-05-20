@@ -46,42 +46,9 @@ function loadRandomMessages(document) {
 // Scans document for elements with random message source attributes,
 // and organizes them into task groups by URL and message ID.
 function createTaskGroups(doc) {
-	const task_groups = new Map();
+	const id_maps = extractIdMaps(doc);
 
-	// Scan document for all marked elements, and store them in a
-	//   Map(url: Map(id: [element...]))
-	// structure.
-	doc.querySelectorAll(`[${ATTRIBUTE_SRC}]`).forEach(element => {
-		const url = element.getAttribute(ATTRIBUTE_SRC);
-		const id = (element.getAttribute(ATTRIBUTE_ID) ?? DEFAULT_ID).trim();
-
-		const task_group = getFromMapWithDefault(task_groups, url, () => new Map());
-
-		getFromMapWithDefault(task_group, id, () => []).push(element);
-	});
-
-	// Partially flatten the task group structure, to
-	//   Map(url: [[element...]...])
-	// where each element array is the group of all elements with the
-	// same ID (and URL).
-	//
-	// Special-case the default ID, splitting the elements of its array
-	// each into their own, single-element array.
-	for (const [url, id_map] of task_groups) {
-		const element_groups = new Array();
-
-		if (id_map.has(DEFAULT_ID))
-			id_map.get(DEFAULT_ID).forEach(element => { element_groups.push([element]); });
-
-		Array.from(id_map.keys())
-			.filter(key => key != '')
-			.forEach(id => { element_groups.push(id_map.get(id)); })
-		;
-
-		task_groups.set(url, element_groups);
-	}
-
-	return task_groups;
+	return createTaskGroupsFromIdMaps(id_maps);
 }
 
 // createTasks(Map(Url, Array(Array(Element)))) -> Array(Promise)
