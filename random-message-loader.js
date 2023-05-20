@@ -29,9 +29,9 @@ window.addEventListener('load', event => {
 	//   Map(url: Map(id: [element...]))
 	// structure.
 	const task_groups = new Map();
-	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
-		const url = element.getAttribute(attribute_src);
-		const id = (element.getAttribute(attribute_id) ?? '').trim();
+	document.querySelectorAll(`[${ATTRIBUTE_SRC}]`).forEach((element) => {
+		const url = element.getAttribute(ATTRIBUTE_SRC);
+		const id = (element.getAttribute(ATTRIBUTE_ID) ?? '').trim();
 
 		if (!task_groups.has(url))
 			task_groups.set(url, new Map());
