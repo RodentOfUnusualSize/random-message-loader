@@ -22,9 +22,6 @@ const ATTRIBUTE_ID  = 'data-saria-random-message-id';
 const DEFAULT_ID = '';
 
 window.addEventListener('load', event => {
-	const attribute_src = 'data-saria-random-message-src';
-	const attribute_id = 'data-saria-random-message-id';
-
 	// Scan document for all marked elements, and store them in a
 	//   Map(url: Map(id: [element...]))
 	// structure.
