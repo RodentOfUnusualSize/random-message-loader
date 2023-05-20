@@ -77,6 +77,15 @@ function createTask(url, element_groups) {
 	;
 }
 
+// Element selection functions /////////////////////////////////////////
+
+// selectElements(Document) -> Array(Element)
+//
+// Selects all elements in document that want randomly-selected content.
+function selectElements(doc) {
+	return Array.from(doc.querySelectorAll(`[${ATTRIBUTE_SRC}]`));
+}
+
 // ID map functions ////////////////////////////////////////////////////
 
 // extractIdMaps(Document) -> Map(Url, Map(Id, Array(Element)))
@@ -87,7 +96,8 @@ function createTask(url, element_groups) {
 function extractIdMaps(doc) {
 	const id_maps = new Map();
 
-	doc.querySelectorAll(`[${ATTRIBUTE_SRC}]`).forEach(element => {
+	const elements = selectElements(doc);
+	for (const element of elements) {
 		const url = element.getAttribute(ATTRIBUTE_SRC);
 		const id = (element.getAttribute(ATTRIBUTE_ID) ?? DEFAULT_ID).trim();
 
@@ -96,7 +106,7 @@ function extractIdMaps(doc) {
 
 		// ... then by ID.
 		getFromMapWithDefault(id_map, id, () => []).push(element);
-	});
+	}
 
 	return id_maps;
 }
