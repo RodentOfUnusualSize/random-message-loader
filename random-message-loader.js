@@ -16,10 +16,106 @@
  *                                                                     *
  **********************************************************************/
 
+// Configuration ///////////////////////////////////////////////////////
+
 const ATTRIBUTE_SRC = 'data-saria-random-message-src';
 const ATTRIBUTE_ID  = 'data-saria-random-message-id';
 
 const DEFAULT_ID = '';
+
+// Random message loader ///////////////////////////////////////////////
+
+// loadRandomMessages(Document) -> null
+//
+// Scans document for elements that want to be filled with randomly-
+// selected content, then loads that content from URLs, and applies it
+// to the elements.
+function loadRandomMessages(document) {
+	const task_groups = createTaskGroups(document);
+
+	const tasks = createTasks(task_groups);
+
+	Promise.all(tasks)
+		.catch(err => console.error(`Random message loader error: ${err.message}`));
+}
+
+// Task functions //////////////////////////////////////////////////////
+
+// createTaskGroups(Document) -> Map(Url, Array(Array(Element)))
+//
+// Scans document for elements with random message source attributes,
+// and organizes them into task groups by URL and message ID.
+function createTaskGroups(doc) {
+	const task_groups = new Map();
+
+	// Scan document for all marked elements, and store them in a
+	//   Map(url: Map(id: [element...]))
+	// structure.
+	doc.querySelectorAll(`[${ATTRIBUTE_SRC}]`).forEach(element => {
+		const url = element.getAttribute(ATTRIBUTE_SRC);
+		const id = (element.getAttribute(ATTRIBUTE_ID) ?? DEFAULT_ID).trim();
+
+		if (!task_groups.has(url))
+			task_groups.set(url, new Map());
+
+		const task_group = task_groups.get(url);
+		if (!task_group.has(id))
+			task_group.set(id, []);
+
+		task_group.get(id).push(element);
+	});
+
+	// Partially flatten the task group structure, to
+	//   Map(url: [[element...]...])
+	// where each element array is the group of all elements with the
+	// same ID (and URL).
+	//
+	// Special-case the default ID, splitting the elements of its array
+	// each into their own, single-element array.
+	for (const [url, id_map] of task_groups) {
+		const element_groups = new Array();
+
+		if (id_map.has(DEFAULT_ID))
+			id_map.get(DEFAULT_ID).forEach(element => { element_groups.push([element]); });
+
+		Array.from(id_map.keys())
+			.filter(key => key != '')
+			.forEach(id => { element_groups.push(id_map.get(id)); })
+		;
+
+		task_groups.set(url, element_groups);
+	}
+
+	return task_groups;
+}
+
+// createTasks(Map(Url, Array(Array(Element)))) -> Array(Promise)
+//
+// Creates a promise for a task out of each URL and group of element
+// groups, and returns the collection of all the tasks.
+function createTasks(task_groups) {
+	const tasks = new Array();
+
+	for (const [url, element_groups] of task_groups)
+		tasks.push(createTask(url, element_groups));
+
+	return tasks;
+}
+
+// createTask(String, Array(Array(Element))) -> Promise
+//
+// Creates a promise for a task tha asynchronously fetches a URL
+// containing messages, parses what it receives, then selects messages
+// randomly from that and applies them to the element groups.
+function createTask(url, element_groups) {
+	return fetch(url)
+		.then(response => response.text())
+		.then(text => doRandomMessages(text, element_groups))
+		.catch((err) => console.error(`Random message loader error with URL ${url}: ${err.message}`))
+	;
+}
+
+// Messages functions //////////////////////////////////////////////////
 
 // parseMessages(String) -> Array(String)
 //
@@ -60,18 +156,7 @@ function doRandomMessages(text, element_groups) {
 	element_groups.forEach(elements => applyRandomMessageToElements(messages, elements));
 }
 
-// createTask(String, Array(Array(Element))) -> Promise
-//
-// Creates a promise for a task tha asynchronously fetches a URL
-// containing messages, parses what it receives, then selects messages
-// randomly from that and applies them to the element groups.
-function createTask(url, element_groups) {
-	return fetch(url)
-		.then(response => response.text())
-		.then(text => doRandomMessages(text, element_groups))
-		.catch((err) => console.error(`Random message loader error with URL ${url}: ${err.message}`))
-	;
-}
+// Helper functions ////////////////////////////////////////////////////
 
 // selectRandomItem(Array(Any)) -> Any
 //
@@ -85,6 +170,8 @@ function selectRandomItem(items) {
 	const index = Math.floor(Math.random() * items.length);
 	return items[index];
 }
+
+// Program /////////////////////////////////////////////////////////////
 
 window.addEventListener('load', event => {
 	// Scan document for all marked elements, and store them in a
