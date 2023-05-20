@@ -16,6 +16,11 @@
  *                                                                     *
  **********************************************************************/
 
+const ATTRIBUTE_SRC = 'data-saria-random-message-src';
+const ATTRIBUTE_ID  = 'data-saria-random-message-id';
+
+const DEFAULT_ID = '';
+
 window.addEventListener('load', event => {
 	const attribute_src = 'data-saria-random-message-src';
 	const attribute_id = 'data-saria-random-message-id';
