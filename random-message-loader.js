@@ -20,6 +20,9 @@ window.addEventListener('load', event => {
 	const attribute_src = 'data-saria-random-message-src';
 	const attribute_id = 'data-saria-random-message-id';
 
+	// Scan document for all marked elements, and store them in a
+	//   Map(url: Map(id: [element...]))
+	// structure.
 	const task_groups = new Map();
 	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
 		const url = element.getAttribute(attribute_src);
@@ -35,6 +38,13 @@ window.addEventListener('load', event => {
 		task_group.get(id).push(element);
 	});
 
+	// Partially flatten the task group structure, to
+	//   Map(url: [[element...]...])
+	// where each element array is the group of all elements with the
+	// same ID (and URL).
+	//
+	// Special-case the default ID, splitting the elements of its array
+	// each into their own, single-element array.
 	for (const [url, id_map] of task_groups) {
 		const element_groups = new Array();
 
