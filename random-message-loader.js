@@ -18,20 +18,50 @@
 
 window.addEventListener('load', event => {
 	const attribute_src = 'data-saria-random-message-src';
+	const attribute_id = 'data-saria-random-message-id';
 
+	// Scan document for all marked elements, and store them in a
+	//   Map(url: Map(id: [element...]))
+	// structure.
 	const task_groups = new Map();
 	document.querySelectorAll(`[${attribute_src}]`).forEach((element) => {
 		const url = element.getAttribute(attribute_src);
+		const id = (element.getAttribute(attribute_id) ?? '').trim();
 
-		if (task_groups.has(url))
-			task_groups.get(url).push(element);
-		else
-			task_groups.set(url, new Array(element));
+		if (!task_groups.has(url))
+			task_groups.set(url, new Map());
+
+		const task_group = task_groups.get(url);
+		if (!task_group.has(id))
+			task_group.set(id, []);
+
+		task_group.get(id).push(element);
 	});
+
+	// Partially flatten the task group structure, to
+	//   Map(url: [[element...]...])
+	// where each element array is the group of all elements with the
+	// same ID (and URL).
+	//
+	// Special-case the default ID, splitting the elements of its array
+	// each into their own, single-element array.
+	for (const [url, id_map] of task_groups) {
+		const element_groups = new Array();
+
+		if (id_map.has(''))
+			id_map.get('').forEach(element => { element_groups.push([element]); });
+
+		Array.from(id_map.keys())
+			.filter(key => key != '')
+			.forEach(id => { element_groups.push(id_map.get(id)); })
+		;
+
+		task_groups.set(url, element_groups);
+	}
 
 	if (task_groups.size != 0) {
 		const tasks = new Array();
-		for (const [url, elems] of task_groups) {
+		for (const [url, element_groups] of task_groups) {
 			tasks.push(
 				fetch(url)
 					.then(response => response.text())
@@ -40,9 +70,11 @@ window.addEventListener('load', event => {
 						if (messages.length == 0)
 							throw Error('no messages');
 
-						for (const elem of elems) {
+						for (const element_group of element_groups) {
 							const index = Math.floor(Math.random() * messages.length);
-							elem.innerHTML = messages[index];
+
+							for (const element of element_group)
+								element.innerHTML = messages[index];
 						}
 					})
 					.catch((err) => console.error(`Random message loader error with url ${url}: ${err.message}`))
