@@ -21,6 +21,37 @@ const ATTRIBUTE_ID  = 'data-saria-random-message-id';
 
 const DEFAULT_ID = '';
 
+// parseMessages(String) -> Array
+//
+// Parse a string representing the raw text content of a messages file
+// into an array of messages.
+function parseMessages(text) {
+	const delimiter = '\n';
+
+	return text.split(delimiter).filter(msg => msg.length > 0);
+}
+
+// validateMessages(Array) -> null
+//
+// Make sure the array of messages is acceptable. Throw an error if not.
+function validateMessages(messages) {
+	if (messages.length == 0)
+		throw Error('no messages');
+}
+
+// selectRandomItem(Array) -> Any
+//
+// Randomly select an item from the array.
+//
+// If the array is empty, throw an error.
+function selectRandomItem(items) {
+	if (items.length == 0)
+		throw Error('no items to select');
+
+	const index = Math.floor(Math.random() * items.length);
+	return items[index];
+}
+
 window.addEventListener('load', event => {
 	// Scan document for all marked elements, and store them in a
 	//   Map(url: Map(id: [element...]))
