@@ -21,7 +21,7 @@ const ATTRIBUTE_ID  = 'data-saria-random-message-id';
 
 const DEFAULT_ID = '';
 
-// parseMessages(String) -> Array
+// parseMessages(String) -> Array(String)
 //
 // Parse a string representing the raw text content of a messages file
 // into an array of messages.
@@ -31,7 +31,7 @@ function parseMessages(text) {
 	return text.split(delimiter).filter(msg => msg.length > 0);
 }
 
-// validateMessages(Array) -> null
+// validateMessages(Array(String)) -> null
 //
 // Make sure the array of messages is acceptable. Throw an error if not.
 function validateMessages(messages) {
@@ -39,7 +39,41 @@ function validateMessages(messages) {
 		throw Error('no messages');
 }
 
-// selectRandomItem(Array) -> Any
+// applyRandomMessageToElements(Array(String), Array(Element)) -> null
+//
+// Selects a random message from the collection, then applies it to all
+// the elements.
+function applyRandomMessageToElements(messages, elements) {
+	const message = selectRandomItem(messages);
+
+	elements.forEach(element => element.innerHTML = message);
+}
+
+// doRandomMessages(String, Array(Array(Element))) -> null
+//
+// Parses the string to get a set of messages, then uses them to pick a
+// random message for each element group.
+function doRandomMessages(text, element_groups) {
+	const messages = parseMessages(text);
+	validateMessages(messages);
+
+	element_groups.forEach(elements => applyRandomMessageToElements(messages, elements));
+}
+
+// createTask(String, Array(Array(Element))) -> Promise
+//
+// Creates a promise for a task tha asynchronously fetches a URL
+// containing messages, parses what it receives, then selects messages
+// randomly from that and applies them to the element groups.
+function createTask(url, element_groups) {
+	return fetch(url)
+		.then(response => response.text())
+		.then(text => doRandomMessages(text, element_groups))
+		.catch((err) => console.error(`Random message loader error with URL ${url}: ${err.message}`))
+	;
+}
+
+// selectRandomItem(Array(Any)) -> Any
 //
 // Randomly select an item from the array.
 //
