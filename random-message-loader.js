@@ -166,6 +166,10 @@ function selectRandomItem(items) {
 	return items[index];
 }
 
+// getFromMapWithDefault(Map(Any[1], Any[2]), Any[1], () -> Any[2]) -> Any[2]
+//
+// Gets an item from a map by ID. If the item does not exist, create it
+// with the function, insert it into the map, and then return it.
 function getFromMapWithDefault(map, id, make_default) {
 	if (!map.has(id))
 		map.set(id, make_default());
