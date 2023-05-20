@@ -110,6 +110,62 @@ function createTask(url, element_groups) {
 	;
 }
 
+// ID map functions ////////////////////////////////////////////////////
+
+// extractIdMaps(Document) -> Map(Url, Map(Id, Array(Element)))
+//
+// Scan the document and extract all elements that want randomly-
+// selected content. Store those elements in nested maps keyed first by
+// URL, then by ID.
+function extractIdMaps(doc) {
+	const id_maps = new Map();
+
+	doc.querySelectorAll(`[${ATTRIBUTE_SRC}]`).forEach(element => {
+		const url = element.getAttribute(ATTRIBUTE_SRC);
+		const id = (element.getAttribute(ATTRIBUTE_ID) ?? DEFAULT_ID).trim();
+
+		// Map the element first by URL...
+		const id_map = getFromMapWithDefault(id_maps, url, () => new Map());
+
+		// ... then by ID.
+		getFromMapWithDefault(id_map, id, () => []).push(element);
+	});
+
+	return id_maps;
+}
+
+// createTaskGroupsFromIdMaps(Map(Url, Map(Id, Array(Element))))
+//   -> Map(Url, Array(Array(Element)))
+//
+// Partially flatten nested URL/ID maps by converting the ID maps to
+// arrays.
+//
+// Special-case the default ID by splitting its element array into
+// multiple arrays, each containing a single element.
+function createTaskGroupsFromIdMaps(id_maps) {
+	const task_groups = new Map();
+
+	for (const [url, id_map] of id_maps) {
+		const element_groups = new Array();
+
+		// For the default ID, split its array of elements into multiple
+		// arrays, each with a single element.
+		if (id_map.has(DEFAULT_ID))
+			id_map.get(DEFAULT_ID).forEach(element => element_groups.push([element]));
+
+		// For all other IDs, just copy the array.
+		Array.from(id_map.keys())
+			.filter(key => key != DEFAULT_ID)
+			.forEach(id => element_groups.push(id_map.get(id)))
+		;
+
+		// Set the task group for the URL.
+		task_groups.set(url, element_groups);
+	}
+
+	return task_groups;
+}
+
 // Messages functions //////////////////////////////////////////////////
 
 // parseMessages(String) -> Array(String)
