@@ -212,4 +212,7 @@ function getFromMapWithDefault(map, id, make_default) {
 
 // Program /////////////////////////////////////////////////////////////
 
-window.addEventListener('load', event => loadRandomMessages(document));
+if (document.readyState == 'loading')
+	window.addEventListener('DOMContentLoaded', event => loadRandomMessages(document));
+else
+	loadRandomMessages(document);
