@@ -215,7 +215,9 @@ function getFromMapWithDefault(map, id, make_default) {
 // Gets a promise for the text content of a response. Throws an
 // exception if there was an error with the request.
 function getTextFromResponse(response) {
-	// TODO: Check for error.
+	if (!response.ok)
+		throw new Error(`HTTP error: ${response.status}`);
+
 	return response.text();
 }
 
