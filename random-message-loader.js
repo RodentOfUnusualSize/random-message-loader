@@ -71,7 +71,7 @@ function createTasks(task_groups) {
 // randomly from that and applies them to the element groups.
 function createTask(url, element_groups) {
 	return fetch(url)
-		.then(response => response.text())
+		.then(response => getTextFromResponse(response))
 		.then(text => doRandomMessages(text, element_groups))
 		.catch((err) => console.error(`Random message loader error with URL ${url}: ${err.message}`))
 	;
