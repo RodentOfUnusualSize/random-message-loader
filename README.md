@@ -289,7 +289,10 @@ For that, there is the `async` attribute.
 *   executes the script as soon as it is available, regardless of whether the page is finished loading or not.
 
 This is the mode that this program is designed to work with.
-It (currently) sets up an event that is only fired when the *entire* page, including all scripts, images, etc. are loaded.
+As soon as the program is loaded, it checks to see if the page is already loaded and parsed.
+If so, the program immediately runs.
+If not, the program installs an event handler that will be fired when the page is finally loaded and parsed.
+
 Example:
 
 ```html
