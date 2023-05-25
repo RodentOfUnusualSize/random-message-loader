@@ -71,7 +71,7 @@ function createTasks(task_groups) {
 // randomly from that and applies them to the element groups.
 function createTask(url, element_groups) {
 	return fetch(url)
-		.then(response => response.text())
+		.then(response => getTextFromResponse(response))
 		.then(text => doRandomMessages(text, element_groups))
 		.catch((err) => console.error(`Random message loader error with URL ${url}: ${err.message}`))
 	;
@@ -208,6 +208,17 @@ function getFromMapWithDefault(map, id, make_default) {
 		map.set(id, make_default());
 
 	return map.get(id);
+}
+
+// getTextFromResponse(Response) -> Promise
+//
+// Gets a promise for the text content of a response. Throws an
+// exception if there was an error with the request.
+function getTextFromResponse(response) {
+	if (!response.ok)
+		throw new Error(`HTTP error: ${response.status}`);
+
+	return response.text();
 }
 
 // Program /////////////////////////////////////////////////////////////
