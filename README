@@ -3,7 +3,6 @@
 [![Release][release-shield]][release-url]
 [![GitHub top language][language-shield]][repo-url]
 [![GPLv3][license-shield]][license-url]
-[![standard-readme compliant][std-readme-shield]][std-readme-url]
 
 Sets content to a randomly-selected message loaded from a URL.
 
@@ -369,8 +368,6 @@ See [the project licence file][license-url] for details.
 [release-shield]: https://img.shields.io/github/v/release/RodentOfUnusualSize/random-message-loader?include_prereleases&sort=semver
 [language-shield]: https://img.shields.io/github/languages/top/RodentOfUnusualSize/random-message-loader.svg
 [license-shield]: https://img.shields.io/github/license/RodentOfUnusualSize/random-message-loader.svg
-[std-readme-shield]: https://img.shields.io/badge/readme%20style-standard-brightgreen.svg
-[std-readme-url]: https://github.com/RichardLitt/standard-readme
 [license-url]: ../LICENSE
 [security-policy-url]: ../SECURITY.md
 [script]: ../random-message-loader.js
