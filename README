@@ -4,6 +4,7 @@
 [![GPLv3][license-shield]][license-url]
 [![Tests status][tests-shield]][tests-url]
 [![GitHub top language][language-shield]][repo-url]
+[![Saria status][saria-shield]][saria-url]
 
 Sets content to a randomly-selected message loaded from a URL.
 
@@ -375,5 +376,7 @@ See [the project licence file][license-url] for details.
 [language-shield]: https://img.shields.io/github/languages/top/RodentOfUnusualSize/random-message-loader.svg
 [script]: ../random-message-loader.js
 [csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+[saria-url]: https://www.saria.fun/
+[saria-shield]: https://img.shields.io/badge/saria-super%20hot%20%E2%9D%A4%EF%B8%8F%E2%80%8D%F0%9F%94%A5-red
 
 <!-- vim: syntax=Markdown -->
