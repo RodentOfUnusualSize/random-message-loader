@@ -2,6 +2,7 @@
 
 [![Release][release-shield]][release-url]
 [![GPLv3][license-shield]][license-url]
+[![Tests status][tests-shield]][tests-url]
 [![GitHub top language][language-shield]][repo-url]
 
 Sets content to a randomly-selected message loaded from a URL.
@@ -363,14 +364,17 @@ See [the project licence file][license-url] for details.
 
 
 [repo-url]: https://github.com/RodentOfUnusualSize/random-message-loader
-[release-url]: https://github.com/RodentOfUnusualSize/random-message-loader/releases
 [security-report-url]: https://github.com/RodentOfUnusualSize/random-message-loader/security
+[release-url]: https://github.com/RodentOfUnusualSize/random-message-loader/releases
 [release-shield]: https://img.shields.io/github/v/release/RodentOfUnusualSize/random-message-loader?include_prereleases&sort=semver
-[language-shield]: https://img.shields.io/github/languages/top/RodentOfUnusualSize/random-message-loader.svg
-[license-shield]: https://img.shields.io/github/license/RodentOfUnusualSize/random-message-loader.svg
 [license-url]: ../LICENSE
+[license-shield]: https://img.shields.io/github/license/RodentOfUnusualSize/random-message-loader.svg
+[tests-url]: https://github.com/RodentOfUnusualSize/random-message-loader/actions/workflows/run-tests.yml
+[tests-shield]: https://img.shields.io/github/actions/workflow/status/RodentOfUnusualSize/random-message-loader/run-tests.yml
 [security-policy-url]: ../SECURITY.md
+[language-shield]: https://img.shields.io/github/languages/top/RodentOfUnusualSize/random-message-loader.svg
 [script]: ../random-message-loader.js
 [csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
 <!-- vim: syntax=Markdown -->
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/RodentOfUnusualSize/random-message-loader/run-tests.yml)
