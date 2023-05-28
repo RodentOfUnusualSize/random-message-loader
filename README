@@ -377,4 +377,3 @@ See [the project licence file][license-url] for details.
 [csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
 <!-- vim: syntax=Markdown -->
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/RodentOfUnusualSize/random-message-loader/run-tests.yml)
