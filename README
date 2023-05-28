@@ -375,3 +375,5 @@ See [the project licence file][license-url] for details.
 [security-policy-url]: ../SECURITY.md
 [script]: ../random-message-loader.js
 [csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+
+<!-- vim: syntax=Markdown -->
