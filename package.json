@@ -1,0 +1,14 @@
+{
+	"scripts": {
+		"test": "node node_modules/.bin/jest ./test"
+	},
+	"jest": {
+		"setupFilesAfterEnv": [
+			"jest-extended/all"
+		]
+	},
+	"devDependencies": {
+		"jest": "^29.5.0",
+		"jest-extended": "^3.2.4"
+	}
+}
