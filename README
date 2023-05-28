@@ -1,8 +1,8 @@
 # Random message loader
 
 [![Release][release-shield]][release-url]
-[![GitHub top language][language-shield]][repo-url]
 [![GPLv3][license-shield]][license-url]
+[![GitHub top language][language-shield]][repo-url]
 
 Sets content to a randomly-selected message loaded from a URL.
 
