@@ -26,4 +26,16 @@ set -u
 
 npm_dir='.npm'
 
-"${npm_dir}"/bin/jest --config test/config/jest.config.json
+# Find Jest config file, so tests can be run either from project root,
+# or from tests directory.
+jest_config_filename='jest.config.json'
+if [ -f "test/config/${jest_config_filename}" ] ; then
+	jest_config_path="test/config/${jest_config_filename}"
+elif [ -f "config/${jest_config_filename}" ] ; then
+	jest_config_path="config/${jest_config_filename}"
+else
+	printf '%s: %s\n' "$(basename -- "${0}")" 'could not find Jest configuration' >&2
+	exit 1
+fi
+
+"${npm_dir}"/bin/jest --config "${jest_config_path}"
