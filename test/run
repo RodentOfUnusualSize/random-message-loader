@@ -23,3 +23,7 @@
 
 set -e
 set -u
+
+npm_dir='.npm'
+
+"${npm_dir}"/bin/jest --config test/config/jest.config.json
