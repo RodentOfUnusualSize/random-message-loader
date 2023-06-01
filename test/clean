@@ -23,3 +23,7 @@
 
 set -e
 set -u
+
+npm_dir='.npm'
+
+rm -rf -- "${npm_dir}"
