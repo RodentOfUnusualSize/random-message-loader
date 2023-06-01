@@ -28,6 +28,7 @@ npm_dir='.npm'
 
 packages='
 jest
+jest-extended
 '
 
 npm install \
