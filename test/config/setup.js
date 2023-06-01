@@ -18,3 +18,7 @@
  * If not, see <https: *www.gnu.org/licenses/>.                        *
  *                                                                     *
  **********************************************************************/
+
+// Add Jest extended matchers //////////////////////////////////////////
+const jestExtended = require(`jest-extended`);
+expect.extend(jestExtended);
