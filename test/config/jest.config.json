@@ -1,2 +1,6 @@
 {
+	"rootDir" : "../..",
+	"roots" : [
+		"<rootDir>/test/tests/"
+	]
 }
