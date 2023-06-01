@@ -34,12 +34,19 @@ jobs:
         steps:
           - name: Checkout code
             uses: actions/checkout@v3
-          - name: Setup Node.js
-            uses: actions/setup-node@v3
+          - name: Get npm cache directory
+            id: npm-cache-dir
+            shell: bash
+            run: printf 'dir=%s\n' "$(npm config get cache)" >>${GITHUB_OUTPUT}
+          - name: Load npm cache
+            uses: actions/cache@v3
+            id: npm-cache
             with:
-                node-version: 18
-                cache: 'npm'
-          - name: Install dependencies
+                path: ${{ steps.npm-cache-dir.outputs.dir }}
+                key: ${{ runner.os }}-node
+                restore-keys: |
+                    ${{ runner.os }}-node
+          - name: Install test dependencies
             run: test/setup
           - name: Run tests
             run: test/run
