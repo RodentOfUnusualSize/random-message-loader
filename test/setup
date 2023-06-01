@@ -23,3 +23,16 @@
 
 set -e
 set -u
+
+npm_dir='.npm'
+
+packages='
+jest
+'
+
+npm install \
+	--global \
+	--no-audit \
+	--no-fund \
+	--prefix "${npm_dir}" \
+	${packages}
