@@ -29,6 +29,7 @@ npm_dir='.npm'
 packages='
 jest
 jest-extended
+jest-environment-jsdom
 '
 
 npm install \
