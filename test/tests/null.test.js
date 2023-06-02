@@ -1,4 +1,4 @@
-describe('Test when the script does effectively nothing', () => {
+describe('When the script does effectively nothing', () => {
 	beforeEach(() => {
 		fetch.mockClear();
 	});
