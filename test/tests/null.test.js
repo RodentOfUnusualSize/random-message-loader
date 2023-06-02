@@ -1,5 +1,5 @@
 describe('When the script does effectively nothing', () => {
-	beforeEach(() => {
+	beforeAll(() => {
 		fetch.mockClear();
 	});
 
