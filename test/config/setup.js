@@ -22,3 +22,6 @@
 // Add Jest extended matchers //////////////////////////////////////////
 const jestExtended = require(`jest-extended`);
 expect.extend(jestExtended);
+
+// Set up fetch mocking ////////////////////////////////////////////////
+require('jest-fetch-mock').enableMocks();
