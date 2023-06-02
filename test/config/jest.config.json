@@ -3,6 +3,7 @@
 	"roots" : [
 		"<rootDir>/test/tests/"
 	],
+	"testEnvironment": "jsdom",
 	"setupFilesAfterEnv" : [
 		"<rootDir>/test/config/setup.js"
 	],
