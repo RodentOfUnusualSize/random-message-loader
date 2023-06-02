@@ -1,4 +1,8 @@
 describe('Test when the script does effectively nothing', () => {
+	beforeEach(() => {
+		fetch.mockClear();
+	});
+
 	test('it adds the event listener', async () => {
 	});
 
