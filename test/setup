@@ -30,6 +30,7 @@ packages='
 jest
 jest-extended
 jest-environment-jsdom
+jest-fetch-mock
 '
 
 npm install \
