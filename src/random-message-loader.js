@@ -15,3 +15,18 @@
  * If not, see <https://www.gnu.org/licenses/>.                        *
  *                                                                     *
  **********************************************************************/
+
+
+/**
+ * Replaces content in marked elements with randomly-selected messages
+ * from a URL
+ *
+ * @returns {Promise} A promise for the program's completion.
+ */
+function run() {
+	return Promise.resolve();
+}
+
+
+// Run the program.
+run();
