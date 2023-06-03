@@ -30,6 +30,8 @@ describe('When the script does effectively nothing', () => {
 
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
+
+		require('../../src/random-message-loader.js');
 	});
 
 	test('it does not add window event listener', async () => {
