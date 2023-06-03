@@ -20,4 +20,9 @@
  **********************************************************************/
 
 describe('When messages cannot be retrieved', () => {
+	test('the default content is not changed', async () => {
+	});
+
+	test('it tries to fetch the message file', async () => {
+	});
 });
