@@ -20,9 +20,13 @@
  **********************************************************************/
 
 describe('In the script\'s most basic synchronous operation', () => {
+	const scriptPath = '../../src/random-message-loader.js';
+
 	test('it changes the content of the target element', async () => {
+		await require('../../src/random-message-loader.js');
 	});
 
 	test('it fetches the message file', async () => {
+		await require('../../src/random-message-loader.js');
 	});
 });
