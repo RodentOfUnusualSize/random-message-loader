@@ -54,5 +54,6 @@ describe('When the script does effectively nothing', () => {
 	});
 
 	test('it does not fetch anything', async () => {
+		expect(fetch.mock.calls).toHaveLength(0);
 	});
 });
