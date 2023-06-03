@@ -59,7 +59,10 @@ function doItToIt(document) {
 		const tasks = elements.map(element => {
 			const src = element.getAttribute(ATTRIBUTE_SRC);
 
-			const task = fetch(src);
+			const task = fetch(src)
+				.then(response => response.text())
+				.then(content => { element.innerHTML = content; });
+			;
 
 			return task;
 		});
