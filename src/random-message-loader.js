@@ -18,13 +18,41 @@
 
 
 /**
+ * Returns a promise that resolves when the document's DOM content is
+ * ready.
+ *
+ * @param {Document} A document that is loading or loaded.
+ * @returns {Promise<Document>} A promise that resolves when the
+ *                              document's DOM content is ready.
+ */
+function waitForDocument(document) {
+	// TODO: Check document.readyState.
+	return Promise.resolve(document);
+}
+
+
+/**
+ * Replaces content in marked elements with randomly-selected messages
+ * from a URL
+ *
+ * @param {Document} The document to run the program on.
+ * @returns {Promise} A promise for the program's completion.
+ */
+function doItToIt(document) {
+	return Promise.resolve();
+}
+
+
+/**
  * Replaces content in marked elements with randomly-selected messages
  * from a URL
  *
  * @returns {Promise} A promise for the program's completion.
  */
 function run() {
-	const result = Promise.resolve();
+	const result = waitForDocument(document)
+		.then(document => doItToIt(document))
+	;
 
 	if (typeof exports === "object")
 		module.exports = result;
