@@ -22,14 +22,27 @@
 describe('In the script\'s most basic synchronous operation', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
+	const message = 'foo';
+
+	let testElement;
+
 	beforeEach(() => {
 		jest.resetModules();
 
 		fetch.mockClear();
+
+		document.body.innerHTML = '';
+
+		testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'messages');
+
+		document.body.appendChild(testElement);
 	});
 
 	test('it changes the content of the target element', async () => {
 		await require('../../src/random-message-loader.js');
+
+		expect(testElement.innerHTML).toBe(message);
 	});
 
 	test('it fetches the message file', async () => {
