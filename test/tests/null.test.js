@@ -35,12 +35,7 @@ describe('When the script does effectively nothing', () => {
 		+ '<p data-saria="awesome">Element with data attribute.</p>'
 	;
 
-	beforeAll(async () => {
-		jest.resetModules();
-
-		windowEventListeners.clear();
-		documentEventListeners.clear();
-
+	beforeAll(() => {
 		window.addEventListener = jest.fn((event, cb) => {
 			if (!windowEventListeners.has(event))
 				windowEventListeners.set(event, []);
@@ -51,6 +46,13 @@ describe('When the script does effectively nothing', () => {
 				documentEventListeners.set(event, []);
 			documentEventListeners.get(event).push(cb);
 		});
+	});
+
+	beforeEach(() => {
+		jest.resetModules();
+
+		windowEventListeners.clear();
+		documentEventListeners.clear();
 
 		fetch.mockClear();
 
