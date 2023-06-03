@@ -40,10 +40,15 @@ describe('When the script does effectively nothing', () => {
 		expect(documentEventListeners.size).toBe(0);
 	});
 
-	test('it does not change DOM content', async () => {
+	test('it does not change DOM content in head', async () => {
 		expect(document.head.innerHTML).toBe(headContent);
-		expect(document.body.innerHTML).toBe(bodyContent);
+	});
 
+	test('it does not change DOM content in body', async () => {
+		expect(document.body.innerHTML).toBe(bodyContent);
+	});
+
+	test('it does not change DOM content', async () => {
 		expect(document.documentElement.outerHTML).toBe(
 			'<html>'
 			+ '<head>'
