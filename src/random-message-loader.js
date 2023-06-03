@@ -24,7 +24,12 @@
  * @returns {Promise} A promise for the program's completion.
  */
 function run() {
-	return Promise.resolve();
+	const result = Promise.resolve();
+
+	if (typeof exports === "object")
+		module.exports = result;
+
+	return result;
 }
 
 
