@@ -20,6 +20,8 @@
  **********************************************************************/
 
 describe('When the script does effectively nothing', () => {
+	const scriptPath = '../../src/random-message-loader.js';
+
 	const windowEventListeners = new Map();
 	const documentEventListeners = new Map();
 
@@ -32,7 +34,7 @@ describe('When the script does effectively nothing', () => {
 	const headContent = ''
 		+ '<meta charset="utf-8"/>'
 		+ '<title>Title</title>'
-		+ '<script src="../../random-message-loader.js"></script>'
+		+ `<script src="${scriptPath}"></script>`
 	;
 
 	const bodyContent = ''
@@ -82,31 +84,31 @@ describe('When the script does effectively nothing', () => {
 	});
 
 	test('it does not add document event listener', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
 		expect(documentEventListeners.size).toBe(0);
 	});
 
 	test('it does not change DOM content in head', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
 		expect(document.head.innerHTML).toBe(expectedContent.head);
 	});
 
 	test('it does not change DOM content in body', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
 		expect(document.body.innerHTML).toBe(expectedContent.body);
 	});
 
 	test('it does not change DOM content', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
 		expect(document.documentElement.outerHTML).toBe(expectedContent.document);
 	});
 
 	test('it does not fetch anything', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
 		expect(fetch.mock.calls).toHaveLength(0);
 	});
