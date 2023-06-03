@@ -56,7 +56,15 @@ function doItToIt(document) {
 			.filter(isTargetElement)
 		;
 
-		return Promise.resolve();
+		const tasks = elements.map(element => {
+			const src = element.getAttribute(ATTRIBUTE_SRC);
+
+			const task = fetch(src);
+
+			return task;
+		});
+
+		return Promise.all(tasks);
 	}
 	catch (err) {
 		return Promise.reject(err);
