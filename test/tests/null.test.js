@@ -1,6 +1,6 @@
 describe('When the script does effectively nothing', () => {
-	windowEventListeners = new Map();
-	documentEventListeners = new Map();
+	const windowEventListeners = new Map();
+	const documentEventListeners = new Map();
 
 	beforeAll(() => {
 		window.addEventListener = jest.fn((event, cb) => {
