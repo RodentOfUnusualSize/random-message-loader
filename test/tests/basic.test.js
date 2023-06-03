@@ -22,6 +22,7 @@
 describe('In the script\'s most basic synchronous operation', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
+	const url = 'messages';
 	const message = 'foo';
 
 	let testElement;
@@ -30,11 +31,12 @@ describe('In the script\'s most basic synchronous operation', () => {
 		jest.resetModules();
 
 		fetch.mockClear();
+		fetch.mockResponseOnce(message);
 
 		document.body.innerHTML = '';
 
 		testElement = document.createElement("p");
-		testElement.setAttribute('data-saria-random-message-src', 'messages');
+		testElement.setAttribute('data-saria-random-message-src', url);
 
 		document.body.appendChild(testElement);
 	});
@@ -47,5 +49,10 @@ describe('In the script\'s most basic synchronous operation', () => {
 
 	test('it fetches the message file', async () => {
 		await require('../../src/random-message-loader.js');
+
+		expect(fetch.mock.calls).toBeArrayOfSize(1);
+
+		expect(fetch.mock.calls[0]).toBeArrayOfSize(1);
+		expect(fetch.mock.calls[0][0]).toBe(url);
 	});
 });
