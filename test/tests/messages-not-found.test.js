@@ -22,11 +22,25 @@
 describe('When messages cannot be retrieved', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
+	const url = 'messages';
+
+	beforeEach(() => {
+		jest.resetModules();
+
+		fetch.mockClear();
+		fetch.mockResponseOnce('foo');
+	});
+
 	test('the default content is not changed', async () => {
 		await require(scriptPath);
 	});
 
 	test('it tries to fetch the message file', async () => {
 		await require(scriptPath);
+
+		expect(fetch.mock.calls).toBeArrayOfSize(1);
+
+		expect(fetch.mock.calls[0]).toBeArrayOfSize(1);
+		expect(fetch.mock.calls[0][0]).toBe(url);
 	});
 });
