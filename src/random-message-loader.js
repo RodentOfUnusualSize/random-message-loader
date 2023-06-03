@@ -18,6 +18,16 @@
 
 
 /**
+ * Name of attribute that holds URL of random messages file.
+ *
+ * @constant
+ * @type {string}
+ * @default
+ */
+const ATTRIBUTE_SRC = 'data-saria-random-message-src';
+
+
+/**
  * Returns a promise that resolves when the document's DOM content is
  * ready.
  *
@@ -39,7 +49,30 @@ function waitForDocument(document) {
  * @returns {Promise} A promise for the program's completion.
  */
 function doItToIt(document) {
-	return Promise.resolve();
+	try {
+		const query = `[${ATTRIBUTE_SRC}]`;
+
+		const elements = Array.from(document.querySelectorAll(query))
+			.filter(isTargetElement)
+		;
+
+		return Promise.resolve();
+	}
+	catch (err) {
+		return Promise.reject(err);
+	}
+}
+
+
+/**
+ * Tests whether the element is a target for a random message
+ *
+ * @param {Element} The element to test.
+ * @return {boolean} Whether the element is a target for a random
+ *                   message.
+ */
+function isTargetElement(element) {
+	return element.hasAttribute(ATTRIBUTE_SRC);
 }
 
 
@@ -52,6 +85,10 @@ function doItToIt(document) {
 function run() {
 	const result = waitForDocument(document)
 		.then(document => doItToIt(document))
+		.catch(error => {
+			console.error(`Random message loader error: ${error.message}`);
+			//return Promise.reject(error);
+		})
 	;
 
 	if (typeof exports === "object")
