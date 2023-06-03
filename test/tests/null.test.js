@@ -3,7 +3,7 @@ describe('When the script does effectively nothing', () => {
 		fetch.mockClear();
 	});
 
-	test('it adds the event listener', async () => {
+	test('it does not add event listener', async () => {
 	});
 
 	test('it does not change DOM content', async () => {
