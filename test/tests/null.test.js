@@ -23,15 +23,22 @@ describe('When the script does effectively nothing', () => {
 	const windowEventListeners = new Map();
 	const documentEventListeners = new Map();
 
+	const expectedContent = {
+		document : '',
+		head     : '',
+		body     : '',
+	};
+
 	const headContent = ''
-		+ '<meta charset="utf-8">'
+		+ '<meta charset="utf-8"/>'
 		+ '<title>Title</title>'
 		+ '<script src="../../random-message-loader.js"></script>'
 	;
+
 	const bodyContent = ''
 		+ '<h1>Heading</h1>'
 		+ '<p>Paragraph.</p>'
-		+ '<img src="image.png" alt="alt text">'
+		+ '<img src="image.png" alt="alt text"/>'
 		+ '<p data-saria="awesome">Element with data attribute.</p>'
 	;
 
@@ -46,6 +53,14 @@ describe('When the script does effectively nothing', () => {
 				documentEventListeners.set(event, []);
 			documentEventListeners.get(event).push(cb);
 		});
+
+		document.head.innerHTML = headContent;
+		document.body.innerHTML = bodyContent;
+
+		expectedContent.document = document.documentElement.outerHTML;
+
+		expectedContent.head = document.head.innerHTML;
+		expectedContent.body = document.body.innerHTML;
 	});
 
 	beforeEach(() => {
@@ -75,28 +90,19 @@ describe('When the script does effectively nothing', () => {
 	test('it does not change DOM content in head', async () => {
 		await require('../../src/random-message-loader.js');
 
-		expect(document.head.innerHTML).toBe(headContent);
+		expect(document.head.innerHTML).toBe(expectedContent.head);
 	});
 
 	test('it does not change DOM content in body', async () => {
 		await require('../../src/random-message-loader.js');
 
-		expect(document.body.innerHTML).toBe(bodyContent);
+		expect(document.body.innerHTML).toBe(expectedContent.body);
 	});
 
 	test('it does not change DOM content', async () => {
 		await require('../../src/random-message-loader.js');
 
-		expect(document.documentElement.outerHTML).toBe(
-			'<html>'
-			+ '<head>'
-			+ headContent
-			+ '</head>'
-			+ '<body>'
-			+ bodyContent
-			+ '</body>'
-			+ '</html>'
-		);
+		expect(document.documentElement.outerHTML).toBe(expectedContent.document);
 	});
 
 	test('it does not fetch anything', async () => {
