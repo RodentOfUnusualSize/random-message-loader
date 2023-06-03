@@ -42,13 +42,13 @@ describe('In the script\'s most basic synchronous operation', () => {
 	});
 
 	test('it changes the content of the target element', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
 		expect(testElement.innerHTML).toBe(message);
 	});
 
 	test('it fetches the message file', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
 
