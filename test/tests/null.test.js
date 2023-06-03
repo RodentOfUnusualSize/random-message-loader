@@ -56,27 +56,35 @@ describe('When the script does effectively nothing', () => {
 
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
-
-		await require('../../src/random-message-loader.js');
 	});
 
 	test('it does not add window event listener', async () => {
+		await require('../../src/random-message-loader.js');
+
 		expect(windowEventListeners.size).toBe(0);
 	});
 
 	test('it does not add document event listener', async () => {
+		await require('../../src/random-message-loader.js');
+
 		expect(documentEventListeners.size).toBe(0);
 	});
 
 	test('it does not change DOM content in head', async () => {
+		await require('../../src/random-message-loader.js');
+
 		expect(document.head.innerHTML).toBe(headContent);
 	});
 
 	test('it does not change DOM content in body', async () => {
+		await require('../../src/random-message-loader.js');
+
 		expect(document.body.innerHTML).toBe(bodyContent);
 	});
 
 	test('it does not change DOM content', async () => {
+		await require('../../src/random-message-loader.js');
+
 		expect(document.documentElement.outerHTML).toBe(
 			'<html>'
 			+ '<head>'
@@ -90,6 +98,8 @@ describe('When the script does effectively nothing', () => {
 	});
 
 	test('it does not fetch anything', async () => {
+		await require('../../src/random-message-loader.js');
+
 		expect(fetch.mock.calls).toHaveLength(0);
 	});
 });
