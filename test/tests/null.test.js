@@ -32,8 +32,11 @@ describe('When the script does effectively nothing', () => {
 		document.body.innerHTML = bodyContent;
 	});
 
-	test('it does not add event listener', async () => {
+	test('it does not add window event listener', async () => {
 		expect(windowEventListeners.size).toBe(0);
+	});
+
+	test('it does not add document event listener', async () => {
 		expect(documentEventListeners.size).toBe(0);
 	});
 
