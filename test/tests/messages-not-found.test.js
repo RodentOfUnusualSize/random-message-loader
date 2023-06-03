@@ -32,7 +32,12 @@ describe('When messages cannot be retrieved', () => {
 		jest.resetModules();
 
 		fetch.mockClear();
-		fetch.mockResponseOnce('foo');
+		fetch.mockResponse(request => {
+			return Promise.resolve({
+				status : 404,
+				body   : 'not found'
+			});
+		});
 
 		document.head.innerHTML = ''
 			+ '<meta charset="utf-8"/>'
