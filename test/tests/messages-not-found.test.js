@@ -20,9 +20,13 @@
  **********************************************************************/
 
 describe('When messages cannot be retrieved', () => {
+	const scriptPath = '../../src/random-message-loader.js';
+
 	test('the default content is not changed', async () => {
+		await require(scriptPath);
 	});
 
 	test('it tries to fetch the message file', async () => {
+		await require(scriptPath);
 	});
 });
