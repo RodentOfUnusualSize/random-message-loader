@@ -33,6 +33,12 @@ describe('In the script\'s most basic synchronous operation', () => {
 		fetch.mockClear();
 		fetch.mockResponseOnce(message);
 
+		document.head.innerHTML = ''
+			+ '<meta charset="utf-8"/>'
+			+ '<title>Title</title>'
+			+ `<script src="${scriptPath}"></script>`
+		;
+
 		document.body.innerHTML = '';
 
 		testElement = document.createElement("p");
