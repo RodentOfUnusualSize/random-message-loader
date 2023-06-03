@@ -38,6 +38,9 @@ describe('When the script does effectively nothing', () => {
 	beforeAll(async () => {
 		jest.resetModules();
 
+		windowEventListeners.clear();
+		documentEventListeners.clear();
+
 		window.addEventListener = jest.fn((event, cb) => {
 			if (!windowEventListeners.has(event))
 				windowEventListeners.set(event, []);
