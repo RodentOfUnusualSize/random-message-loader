@@ -24,15 +24,35 @@ describe('When messages cannot be retrieved', () => {
 
 	const url = 'messages';
 
+	const defaultContent = '[default content]';
+
+	let testElement;
+
 	beforeEach(() => {
 		jest.resetModules();
 
 		fetch.mockClear();
 		fetch.mockResponseOnce('foo');
+
+		document.head.innerHTML = ''
+			+ '<meta charset="utf-8"/>'
+			+ '<title>Title</title>'
+			+ `<script src="${scriptPath}"></script>`
+		;
+
+		document.body.innerHTML = '';
+
+		testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', url);
+		testElement.textContent = defaultContent;
+
+		document.body.appendChild(testElement);
 	});
 
 	test('the default content is not changed', async () => {
 		await require(scriptPath);
+
+		expect(testElement.innerHTML).toBe(defaultContent);
 	});
 
 	test('it tries to fetch the message file', async () => {
