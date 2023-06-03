@@ -19,5 +19,10 @@
  *                                                                     *
  **********************************************************************/
 
-describe('In the script\'s most basic operation', () => {
+describe('In the script\'s most basic synchronous operation', () => {
+	test('it changes the content of the target element', async () => {
+	});
+
+	test('it fetches the message file', async () => {
+	});
 });
