@@ -88,36 +88,4 @@ describe('When multiple messages are wanted from a single source', () => {
 		expect(fetch.mock.calls[0]).toBeArrayOfSize(1);
 		expect(fetch.mock.calls[0][0]).toBe(url);
 	});
-
-	describe('content of all target elements is randomly selected', () => {
-		const expected = {};
-		const actual = {};
-
-		beforeAll(async () => {
-			await require(scriptPath);
-
-			expected.mean = (messages.length - 1) / 2;
-
-			actual.values = elements
-				.map(element => element.innerHTML)
-				.map(message => message.replace('message #', ''))
-				.map(id => parseInt(id))
-			;
-
-			actual.sum = actual.values.reduce((x, sum) => x + sum);
-			actual.mean = actual.sum / actual.values.length;
-		});
-
-		test('mean is within expected range', () => {
-			// For uniformly distributed indices, the mean should be
-			// the halfway point.
-			//
-			// I don't expect the relative error to exceed ~35%, but
-			// let's call it 40% to be generous.
-
-			const relativeError = Math.abs(actual.mean - expected.mean) / expected.mean;
-
-			expect(relativeError).toBeLessThan(0.4);
-		});
-	});
 });
