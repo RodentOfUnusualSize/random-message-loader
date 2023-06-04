@@ -22,11 +22,31 @@
 describe('When messages data is empty', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
+	const url = 'messages';
+
+	const defaultContent = '[default content]';
+
+	let testElement;
+
 	beforeEach(() => {
 		jest.resetModules();
 
 		fetch.mockClear();
 		fetch.mockResponse('');
+
+		document.head.innerHTML = ''
+			+ '<meta charset="utf-8"/>'
+			+ '<title>Title</title>'
+			+ `<script src="${scriptPath}"></script>`
+		;
+
+		document.body.innerHTML = '';
+
+		testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', url);
+		testElement.textContent = defaultContent;
+
+		document.body.appendChild(testElement);
 	});
 
 	test('the default content is not changed', async () => {
