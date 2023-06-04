@@ -51,6 +51,8 @@ describe('When messages data is empty', () => {
 
 	test('the default content is not changed', async () => {
 		await require(scriptPath);
+
+		expect(testElement.innerHTML).toBe(defaultContent);
 	});
 
 	test('it tries to fetch the message file', async () => {
