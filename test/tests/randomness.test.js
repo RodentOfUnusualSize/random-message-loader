@@ -18,3 +18,6 @@
  * If not, see <https: *www.gnu.org/licenses/>.                        *
  *                                                                     *
  **********************************************************************/
+
+describe('content of all target elements is randomly selected', () => {
+});
