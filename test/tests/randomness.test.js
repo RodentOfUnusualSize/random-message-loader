@@ -78,5 +78,12 @@ describe('content of all target elements is randomly selected', () => {
 		actual.mean = actual.sum / actual.values.length;
 	});
 
-	test.todo('mean is within expected range');
+	test('mean is within expected range', () => {
+		// For uniformly distributed indices, the mean should be the
+		// halfway point.
+		//
+		// I don't expect the relative error to exceed ~35%, but let's
+		// call it 40% to be generous.
+		expect(Math.abs(actual.mean - expected.mean) / expected.mean).toBeLessThan(0.4);
+	});
 });
