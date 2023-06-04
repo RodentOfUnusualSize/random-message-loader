@@ -60,7 +60,7 @@ function doItToIt(document) {
 			const src = element.getAttribute(ATTRIBUTE_SRC);
 
 			const task = fetch(src)
-				.then(response => response.text())
+				.then(response => getResponseText(response))
 				.then(content => { element.innerHTML = content; });
 			;
 
@@ -84,6 +84,20 @@ function doItToIt(document) {
  */
 function isTargetElement(element) {
 	return element.hasAttribute(ATTRIBUTE_SRC);
+}
+
+
+/**
+ * Gets the body of a response as a string.
+ *
+ * @oaram {Response} The response.
+ * @resturns {string} The text content of the response.
+ */
+function getResponseText(response) {
+	if (!response.ok)
+		throw new Error(`HTTP error for URL ${response.url}: ${response.status} ${response.statusText}`);
+
+	return response.text();
 }
 
 
