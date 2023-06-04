@@ -28,6 +28,12 @@ describe('When messages data is empty', () => {
 
 	let testElement;
 
+	beforeAll(() => {
+		// We expect error messages for the failed request.
+		// So, silence them.
+		jest.spyOn(console, 'error').mockImplementation(jest.fn());
+	});
+
 	beforeEach(() => {
 		jest.resetModules();
 
