@@ -20,4 +20,63 @@
  **********************************************************************/
 
 describe('content of all target elements is randomly selected', () => {
+	const scriptPath = '../../src/random-message-loader.js';
+
+	const numberOfMessages = 10;
+	const numberOfElements = 100;
+
+	const expected = {
+		mean : (numberOfMessages - 1) / 2,
+	};
+
+	const actual = {
+		values : [],
+		sum    : 0,
+		mean   : undefined,
+	};
+
+	beforeEach(async () => {
+		jest.resetModules();
+
+		const url = 'messages';
+		const messages = Array.from(Array(numberOfMessages).keys())
+			.map(n => `message #${n}`)
+		;
+
+		fetch.mockClear();
+		fetch.mockResponse(messages.join('\n'));
+
+		document.head.innerHTML = ''
+			+ '<meta charset="utf-8"/>'
+			+ '<title>Title</title>'
+			+ `<script src="${scriptPath}"></script>`
+		;
+
+		document.body.innerHTML = '';
+
+		const elements = Array.from(Array(numberOfElements).keys())
+			.map(n => {
+				const element = document.createElement('p');
+				element.setAttribute('data-saria-random-message-src', url);
+				element.textContent = '[default content]';
+
+				document.body.appendChild(element);
+
+				return element;
+			})
+		;
+
+		await require(scriptPath);
+
+		actual.values = elements
+			.map(element => element.innerHTML)
+			.map(message => message.replace('message #', ''))
+			.map(id => parseInt(id))
+		;
+
+		actual.sum = actual.values.reduce((x, sum) => x + sum);
+		actual.mean = actual.sum / actual.values.length;
+	});
+
+	test.todo('mean is within expected range');
 });
