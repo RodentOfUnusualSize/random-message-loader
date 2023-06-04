@@ -24,17 +24,14 @@ describe('When multiple messages are wanted from a single source', () => {
 
 	const url = 'messages';
 
-	const numberOfMessages = 10;
-	const numberOfElements = 100;
-
-	const messages = Array.from(Array(numberOfMessages).keys())
-		.map(n => `message #${n}`)
-	;
-
 	const elements = [];
 
 	beforeEach(() => {
 		jest.resetModules();
+
+		const messages = Array.from(Array(10).keys())
+			.map(n => `message #${n}`)
+		;
 
 		fetch.mockClear();
 		fetch.mockResponse(messages.join('\n'));
@@ -49,8 +46,9 @@ describe('When multiple messages are wanted from a single source', () => {
 
 		elements.length = 0;
 
-		for (let i = 0; i < (numberOfElements / 2); ++i) {
-			const element = document.createElement("p");
+		// Some <p> elements:
+		for (let i = 0; i < 3; ++i) {
+			const element = document.createElement('p');
 			element.setAttribute('data-saria-random-message-src', url);
 			element.textContent = '[default content]';
 
@@ -59,8 +57,9 @@ describe('When multiple messages are wanted from a single source', () => {
 			elements.push(element);
 		}
 
+		// A list:
 		const list = document.createElement('ol');
-		for (let i = 0; i < (numberOfElements - (numberOfElements / 2)); ++i) {
+		for (let i = 0; i < 4; ++i) {
 			const li = document.createElement('li');
 			li.setAttribute('data-saria-random-message-src', url);
 			li.textContent = `list item #${i}`;
@@ -70,6 +69,23 @@ describe('When multiple messages are wanted from a single source', () => {
 			elements.push(li);
 		}
 		document.body.appendChild(list);
+
+		// Deeply nested definition list (non-sibling target elements):
+		const div = document.createElement('div');
+		const dl = document.createElement('dl');
+		for (let i = 0; i < 2; ++i) {
+			const dt = document.createElement('dt');
+			dt.textContent = `Definition #${i}`;
+
+			const dd = document.createElement('dd');
+			dd.setAttribute('data-saria-random-message-src', url);
+			dd.textContent = `[${i}]`;
+
+			dl.appendChild(dt);
+			dl.appendChild(dd);
+		}
+		div.appendChild(dl);
+		document.body.appendChild(div);
 	});
 
 	test('content of all target elements is changed', async () => {
