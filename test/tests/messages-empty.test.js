@@ -24,6 +24,9 @@ describe('When messages data is empty', () => {
 
 	beforeEach(() => {
 		jest.resetModules();
+
+		fetch.mockClear();
+		fetch.mockResponse('');
 	});
 
 	test('the default content is not changed', async () => {
