@@ -24,7 +24,10 @@ describe('When multiple messages are wanted from a single source', () => {
 
 	const url = 'messages';
 
-	const messages = Array.from(Array(3).keys())
+	const numberOfMessages = 10;
+	const numberOfElements = 100;
+
+	const messages = Array.from(Array(numberOfMessages).keys())
 		.map(n => `message #${n}`)
 	;
 
@@ -46,7 +49,7 @@ describe('When multiple messages are wanted from a single source', () => {
 
 		elements.length = 0;
 
-		for (let i = 0; i < 10; ++i) {
+		for (let i = 0; i < (numberOfElements / 2); ++i) {
 			const element = document.createElement("p");
 			element.setAttribute('data-saria-random-message-src', url);
 			element.textContent = '[default content]';
@@ -57,7 +60,7 @@ describe('When multiple messages are wanted from a single source', () => {
 		}
 
 		const list = document.createElement('ol');
-		for (let i = 0; i < 10; ++i) {
+		for (let i = 0; i < (numberOfElements - (numberOfElements / 2)); ++i) {
 			const li = document.createElement('li');
 			li.setAttribute('data-saria-random-message-src', url);
 			li.textContent = `list item #${i}`;
@@ -77,8 +80,6 @@ describe('When multiple messages are wanted from a single source', () => {
 		}
 	});
 
-	test.todo('content of all target elements is randomly selected');
-
 	test('only one fetch request is made', async () => {
 		await require(scriptPath);
 
@@ -86,5 +87,37 @@ describe('When multiple messages are wanted from a single source', () => {
 
 		expect(fetch.mock.calls[0]).toBeArrayOfSize(1);
 		expect(fetch.mock.calls[0][0]).toBe(url);
+	});
+
+	describe('content of all target elements is randomly selected', () => {
+		const expected = {};
+		const actual = {};
+
+		beforeAll(async () => {
+			await require(scriptPath);
+
+			expected.mean = (messages.length - 1) / 2;
+
+			actual.values = elements
+				.map(element => element.innerHTML)
+				.map(message => message.replace('message #', ''))
+				.map(id => parseInt(id))
+			;
+
+			actual.sum = actual.values.reduce((x, sum) => x + sum);
+			actual.mean = actual.sum / actual.values.length;
+		});
+
+		test('mean is within expected range', () => {
+			// For uniformly distributed indices, the mean should be
+			// the halfway point.
+			//
+			// I don't expect the relative error to exceed ~35%, but
+			// let's call it 40% to be generous.
+
+			const relativeError = Math.abs(actual.mean - expected.mean) / expected.mean;
+
+			expect(relativeError).toBeLessThan(0.4);
+		});
 	});
 });
