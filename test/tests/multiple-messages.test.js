@@ -20,4 +20,12 @@
  **********************************************************************/
 
 describe('When multiple messages are wanted from a single source', () => {
+	test('content of all target elements is changed', async () => {
+	});
+
+	test('content of all target elements is randomly selected', async () => {
+	});
+
+	test('only one fetch request is made', async () => {
+	});
 });
