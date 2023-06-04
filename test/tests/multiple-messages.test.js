@@ -77,9 +77,7 @@ describe('When multiple messages are wanted from a single source', () => {
 		}
 	});
 
-	test('content of all target elements is randomly selected', async () => {
-		await require(scriptPath);
-	});
+	test.todo('content of all target elements is randomly selected');
 
 	test('only one fetch request is made', async () => {
 		await require(scriptPath);
