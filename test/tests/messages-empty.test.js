@@ -20,10 +20,17 @@
  **********************************************************************/
 
 describe('When messages data is empty', () => {
+	const scriptPath = '../../src/random-message-loader.js';
+
+	beforeEach(() => {
+		jest.resetModules();
+	});
 
 	test('the default content is not changed', async () => {
+		await require(scriptPath);
 	});
 
 	test('it tries to fetch the message file', async () => {
+		await require(scriptPath);
 	});
 });
