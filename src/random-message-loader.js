@@ -52,30 +52,22 @@ function doItToIt(document) {
 	try {
 		const query = `[${ATTRIBUTE_SRC}]`;
 
-		const elements = Array.from(document.querySelectorAll(query))
+		// Collect all elements that want random content, and extract
+		// the source URL and other relevant data.
+		const taskDataSet = Array.from(document.querySelectorAll(query))
 			.filter(isTargetElement)
+			.map(element => createTaskData(element))
 		;
 
-		const tasks = elements.map(element => {
-			const src = element.getAttribute(ATTRIBUTE_SRC);
+		// Group all collected elements by source URL.
+		const taskGroups = groupTaskData(taskDataSet);
 
-			const task = fetch(src)
-				.then(response => getResponseText(response))
-				.then(content => {
-					const messages = content
-						.split('\n')
-						.filter(message => message.length > 0)
-					;
-
-					if (messages.length == 0)
-						throw new Error('no messages');
-
-					element.innerHTML = messages[0];
-				});
-			;
-
-			return task;
-		});
+		// Create a promised task for each unique source URL, that 
+		// fetches the message data and sets the elements' content to
+		// randomly selected messages.
+		const tasks = [];
+		for (const [url, elementGroups] of taskGroups)
+			tasks.push(createTask(url, elementGroups));
 
 		return Promise.all(tasks);
 	}
@@ -108,6 +100,85 @@ function getResponseText(response) {
 		throw new Error(`HTTP error for URL ${response.url}: ${response.status} ${response.statusText}`);
 
 	return response.text();
+}
+
+
+/**
+ * Transform an element that wants random content into task data.
+ *
+ * @param {Element} element - The element to parse.
+ * @returns {Object} Task data for the element.
+ */
+function createTaskData(element) {
+	return {
+		element : element,
+		url     : element.getAttribute(ATTRIBUTE_SRC),
+	};
+}
+
+
+/**
+ * Group task data by URL.
+ *
+ * @param {Object} taskDataSet - Collection of task data.
+ * @returns {Map<URL, Array<Array<Element>>} Task data elements grouped
+ *                                           by URL.
+ */
+function groupTaskData(taskDataSet) {
+	const taskGroups = new Map();
+
+	for (const taskData of taskDataSet) {
+		if (!taskGroups.has(taskData.url))
+			taskGroups.set(taskData.url, new Map());
+
+		const urlGroup = taskGroups.get(taskData.url);
+		if (!urlGroup.has(''))
+			urlGroup.set('', []);
+
+		urlGroup.get('').push(taskData.element);
+	}
+
+	for (const [url, group] of taskGroups) {
+		const elementGroups = [];
+
+		for (const [id, elements] of group)
+			elementGroups.push(elements);
+
+		taskGroups.set(url, elementGroups);
+	}
+
+	return taskGroups;
+}
+
+
+/**
+ * Create a task for a given URL and elements
+ *
+ * @param {URL} url - The URL of the messages data.
+ * @param {Array<Array<Element>>} Element groups.
+ * @param {Promise} A promise that resolves when the messages have been
+ *                  fetched, and all elements have been given their
+ *                  messages.
+ */
+function createTask(url, elementGroups) {
+	return fetch(url)
+		.then(response => getResponseText(response))
+		.then(content => {
+			const messages = content
+				.split('\n')
+				.filter(message => message.length > 0)
+			;
+
+			if (messages.length == 0)
+				throw new Error('no messages');
+
+			for (const elementGroup of elementGroups) {
+				const index = 0;
+
+				for (const element of elementGroup)
+					element.innerHTML = messages[index];
+			}
+		});
 }
 
 
