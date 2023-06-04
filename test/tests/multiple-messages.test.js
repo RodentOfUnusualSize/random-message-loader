@@ -20,12 +20,17 @@
  **********************************************************************/
 
 describe('When multiple messages are wanted from a single source', () => {
+	const scriptPath = '../../src/random-message-loader.js';
+
 	test('content of all target elements is changed', async () => {
+		await require(scriptPath);
 	});
 
 	test('content of all target elements is randomly selected', async () => {
+		await require(scriptPath);
 	});
 
 	test('only one fetch request is made', async () => {
+		await require(scriptPath);
 	});
 });
