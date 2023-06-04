@@ -35,6 +35,38 @@ describe('When multiple messages are wanted from a single source', () => {
 
 		fetch.mockClear();
 		fetch.mockResponse(messages.join('\n'));
+
+		document.head.innerHTML = ''
+			+ '<meta charset="utf-8"/>'
+			+ '<title>Title</title>'
+			+ `<script src="${scriptPath}"></script>`
+		;
+
+		document.body.innerHTML = '';
+
+		elements.length = 0;
+
+		for (let i = 0; i < 10; ++i) {
+			const element = document.createElement("p");
+			element.setAttribute('data-saria-random-message-src', url);
+			element.textContent = '[default content]';
+
+			document.body.appendChild(element);
+
+			elements.push(element);
+		}
+
+		const list = document.createElement('ol');
+		for (let i = 0; i < 10; ++i) {
+			const li = document.createElement('li');
+			li.setAttribute('data-saria-random-message-src', url);
+			li.textContent = `list item #${i}`;
+
+			list.appendChild(li);
+
+			elements.push(li);
+		}
+		document.body.appendChild(list);
 	});
 
 	test('content of all target elements is changed', async () => {
