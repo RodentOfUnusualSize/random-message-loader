@@ -61,7 +61,17 @@ function doItToIt(document) {
 
 			const task = fetch(src)
 				.then(response => getResponseText(response))
-				.then(content => { element.innerHTML = content; });
+				.then(content => {
+					const messages = content
+						.split('\n')
+						.filter(message => message.length > 0)
+					;
+
+					if (messages.length == 0)
+						throw new Error('no messages');
+
+					element.innerHTML = messages[0];
+				});
 			;
 
 			return task;
