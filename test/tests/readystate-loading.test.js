@@ -18,3 +18,32 @@
  * If not, see <https: *www.gnu.org/licenses/>.                        *
  *                                                                     *
  **********************************************************************/
+
+describe('When document is not ready', () => {
+	const scriptPath = '../../src/random-message-loader.js';
+
+	let testElement;
+
+	beforeEach(() => {
+		jest.resetModules();
+
+		fetch.mockClear();
+		fetch.mockResponseOnce('message content');
+
+		document.head.innerHTML = ''
+			+ '<meta charset="utf-8"/>'
+			+ '<title>Title</title>'
+			+ `<script src="${scriptPath}"></script>`
+		;
+
+		document.body.innerHTML = '';
+
+		testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'messages');
+		testElement.textContent = 'default content';
+
+		document.body.appendChild(testElement);
+	});
+
+	test.todo('target element content is unchanged');
+});
