@@ -22,7 +22,13 @@
 describe('When document is not ready', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
+	let mockReadyState = 'loading';
+
 	let testElement;
+
+	beforeAll(() => {
+		Object.defineProperty(document, 'readyState', { get() { return mockReadyState; } });
+	});
 
 	beforeEach(() => {
 		jest.resetModules();
@@ -46,7 +52,7 @@ describe('When document is not ready', () => {
 	});
 
 	test('target element content is unchanged', async () => {
-		document.readyState = 'loading';
+		mockReadyState = 'loading';
 
 		await require(scriptPath);
 
@@ -54,7 +60,7 @@ describe('When document is not ready', () => {
 	});
 
 	test('no fetches have been attempted', async () => {
-		document.readyState = 'loading';
+		mockReadyState = 'loading';
 
 		await require(scriptPath);
 
