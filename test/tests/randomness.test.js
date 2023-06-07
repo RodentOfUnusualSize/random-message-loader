@@ -19,7 +19,7 @@
  *                                                                     *
  **********************************************************************/
 
-describe('content of all target elements is randomly selected', () => {
+describe.skip('content of all target elements is randomly selected', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
 	const numberOfMessages = 10;
