@@ -54,7 +54,7 @@ describe('When document is not ready', () => {
 	test('target element content is unchanged', async () => {
 		mockReadyState = 'loading';
 
-		await require(scriptPath);
+		const result = require(scriptPath);
 
 		expect(testElement.textContent).toBe('default content');
 	});
@@ -62,7 +62,7 @@ describe('When document is not ready', () => {
 	test('no fetches have been attempted', async () => {
 		mockReadyState = 'loading';
 
-		await require(scriptPath);
+		const result = require(scriptPath);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(0);
 	});
