@@ -45,5 +45,11 @@ describe('When document is not ready', () => {
 		document.body.appendChild(testElement);
 	});
 
-	test.todo('target element content is unchanged');
+	test('target element content is unchanged', async () => {
+		document.readyState = 'loading';
+
+		await require(scriptPath);
+
+		expect(testElement.textContent).toBe('default content');
+	});
 });
