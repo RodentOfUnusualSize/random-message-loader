@@ -52,4 +52,12 @@ describe('When document is not ready', () => {
 
 		expect(testElement.textContent).toBe('default content');
 	});
+
+	test('no fetches have been attempted', async () => {
+		document.readyState = 'loading';
+
+		await require(scriptPath);
+
+		expect(fetch.mock.calls).toBeArrayOfSize(0);
+	});
 });
