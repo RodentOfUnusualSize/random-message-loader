@@ -22,6 +22,8 @@
 describe('When document is not ready', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
+	const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 	let mockReadyState = 'loading';
 
 	let testElement;
@@ -56,6 +58,8 @@ describe('When document is not ready', () => {
 
 		const result = require(scriptPath);
 
+		await Promise.any([result, pause(2000)]);
+
 		expect(testElement.textContent).toBe('default content');
 	});
 
@@ -63,6 +67,8 @@ describe('When document is not ready', () => {
 		mockReadyState = 'loading';
 
 		const result = require(scriptPath);
+
+		await Promise.any([result, pause(2000)]);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(0);
 	});
