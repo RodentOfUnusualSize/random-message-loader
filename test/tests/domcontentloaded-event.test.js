@@ -18,3 +18,6 @@
  * If not, see <https: *www.gnu.org/licenses/>.                        *
  *                                                                     *
  **********************************************************************/
+
+describe('When document is becoming ready', () => {
+});
