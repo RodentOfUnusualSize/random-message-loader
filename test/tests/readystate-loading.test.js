@@ -33,9 +33,6 @@ describe('When document is not ready', () => {
 	});
 
 	beforeEach(() => {
-		jest.resetModules();
-
-		fetch.mockClear();
 		fetch.mockResponseOnce('message content');
 
 		document.head.innerHTML = ''
@@ -51,6 +48,12 @@ describe('When document is not ready', () => {
 		testElement.textContent = 'default content';
 
 		document.body.appendChild(testElement);
+	});
+
+	afterEach(() => {
+		jest.resetModules();
+
+		fetch.mockClear();
 	});
 
 	test('target element content is unchanged', async () => {
