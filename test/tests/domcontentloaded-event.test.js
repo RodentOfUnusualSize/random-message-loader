@@ -20,4 +20,9 @@
  **********************************************************************/
 
 describe('When document is becoming ready', () => {
+	test.todo('listener for DOMContentLoaded event is added');
+
+	test.todo('content is changed after DOMContentLoaded event');
+
+	test.todo('messages are fetched after DOMContentLoaded event');
 });
