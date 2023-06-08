@@ -28,11 +28,6 @@ describe('In the script\'s most basic synchronous operation', () => {
 	let testElement;
 
 	beforeEach(() => {
-		jest.resetModules();
-
-		fetch.mockClear();
-		fetch.mockResponseOnce(message);
-
 		document.head.innerHTML = ''
 			+ '<meta charset="utf-8"/>'
 			+ '<title>Title</title>'
@@ -45,6 +40,14 @@ describe('In the script\'s most basic synchronous operation', () => {
 		testElement.setAttribute('data-saria-random-message-src', url);
 
 		document.body.appendChild(testElement);
+
+		fetch.mockResponse(message);
+	});
+
+	afterEach(() => {
+		jest.resetModules();
+
+		fetch.mockClear();
 	});
 
 	test('it changes the content of the target element', async () => {
