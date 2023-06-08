@@ -24,13 +24,7 @@ describe('When document is not ready', () => {
 
 	const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-	let mockReadyState = 'loading';
-
 	let testElement;
-
-	beforeAll(() => {
-		Object.defineProperty(document, 'readyState', { get() { return mockReadyState; } });
-	});
 
 	beforeEach(() => {
 		fetch.mockResponseOnce('message content');
@@ -52,12 +46,13 @@ describe('When document is not ready', () => {
 
 	afterEach(() => {
 		jest.resetModules();
+		jest.restoreAllMocks();
 
 		fetch.mockClear();
 	});
 
 	test('target element content is unchanged', async () => {
-		mockReadyState = 'loading';
+		jest.spyOn(document, 'readyState', 'get').mockImplementation(() => 'loading');
 
 		const result = require(scriptPath);
 
@@ -67,7 +62,7 @@ describe('When document is not ready', () => {
 	});
 
 	test('no fetches have been attempted', async () => {
-		mockReadyState = 'loading';
+		jest.spyOn(document, 'readyState', 'get').mockImplementation(() => 'loading');
 
 		const result = require(scriptPath);
 
