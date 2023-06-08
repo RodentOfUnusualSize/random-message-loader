@@ -42,6 +42,8 @@ describe('When document is not ready', () => {
 		testElement.textContent = 'default content';
 
 		document.body.appendChild(testElement);
+
+		jest.spyOn(document, 'readyState', 'get').mockImplementation(() => 'loading');
 	});
 
 	afterEach(() => {
@@ -52,8 +54,6 @@ describe('When document is not ready', () => {
 	});
 
 	test('target element content is unchanged', async () => {
-		jest.spyOn(document, 'readyState', 'get').mockImplementation(() => 'loading');
-
 		const result = require(scriptPath);
 
 		await Promise.any([result, pause(2000)]);
@@ -62,8 +62,6 @@ describe('When document is not ready', () => {
 	});
 
 	test('no fetches have been attempted', async () => {
-		jest.spyOn(document, 'readyState', 'get').mockImplementation(() => 'loading');
-
 		const result = require(scriptPath);
 
 		await Promise.any([result, pause(2000)]);
