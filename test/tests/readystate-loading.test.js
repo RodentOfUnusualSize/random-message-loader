@@ -22,12 +22,14 @@
 describe('When document is not ready', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
-	const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+	const awaitResult = async result => {
+		await Promise.any([result, new Promise(resolve => setTimeout(resolve, 1000))]);
+	};
 
 	let testElement;
 
 	beforeEach(() => {
-		fetch.mockResponseOnce('message content');
+		fetch.mockResponse('message content');
 
 		document.head.innerHTML = ''
 			+ '<meta charset="utf-8"/>'
@@ -54,17 +56,13 @@ describe('When document is not ready', () => {
 	});
 
 	test('target element content is unchanged', async () => {
-		const result = require(scriptPath);
-
-		await Promise.any([result, pause(2000)]);
+		awaitResult(require(scriptPath));
 
 		expect(testElement.textContent).toBe('default content');
 	});
 
 	test('no fetches have been attempted', async () => {
-		const result = require(scriptPath);
-
-		await Promise.any([result, pause(2000)]);
+		awaitResult(require(scriptPath));
 
 		expect(fetch.mock.calls).toBeArrayOfSize(0);
 	});
