@@ -26,6 +26,7 @@ describe('When document is not ready', () => {
 		await Promise.any([result, new Promise(resolve => setTimeout(resolve, 1000))]);
 	};
 
+	let readyStateMock;
 	let testElement;
 
 	beforeEach(() => {
@@ -45,7 +46,8 @@ describe('When document is not ready', () => {
 
 		document.body.appendChild(testElement);
 
-		jest.spyOn(document, 'readyState', 'get').mockImplementation(() => 'loading');
+		readyStateMock = jest.spyOn(document, 'readyState', 'get');
+		readyStateMock.mockReturnValue('loading');
 	});
 
 	afterEach(() => {
