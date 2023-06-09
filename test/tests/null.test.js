@@ -22,9 +22,6 @@
 describe('When the script does effectively nothing', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
-	const windowEventListeners = new Map();
-	const documentEventListeners = new Map();
-
 	const expectedContent = {
 		document : '',
 		head     : '',
@@ -44,18 +41,10 @@ describe('When the script does effectively nothing', () => {
 		+ '<p data-saria="awesome">Element with data attribute.</p>'
 	;
 
-	beforeAll(() => {
-		window.addEventListener = jest.fn((event, cb) => {
-			if (!windowEventListeners.has(event))
-				windowEventListeners.set(event, []);
-			windowEventListeners.get(event).push(cb);
-		});
-		document.addEventListener = jest.fn((event, cb) => {
-			if (!documentEventListeners.has(event))
-				documentEventListeners.set(event, []);
-			documentEventListeners.get(event).push(cb);
-		});
+	let windowAddEventListener;
+	let documentAddEventListener;
 
+	beforeAll(() => {
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
 
@@ -66,27 +55,30 @@ describe('When the script does effectively nothing', () => {
 	});
 
 	beforeEach(() => {
-		jest.resetModules();
-
-		windowEventListeners.clear();
-		documentEventListeners.clear();
-
-		fetch.mockClear();
-
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
+
+		windowAddEventListener = jest.spyOn(window, 'addEventListener');
+		documentAddEventListener = jest.spyOn(document, 'addEventListener');
+	});
+
+	afterEach(() => {
+		jest.resetModules();
+		jest.restoreAllMocks();
+
+		fetch.mockClear();
 	});
 
 	test('it does not add window event listener', async () => {
-		await require('../../src/random-message-loader.js');
+		await require(scriptPath);
 
-		expect(windowEventListeners.size).toBe(0);
+		expect(windowAddEventListener.mock.calls).toBeArrayOfSize(0);
 	});
 
 	test('it does not add document event listener', async () => {
 		await require(scriptPath);
 
-		expect(documentEventListeners.size).toBe(0);
+		expect(documentAddEventListener.mock.calls).toBeArrayOfSize(0);
 	});
 
 	test('it does not change DOM content in head', async () => {
@@ -110,6 +102,6 @@ describe('When the script does effectively nothing', () => {
 	test('it does not fetch anything', async () => {
 		await require(scriptPath);
 
-		expect(fetch.mock.calls).toHaveLength(0);
+		expect(fetch.mock.calls).toBeArrayOfSize(0);
 	});
 });
