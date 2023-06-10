@@ -34,8 +34,6 @@ describe('In the script\'s most basic synchronous operation', () => {
 			+ `<script src="${scriptPath}"></script>`
 		;
 
-		document.body.innerHTML = '';
-
 		testElement = document.createElement("p");
 		testElement.setAttribute('data-saria-random-message-src', url);
 
