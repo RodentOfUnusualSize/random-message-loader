@@ -39,10 +39,6 @@ describe('When multiple messages are wanted from a single source', () => {
 			+ `<script src="${scriptPath}"></script>`
 		;
 
-		document.body.innerHTML = '';
-
-		elements.length = 0;
-
 		// Some <p> elements:
 		for (let i = 0; i < 3; ++i) {
 			const element = document.createElement('p');
@@ -86,9 +82,13 @@ describe('When multiple messages are wanted from a single source', () => {
 	});
 
 	afterEach(() => {
-		jest.resetModules();
+		document.head.innerHTML = '';
+		document.body.innerHTML = '';
+
+		elements.length = 0;
 
 		fetch.mockClear();
+		jest.resetModules();
 	});
 
 	test('content of all target elements is changed', async () => {
