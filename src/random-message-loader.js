@@ -36,8 +36,10 @@ const ATTRIBUTE_SRC = 'data-saria-random-message-src';
  *                              document's DOM content is ready.
  */
 function waitForDocument(document) {
-	// TODO: Check document.readyState.
-	return Promise.resolve(document);
+	if (document.readyState === 'loading')
+		return new Promise(resolve => document.addEventListener('DOMContentLoaded', event => resolve(document)));
+	else
+		return Promise.resolve(document);
 }
 
 
