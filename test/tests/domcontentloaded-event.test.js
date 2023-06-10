@@ -82,6 +82,12 @@ describe('When document is becoming ready', () => {
 	});
 
 	test('content is changed after DOMContentLoaded event', async () => {
+		global.fetch
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message content'),
+			});
+
 		const readyState = jest.spyOn(document, 'readyState', 'get');
 		readyState.mockReturnValue('loading');
 
@@ -90,12 +96,6 @@ describe('When document is becoming ready', () => {
 
 		readyState.mockReturnValue('interactive');
 		document.dispatchEvent(new Event('DOMContentLoaded', { bubbles : true }));
-
-		global.fetch
-			.mockResolvedValue({
-				ok   : true,
-				text : jest.fn().mockResolvedValue('message content'),
-			});
 
 		await expect(result).toResolve();
 
