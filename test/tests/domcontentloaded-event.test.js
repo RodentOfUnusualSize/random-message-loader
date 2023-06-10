@@ -51,7 +51,7 @@ describe('When document is becoming ready', () => {
 			return originalFunc(...args);
 		});
 
-		fetch.mockResponse('message content');
+		global.fetch = jest.fn();
 	});
 
 	afterEach(() => {
@@ -64,9 +64,10 @@ describe('When document is becoming ready', () => {
 		addEventListenerMock = undefined;
 		testElement = undefined;
 
-		fetch.mockClear();
 		jest.restoreAllMocks();
 		jest.resetModules();
+
+		delete global.fetch;
 	});
 
 	test('listener for DOMContentLoaded event is added', async () => {
@@ -80,7 +81,26 @@ describe('When document is becoming ready', () => {
 		expect(addEventListenerMock.mock.calls[0][0]).toBe('DOMContentLoaded');
 	});
 
-	test.todo('content is changed after DOMContentLoaded event');
+	test('content is changed after DOMContentLoaded event', async () => {
+		const readyState = jest.spyOn(document, 'readyState', 'get');
+		readyState.mockReturnValue('loading');
+
+		const result = require(scriptPath);
+		awaitResult(result);
+
+		readyState.mockReturnValue('interactive');
+		document.dispatchEvent(new Event('DOMContentLoaded', { bubbles : true }));
+
+		global.fetch
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message content'),
+			});
+
+		await expect(result).toResolve();
+
+		expect(testElement.innerHTML).toBe('message content');
+	});
 
 	test.todo('messages are fetched after DOMContentLoaded event');
 });
