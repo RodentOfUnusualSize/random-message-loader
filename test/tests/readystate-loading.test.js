@@ -38,8 +38,6 @@ describe('When document is not ready', () => {
 			+ `<script src="${scriptPath}"></script>`
 		;
 
-		document.body.innerHTML = '';
-
 		testElement = document.createElement("p");
 		testElement.setAttribute('data-saria-random-message-src', 'messages');
 		testElement.textContent = 'default content';
@@ -51,10 +49,15 @@ describe('When document is not ready', () => {
 	});
 
 	afterEach(() => {
-		jest.resetModules();
-		jest.restoreAllMocks();
+		document.head.innerHTML = '';
+		document.body.innerHTML = '';
+
+		readyStateMock = undefined;
+		testElement = undefined;
 
 		fetch.mockClear();
+		jest.resetModules();
+		jest.restoreAllMocks();
 	});
 
 	test('target element content is unchanged', async () => {
