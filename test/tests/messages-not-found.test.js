@@ -28,16 +28,9 @@ describe('When messages cannot be retrieved', () => {
 
 	let testElement;
 
-	beforeAll(() => {
-		// We expect error messages for the failed request.
-		// So, silence them.
-		jest.spyOn(console, 'error').mockImplementation(jest.fn());
-	});
-
 	beforeEach(() => {
 		jest.resetModules();
 
-		fetch.mockClear();
 		fetch.mockResponse(request => {
 			return Promise.resolve({
 				status : 404,
@@ -58,6 +51,17 @@ describe('When messages cannot be retrieved', () => {
 		testElement.textContent = defaultContent;
 
 		document.body.appendChild(testElement);
+
+		// We expect error messages for the failed request.
+		// So, silence them.
+		jest.spyOn(console, 'error').mockImplementation(jest.fn());
+	});
+
+	afterEach(() => {
+		jest.resetModules();
+		jest.restoreAllMocks();
+
+		fetch.mockClear();
 	});
 
 	test('the default content is not changed', async () => {
