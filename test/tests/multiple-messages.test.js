@@ -76,6 +76,8 @@ describe('When multiple messages are wanted from a single source', () => {
 
 			dl.appendChild(dt);
 			dl.appendChild(dd);
+
+			elements.push(dd);
 		}
 		div.appendChild(dl);
 		document.body.appendChild(div);
