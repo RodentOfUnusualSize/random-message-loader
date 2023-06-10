@@ -27,13 +27,10 @@ describe('When multiple messages are wanted from a single source', () => {
 	const elements = [];
 
 	beforeEach(() => {
-		jest.resetModules();
-
 		const messages = Array.from(Array(10).keys())
 			.map(n => `message #${n}`)
 		;
 
-		fetch.mockClear();
 		fetch.mockResponse(messages.join('\n'));
 
 		document.head.innerHTML = ''
@@ -86,6 +83,12 @@ describe('When multiple messages are wanted from a single source', () => {
 		}
 		div.appendChild(dl);
 		document.body.appendChild(div);
+	});
+
+	afterEach(() => {
+		jest.resetModules();
+
+		fetch.mockClear();
 	});
 
 	test('content of all target elements is changed', async () => {
