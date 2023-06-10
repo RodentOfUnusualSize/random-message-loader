@@ -38,4 +38,4 @@ else
 	exit 1
 fi
 
-"${npm_dir}"/bin/jest --config "${jest_config_path}"
+"${npm_dir}"/bin/jest --config "${jest_config_path}" "${@}"
