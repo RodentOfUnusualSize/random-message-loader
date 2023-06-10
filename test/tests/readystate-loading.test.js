@@ -56,8 +56,8 @@ describe('When document is not ready', () => {
 		testElement = undefined;
 
 		fetch.mockClear();
-		jest.resetModules();
 		jest.restoreAllMocks();
+		jest.resetModules();
 	});
 
 	test('target element content is unchanged', async () => {
