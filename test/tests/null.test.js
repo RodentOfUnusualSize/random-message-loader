@@ -45,6 +45,8 @@ describe('When the script does effectively nothing', () => {
 	let documentAddEventListener;
 
 	beforeAll(() => {
+		// Determine expected content by setting document content, then
+		// examining it.
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
 
@@ -52,6 +54,10 @@ describe('When the script does effectively nothing', () => {
 
 		expectedContent.head = document.head.innerHTML;
 		expectedContent.body = document.body.innerHTML;
+
+		// Restore to defaults.
+		document.head.innerHTML = '';
+		document.body.innerHTML = '';
 	});
 
 	beforeEach(() => {
@@ -63,10 +69,12 @@ describe('When the script does effectively nothing', () => {
 	});
 
 	afterEach(() => {
-		jest.resetModules();
-		jest.restoreAllMocks();
+		document.head.innerHTML = '';
+		document.body.innerHTML = '';
 
 		fetch.mockClear();
+		jest.restoreAllMocks();
+		jest.resetModules();
 	});
 
 	test('it does not add window event listener', async () => {
