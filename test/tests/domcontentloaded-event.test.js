@@ -27,7 +27,6 @@ describe('When document is becoming ready', () => {
 	};
 
 	let addEventListenerMock;
-	let readyStateMock;
 	let testElement;
 
 	const listeners = [];
@@ -52,9 +51,6 @@ describe('When document is becoming ready', () => {
 			return originalFunc(...args);
 		});
 
-		readyStateMock = jest.spyOn(document, 'readyState', 'get');
-		readyStateMock.mockReturnValue('loading');
-
 		fetch.mockResponse('message content');
 	});
 
@@ -66,7 +62,6 @@ describe('When document is becoming ready', () => {
 		listeners.length = 0;
 
 		addEventListenerMock = undefined;
-		readyStateMock = undefined;
 		testElement = undefined;
 
 		fetch.mockClear();
@@ -75,6 +70,9 @@ describe('When document is becoming ready', () => {
 	});
 
 	test('listener for DOMContentLoaded event is added', async () => {
+		jest.spyOn(document, 'readyState', 'get')
+			.mockReturnValue('loading');
+
 		awaitResult(require(scriptPath));
 
 		expect(addEventListenerMock.mock.calls).toBeArrayOfSize(1);
