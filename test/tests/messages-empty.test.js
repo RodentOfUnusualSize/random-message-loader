@@ -29,8 +29,6 @@ describe('When messages data is empty', () => {
 	let testElement;
 
 	beforeEach(() => {
-		jest.resetModules();
-
 		fetch.mockResponse('');
 
 		document.head.innerHTML = ''

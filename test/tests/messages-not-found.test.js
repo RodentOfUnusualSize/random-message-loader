@@ -29,8 +29,6 @@ describe('When messages cannot be retrieved', () => {
 	let testElement;
 
 	beforeEach(() => {
-		jest.resetModules();
-
 		fetch.mockResponse(request => {
 			return Promise.resolve({
 				status : 404,
