@@ -102,5 +102,25 @@ describe('When document is becoming ready', () => {
 		expect(testElement.innerHTML).toBe('message content');
 	});
 
-	test.todo('messages are fetched after DOMContentLoaded event');
+	test('messages are fetched after DOMContentLoaded event', async () => {
+		global.fetch
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message content'),
+			});
+
+		const readyState = jest.spyOn(document, 'readyState', 'get');
+		readyState.mockReturnValue('loading');
+
+		const result = require(scriptPath);
+		awaitResult(result);
+
+		readyState.mockReturnValue('interactive');
+		document.dispatchEvent(new Event('DOMContentLoaded', { bubbles : true }));
+
+		await expect(result).toResolve();
+
+		expect(global.fetch.mock.calls).toBeArrayOfSize(1);
+		expect(global.fetch.mock.calls[0][0]).toBe('messages');
+	});
 });
