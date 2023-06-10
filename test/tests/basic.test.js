@@ -45,9 +45,13 @@ describe('In the script\'s most basic synchronous operation', () => {
 	});
 
 	afterEach(() => {
-		jest.resetModules();
+		document.head.innerHTML = '';
+		document.body.innerHTML = '';
+
+		testElement = undefined;
 
 		fetch.mockClear();
+		jest.resetModules();
 	});
 
 	test('it changes the content of the target element', async () => {
