@@ -42,8 +42,6 @@ describe('When messages cannot be retrieved', () => {
 			+ `<script src="${scriptPath}"></script>`
 		;
 
-		document.body.innerHTML = '';
-
 		testElement = document.createElement("p");
 		testElement.setAttribute('data-saria-random-message-src', url);
 		testElement.textContent = defaultContent;
@@ -56,10 +54,14 @@ describe('When messages cannot be retrieved', () => {
 	});
 
 	afterEach(() => {
-		jest.resetModules();
-		jest.restoreAllMocks();
+		document.head.innerHTML = '';
+		document.body.innerHTML = '';
+
+		testElement = undefined;
 
 		fetch.mockClear();
+		jest.restoreAllMocks();
+		jest.resetModules();
 	});
 
 	test('the default content is not changed', async () => {
