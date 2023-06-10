@@ -20,7 +20,67 @@
  **********************************************************************/
 
 describe('When document is becoming ready', () => {
-	test.todo('listener for DOMContentLoaded event is added');
+	const scriptPath = '../../src/random-message-loader.js';
+
+	const awaitResult = async result => {
+		await Promise.any([result, new Promise(resolve => setTimeout(resolve, 1000))]);
+	};
+
+	let addEventListenerMock;
+	let readyStateMock;
+	let testElement;
+
+	const listeners = [];
+
+	beforeEach(() => {
+		document.head.innerHTML = ''
+			+ '<meta charset="utf-8"/>'
+			+ '<title>Title</title>'
+			+ `<script src="${scriptPath}"></script>`
+		;
+
+		testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'messages');
+		testElement.textContent = 'default content';
+
+		document.body.appendChild(testElement);
+
+		let originalFunc = document.addEventListener;
+		addEventListenerMock = jest.spyOn(document, 'addEventListener');
+		addEventListenerMock.mockImplementation((...args) => {
+			listeners.push(args);
+			return originalFunc(...args);
+		});
+
+		readyStateMock = jest.spyOn(document, 'readyState', 'get');
+		readyStateMock.mockReturnValue('loading');
+
+		fetch.mockResponse('message content');
+	});
+
+	afterEach(() => {
+		document.head.innerHTML = '';
+		document.body.innerHTML = '';
+
+		listeners.forEach(listener => document.removeEventListener(...listener));
+		listeners.length = 0;
+
+		addEventListenerMock = undefined;
+		readyStateMock = undefined;
+		testElement = undefined;
+
+		fetch.mockClear();
+		jest.restoreAllMocks();
+		jest.resetModules();
+	});
+
+	test('listener for DOMContentLoaded event is added', async () => {
+		awaitResult(require(scriptPath));
+
+		expect(addEventListenerMock.mock.calls).toBeArrayOfSize(1);
+
+		expect(addEventListenerMock.mock.calls[0][0]).toBe('DOMContentLoaded');
+	});
 
 	test.todo('content is changed after DOMContentLoaded event');
 
