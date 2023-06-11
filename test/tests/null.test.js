@@ -41,9 +41,6 @@ describe('When the script does effectively nothing', () => {
 		+ '<p data-saria="awesome">Element with data attribute.</p>'
 	;
 
-	let windowAddEventListener;
-	let documentAddEventListener;
-
 	beforeAll(() => {
 		// Determine expected content by setting document content, then
 		// examining it.
@@ -56,21 +53,11 @@ describe('When the script does effectively nothing', () => {
 		expectedContent.body = document.body.innerHTML;
 
 		// Restore to defaults.
-		document.head.innerHTML = '';
-		document.body.innerHTML = '';
-	});
-
-	beforeEach(() => {
-		document.head.innerHTML = headContent;
-		document.body.innerHTML = bodyContent;
-
-		windowAddEventListener = jest.spyOn(window, 'addEventListener');
-		documentAddEventListener = jest.spyOn(document, 'addEventListener');
+		saria.testing.jsdom.restore();
 	});
 
 	afterEach(() => {
-		document.head.innerHTML = '';
-		document.body.innerHTML = '';
+		saria.testing.jsdom.restore();
 
 		fetch.mockClear();
 		jest.restoreAllMocks();
@@ -78,36 +65,58 @@ describe('When the script does effectively nothing', () => {
 	});
 
 	test('it does not add window event listener', async () => {
+		document.head.innerHTML = headContent;
+		document.body.innerHTML = bodyContent;
+
+		jest.spyOn(window, 'addEventListener');
+
 		await require(scriptPath);
 
-		expect(windowAddEventListener.mock.calls).toBeArrayOfSize(0);
+		expect(window.addEventListener.mock.calls).toBeArrayOfSize(0);
 	});
 
 	test('it does not add document event listener', async () => {
+		document.head.innerHTML = headContent;
+		document.body.innerHTML = bodyContent;
+
+		jest.spyOn(document, 'addEventListener');
+
 		await require(scriptPath);
 
-		expect(documentAddEventListener.mock.calls).toBeArrayOfSize(0);
+		expect(document.addEventListener.mock.calls).toBeArrayOfSize(0);
 	});
 
 	test('it does not change DOM content in head', async () => {
+		document.head.innerHTML = headContent;
+		document.body.innerHTML = bodyContent;
+
 		await require(scriptPath);
 
 		expect(document.head.innerHTML).toBe(expectedContent.head);
 	});
 
 	test('it does not change DOM content in body', async () => {
+		document.head.innerHTML = headContent;
+		document.body.innerHTML = bodyContent;
+
 		await require(scriptPath);
 
 		expect(document.body.innerHTML).toBe(expectedContent.body);
 	});
 
 	test('it does not change DOM content', async () => {
+		document.head.innerHTML = headContent;
+		document.body.innerHTML = bodyContent;
+
 		await require(scriptPath);
 
 		expect(document.documentElement.outerHTML).toBe(expectedContent.document);
 	});
 
 	test('it does not fetch anything', async () => {
+		document.head.innerHTML = headContent;
+		document.body.innerHTML = bodyContent;
+
 		await require(scriptPath);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(0);
