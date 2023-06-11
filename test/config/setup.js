@@ -20,8 +20,79 @@
  **********************************************************************/
 
 // Add Jest extended matchers //////////////////////////////////////////
-const jestExtended = require(`jest-extended`);
+
+const jestExtended = require('jest-extended');
 expect.extend(jestExtended);
 
+
 // Set up fetch mocking ////////////////////////////////////////////////
+
 require('jest-fetch-mock').enableMocks();
+
+
+// Set up my own testing services //////////////////////////////////////
+
+if (!('saria' in globalThis))
+	globalThis.saria = {};
+
+if ('testing' in saria)
+	throw new Error('saria.testing already exists');
+
+saria.testing = {};
+
+
+// Set up JSDOM restore support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+saria.testing.jsdom = {
+	__keys :
+		new Map(
+			['document', 'window']
+				.map(obj => [obj, new Set(Object.keys(globalThis[obj]))])
+		),
+
+	__listeners :
+		new Map(
+			['document', 'window']
+				.map(obj => [obj, []])
+		),
+
+	restore :
+		() => {
+			// Remove all attributes and children of <html>, other than
+			// <head> and <body>.
+			for (const attribute of document.documentElement.attributes)
+				document.documentElement.removeAttribute(attribute.name);
+
+			document.documentElement.innerHTML = '<head></head><body></body>';
+
+			// Remove all event listeners.
+			for (const [obj, args] of saria.testing.jsdom.__listeners.entries()) {
+				args.forEach(args => globalThis[obj].removeEventListener(...args));
+				args.length = 0;
+			}
+
+			// Remove any added keys.
+			for (const [obj, keys] of saria.testing.jsdom.__keys.entries()) {
+				Object.keys(globalThis[obj])
+					.filter(key => !keys.has(key))
+					.forEach(key => { delete globalThis[obj][key]; });
+			}
+		},
+};
+
+const addEventListenerWrapper = obj => {
+	return (...args) => {
+		saria.testing.jsdom.__listeners.get(obj).push(args);
+		globalThis[obj].__saria__addEventListener(...args);
+	};
+};
+
+['document', 'window'].forEach(obj => {
+	globalThis[obj].__saria__addEventListener = globalThis[obj].addEventListener;
+	globalThis[obj].addEventListener = addEventListenerWrapper(obj);
+
+	saria.testing.jsdom.__keys.get(obj)
+		.add('addEventListener')
+		.add('__saria__addEventListener')
+	;
+});
