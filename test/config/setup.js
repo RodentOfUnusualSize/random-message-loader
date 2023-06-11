@@ -25,11 +25,6 @@ const jestExtended = require('jest-extended');
 expect.extend(jestExtended);
 
 
-// Set up fetch mocking ////////////////////////////////////////////////
-
-require('jest-fetch-mock').enableMocks();
-
-
 // Set up my own testing services //////////////////////////////////////
 
 if (!('saria' in globalThis))
@@ -108,3 +103,15 @@ const addEventListenerWrapper = obj => {
 		.add('__saria__addEventListener')
 	;
 });
+
+
+// Set up fetch stub ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if (!('fetch' in globalThis)) {
+	Object.defineProperty(globalThis, 'fetch', {
+		value        : (...args) => Promise.reject(new Error('fetch()')),
+		configurable : false,
+		enumerable   : true,
+		writable     : true,
+	});
+}
