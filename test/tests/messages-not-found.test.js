@@ -31,7 +31,6 @@ describe('When messages cannot be retrieved', () => {
 	afterEach(() => {
 		saria.testing.jsdom.restore();
 
-		fetch.mockClear();
 		jest.restoreAllMocks();
 		jest.resetModules();
 	});
@@ -46,12 +45,13 @@ describe('When messages cannot be retrieved', () => {
 		testElement.textContent = defaultContent;
 		document.body.appendChild(testElement);
 
-		fetch.mockResponse(request => {
-			return Promise.resolve({
-				status : 404,
-				body   : 'not found'
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				url        : 'url',
+				ok         : false,
+				status     : 404,
+				statusText : 'Not Found',
 			});
-		});
 
 		await require(scriptPath);
 
@@ -64,12 +64,13 @@ describe('When messages cannot be retrieved', () => {
 		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
 		document.body.innerHTML = `<p data-saria-random-message-src="${url}">default content</p>`;
 
-		fetch.mockResponse(request => {
-			return Promise.resolve({
-				status : 404,
-				body   : 'not found'
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				url        : 'url',
+				ok         : false,
+				status     : 404,
+				statusText : 'Not Found',
 			});
-		});
 
 		await require(scriptPath);
 
