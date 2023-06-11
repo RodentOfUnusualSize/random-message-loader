@@ -22,37 +22,14 @@
 describe('When messages data is empty', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
-	const url = 'messages';
-
-	const defaultContent = '[default content]';
-
-	let testElement;
-
 	beforeEach(() => {
-		fetch.mockResponse('');
-
-		document.head.innerHTML = ''
-			+ '<meta charset="utf-8"/>'
-			+ '<title>Title</title>'
-			+ `<script src="${scriptPath}"></script>`
-		;
-
-		testElement = document.createElement("p");
-		testElement.setAttribute('data-saria-random-message-src', url);
-		testElement.textContent = defaultContent;
-
-		document.body.appendChild(testElement);
-
 		// We expect error messages for the failed request.
 		// So, silence them.
 		jest.spyOn(console, 'error').mockImplementation(jest.fn());
 	});
 
 	afterEach(() => {
-		document.head.innerHTML = '';
-		document.body.innerHTML = '';
-
-		testElement = undefined;
+		saria.testing.jsdom.restore();
 
 		fetch.mockClear();
 		jest.restoreAllMocks();
@@ -60,12 +37,30 @@ describe('When messages data is empty', () => {
 	});
 
 	test('the default content is not changed', async () => {
+		const defaultContent = 'default content';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'url');
+		testElement.textContent = defaultContent;
+		document.body.appendChild(testElement);
+
+		fetch.mockResponse('');
+
 		await require(scriptPath);
 
 		expect(testElement.innerHTML).toBe(defaultContent);
 	});
 
 	test('it tries to fetch the message file', async () => {
+		const url = 'url';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+		document.body.innerHTML = `<p data-saria-random-message-src="${url}">default content</p>`;
+
+		fetch.mockResponse('');
+
 		await require(scriptPath);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
