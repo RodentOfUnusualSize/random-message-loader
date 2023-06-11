@@ -19,81 +19,79 @@
  *                                                                     *
  **********************************************************************/
 
+// Fill a document’s body with a diverse set of elements, some of which
+// want random message content (from the given URL), and some of which
+// don’t.
+function generateBodyTestContent(testDocument, testUrl) {
+	const elements = [];
+
+	// Some <p> elements:
+	for (let i = 0; i < 3; ++i) {
+		const element = testDocument.createElement('p');
+		element.setAttribute('data-saria-random-message-src', testUrl);
+		element.textContent = '[default content]';
+
+		testDocument.body.appendChild(element);
+
+		elements.push(element);
+	}
+
+	// A list:
+	const list = testDocument.createElement('ol');
+	for (let i = 0; i < 4; ++i) {
+		const li = testDocument.createElement('li');
+		li.setAttribute('data-saria-random-message-src', testUrl);
+		li.textContent = `list item #${i}`;
+
+		list.appendChild(li);
+
+		elements.push(li);
+	}
+	testDocument.body.appendChild(list);
+
+	// Deeply nested definition list (non-sibling target elements):
+	const div = testDocument.createElement('div');
+	const dl = testDocument.createElement('dl');
+	for (let i = 0; i < 2; ++i) {
+		const dt = testDocument.createElement('dt');
+		dt.textContent = `Definition #${i}`;
+
+		const dd = testDocument.createElement('dd');
+		dd.setAttribute('data-saria-random-message-src', testUrl);
+		dd.textContent = `[${i}]`;
+
+		dl.appendChild(dt);
+		dl.appendChild(dd);
+
+		elements.push(dd);
+	}
+	div.appendChild(dl);
+	testDocument.body.appendChild(div);
+
+	return elements;
+}
+
 describe('When multiple messages are wanted from a single source', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
-	const url = 'messages';
-
-	const elements = [];
-
-	beforeEach(() => {
-		const messages = Array.from(Array(10).keys())
-			.map(n => `message #${n}`)
-		;
-
-		fetch.mockResponse(messages.join('\n'));
-
-		document.head.innerHTML = ''
-			+ '<meta charset="utf-8"/>'
-			+ '<title>Title</title>'
-			+ `<script src="${scriptPath}"></script>`
-		;
-
-		// Some <p> elements:
-		for (let i = 0; i < 3; ++i) {
-			const element = document.createElement('p');
-			element.setAttribute('data-saria-random-message-src', url);
-			element.textContent = '[default content]';
-
-			document.body.appendChild(element);
-
-			elements.push(element);
-		}
-
-		// A list:
-		const list = document.createElement('ol');
-		for (let i = 0; i < 4; ++i) {
-			const li = document.createElement('li');
-			li.setAttribute('data-saria-random-message-src', url);
-			li.textContent = `list item #${i}`;
-
-			list.appendChild(li);
-
-			elements.push(li);
-		}
-		document.body.appendChild(list);
-
-		// Deeply nested definition list (non-sibling target elements):
-		const div = document.createElement('div');
-		const dl = document.createElement('dl');
-		for (let i = 0; i < 2; ++i) {
-			const dt = document.createElement('dt');
-			dt.textContent = `Definition #${i}`;
-
-			const dd = document.createElement('dd');
-			dd.setAttribute('data-saria-random-message-src', url);
-			dd.textContent = `[${i}]`;
-
-			dl.appendChild(dt);
-			dl.appendChild(dd);
-
-			elements.push(dd);
-		}
-		div.appendChild(dl);
-		document.body.appendChild(div);
-	});
-
 	afterEach(() => {
-		document.head.innerHTML = '';
-		document.body.innerHTML = '';
-
-		elements.length = 0;
+		saria.testing.jsdom.restore();
 
 		fetch.mockClear();
 		jest.resetModules();
 	});
 
 	test('content of all target elements is changed', async () => {
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const elements = generateBodyTestContent(document, 'messages.txt');
+
+		fetch.mockResponse(
+			Array.from(Array(10).keys())
+				.map(n => `message #${n}`)
+				.join('\n')
+		);
+
 		await require(scriptPath);
 
 		for (const element of elements) {
@@ -102,6 +100,18 @@ describe('When multiple messages are wanted from a single source', () => {
 	});
 
 	test('only one fetch request is made', async () => {
+		const url = 'messages.txt';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		generateBodyTestContent(document, url);
+
+		fetch.mockResponse(
+			Array.from(Array(10).keys())
+				.map(n => `message #${n}`)
+				.join('\n')
+		);
+
 		await require(scriptPath);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
