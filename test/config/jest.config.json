@@ -1,0 +1,14 @@
+{
+	"rootDir" : "../..",
+	"roots" : [
+		"<rootDir>/test/tests/"
+	],
+	"testEnvironment": "jsdom",
+	"setupFilesAfterEnv" : [
+		"<rootDir>/test/config/setup.js"
+	],
+	"moduleDirectories" : [
+		"node_modules",
+		"./.npm/lib/node_modules"
+	]
+}

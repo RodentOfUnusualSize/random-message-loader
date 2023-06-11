@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ########################################################################
 #                                                                      #
 # This file is part of Saria’s random message loader program.          #
@@ -19,34 +21,9 @@
 #                                                                      #
 ########################################################################
 
-name: Run tests
-on:
-    push:
-        branches:
-          - main
-    pull_request:
-        branches:
-          - main
-    workflow_dispatch:
-jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v3
-          - name: Get npm cache directory
-            id: npm-cache-dir
-            shell: bash
-            run: printf 'dir=%s\n' "$(npm config get cache)" >>${GITHUB_OUTPUT}
-          - name: Load npm cache
-            uses: actions/cache@v3
-            id: npm-cache
-            with:
-                path: ${{ steps.npm-cache-dir.outputs.dir }}
-                key: node-cache-${{ runner.os }}
-                restore-keys: |
-                    node-cache-${{ runner.os }}
-          - name: Install test dependencies
-            run: test/setup
-          - name: Run tests
-            run: test/run
+set -e
+set -u
+
+npm_dir='.npm'
+
+rm -rf -- "${npm_dir}"
