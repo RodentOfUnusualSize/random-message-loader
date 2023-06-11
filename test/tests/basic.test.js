@@ -25,7 +25,7 @@ describe('In the script\'s most basic synchronous operation', () => {
 	afterEach(() => {
 		saria.testing.jsdom.restore();
 
-		fetch.mockClear();
+		jest.restoreAllMocks();
 		jest.resetModules();
 	});
 
@@ -38,7 +38,11 @@ describe('In the script\'s most basic synchronous operation', () => {
 		testElement.setAttribute('data-saria-random-message-src', 'url');
 		document.body.appendChild(testElement);
 
-		fetch.mockResponse(message);
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue(message),
+			});
 
 		await require(scriptPath);
 
@@ -50,6 +54,12 @@ describe('In the script\'s most basic synchronous operation', () => {
 
 		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
 		document.body.innerHTML = `<p data-saria-random-message-src="${url}"></p>`;
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message content'),
+			});
 
 		await require(scriptPath);
 
