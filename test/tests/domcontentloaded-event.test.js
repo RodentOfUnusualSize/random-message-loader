@@ -22,105 +22,84 @@
 describe('When document is becoming ready', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
-	const awaitResult = async result => {
-		await Promise.any([result, new Promise(resolve => setTimeout(resolve, 1000))]);
-	};
-
-	let addEventListenerMock;
-	let testElement;
-
-	const listeners = [];
-
-	beforeEach(() => {
-		document.head.innerHTML = ''
-			+ '<meta charset="utf-8"/>'
-			+ '<title>Title</title>'
-			+ `<script src="${scriptPath}"></script>`
-		;
-
-		testElement = document.createElement("p");
-		testElement.setAttribute('data-saria-random-message-src', 'messages');
-		testElement.textContent = 'default content';
-
-		document.body.appendChild(testElement);
-
-		let originalFunc = document.addEventListener;
-		addEventListenerMock = jest.spyOn(document, 'addEventListener');
-		addEventListenerMock.mockImplementation((...args) => {
-			listeners.push(args);
-			return originalFunc(...args);
-		});
-
-		global.fetch = jest.fn();
-	});
-
 	afterEach(() => {
-		document.head.innerHTML = '';
-		document.body.innerHTML = '';
-
-		listeners.forEach(listener => document.removeEventListener(...listener));
-		listeners.length = 0;
-
-		addEventListenerMock = undefined;
-		testElement = undefined;
+		saria.testing.jsdom.restore();
 
 		jest.restoreAllMocks();
 		jest.resetModules();
-
-		delete global.fetch;
 	});
 
 	test('listener for DOMContentLoaded event is added', async () => {
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+		document.body.innerHTML = '<p data-saria-random-message-src="url"></p>';
+
+		jest.spyOn(document, 'addEventListener');
+
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
 
-		awaitResult(require(scriptPath));
+		saria.testing.partiallyAwait(require(scriptPath));
 
-		expect(addEventListenerMock.mock.calls).toBeArrayOfSize(1);
+		expect(document.addEventListener.mock.calls).toBeArrayOfSize(1);
 
-		expect(addEventListenerMock.mock.calls[0][0]).toBe('DOMContentLoaded');
+		expect(document.addEventListener.mock.calls[0][0]).toBe('DOMContentLoaded');
 	});
 
 	test('content is changed after DOMContentLoaded event', async () => {
-		global.fetch
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'url');
+		testElement.textContent = 'default content';
+		document.body.appendChild(testElement);
+
+		jest.spyOn(globalThis, 'fetch')
 			.mockResolvedValue({
 				ok   : true,
 				text : jest.fn().mockResolvedValue('message content'),
 			});
 
-		const readyState = jest.spyOn(document, 'readyState', 'get');
-		readyState.mockReturnValue('loading');
+		jest.spyOn(document, 'readyState', 'get')
+			.mockReturnValue('loading');
 
 		const result = require(scriptPath);
-		awaitResult(result);
+		saria.testing.partiallyAwait(result);
 
-		readyState.mockReturnValue('interactive');
+		jest.spyOn(document, 'readyState', 'get')
+			.mockReturnValue('interactive');
+
 		document.dispatchEvent(new Event('DOMContentLoaded', { bubbles : true }));
 
-		await expect(result).toResolve();
+		await result;
 
 		expect(testElement.innerHTML).toBe('message content');
 	});
 
 	test('messages are fetched after DOMContentLoaded event', async () => {
-		global.fetch
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+		document.body.innerHTML = '<p data-saria-random-message-src="url"></p>';
+
+		jest.spyOn(globalThis, 'fetch')
 			.mockResolvedValue({
 				ok   : true,
 				text : jest.fn().mockResolvedValue('message content'),
 			});
 
-		const readyState = jest.spyOn(document, 'readyState', 'get');
-		readyState.mockReturnValue('loading');
+		jest.spyOn(document, 'readyState', 'get')
+			.mockReturnValue('loading');
 
 		const result = require(scriptPath);
-		awaitResult(result);
+		saria.testing.partiallyAwait(result);
 
-		readyState.mockReturnValue('interactive');
+		jest.spyOn(document, 'readyState', 'get')
+			.mockReturnValue('interactive');
+
 		document.dispatchEvent(new Event('DOMContentLoaded', { bubbles : true }));
 
-		await expect(result).toResolve();
+		await result;
 
-		expect(global.fetch.mock.calls).toBeArrayOfSize(1);
-		expect(global.fetch.mock.calls[0][0]).toBe('messages');
+		expect(fetch.mock.calls).toBeArrayOfSize(1);
+
+		expect(fetch.mock.calls[0][0]).toBe('url');
 	});
 });
