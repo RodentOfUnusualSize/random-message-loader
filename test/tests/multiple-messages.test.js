@@ -77,7 +77,7 @@ describe('When multiple messages are wanted from a single source', () => {
 	afterEach(() => {
 		saria.testing.jsdom.restore();
 
-		fetch.mockClear();
+		jest.restoreAllMocks();
 		jest.resetModules();
 	});
 
@@ -86,11 +86,16 @@ describe('When multiple messages are wanted from a single source', () => {
 
 		const elements = generateBodyTestContent(document, 'messages.txt');
 
-		fetch.mockResponse(
-			Array.from(Array(10).keys())
-				.map(n => `message #${n}`)
-				.join('\n')
-		);
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text :
+					jest.fn().mockResolvedValue(
+						Array.from(Array(10).keys())
+							.map(n => `message #${n}`)
+							.join('\n')
+						),
+			});
 
 		await require(scriptPath);
 
@@ -106,11 +111,16 @@ describe('When multiple messages are wanted from a single source', () => {
 
 		generateBodyTestContent(document, url);
 
-		fetch.mockResponse(
-			Array.from(Array(10).keys())
-				.map(n => `message #${n}`)
-				.join('\n')
-		);
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text :
+					jest.fn().mockResolvedValue(
+						Array.from(Array(10).keys())
+							.map(n => `message #${n}`)
+							.join('\n')
+						),
+			});
 
 		await require(scriptPath);
 
