@@ -22,43 +22,35 @@
 describe('In the script\'s most basic synchronous operation', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
-	const url = 'messages';
-	const message = 'foo';
-
-	let testElement;
-
-	beforeEach(() => {
-		document.head.innerHTML = ''
-			+ '<meta charset="utf-8"/>'
-			+ '<title>Title</title>'
-			+ `<script src="${scriptPath}"></script>`
-		;
-
-		testElement = document.createElement("p");
-		testElement.setAttribute('data-saria-random-message-src', url);
-
-		document.body.appendChild(testElement);
-
-		fetch.mockResponse(message);
-	});
-
 	afterEach(() => {
-		document.head.innerHTML = '';
-		document.body.innerHTML = '';
-
-		testElement = undefined;
+		saria.testing.jsdom.restore();
 
 		fetch.mockClear();
 		jest.resetModules();
 	});
 
 	test('it changes the content of the target element', async () => {
+		const message = 'message';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'url');
+		document.body.appendChild(testElement);
+
+		fetch.mockResponse(message);
+
 		await require(scriptPath);
 
 		expect(testElement.innerHTML).toBe(message);
 	});
 
 	test('it fetches the message file', async () => {
+		const url = 'url';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+		document.body.innerHTML = `<p data-saria-random-message-src="${url}"></p>`;
+
 		await require(scriptPath);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
