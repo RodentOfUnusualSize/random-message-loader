@@ -59,7 +59,6 @@ describe('When the script does effectively nothing', () => {
 	afterEach(() => {
 		saria.testing.jsdom.restore();
 
-		fetch.mockClear();
 		jest.restoreAllMocks();
 		jest.resetModules();
 	});
@@ -116,6 +115,8 @@ describe('When the script does effectively nothing', () => {
 	test('it does not fetch anything', async () => {
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
+
+		jest.spyOn(globalThis, 'fetch');
 
 		await require(scriptPath);
 
