@@ -41,6 +41,18 @@ if ('testing' in saria)
 saria.testing = {};
 
 
+// Partially awaiting promises ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// This is a way to await a promise that may not resolve, or may not
+// resolve quickly enough.
+//
+// TODO: Return something to indicate if the promise is not settled
+// before the wait period ends… otherwise return the promised value.
+saria.testing.partiallyAwait = async (promise, ms = 1000) => {
+	await Promise.any([promise, new Promise(resolve => setTimeout(resolve, ms))]);
+};
+
+
 // Set up JSDOM restore support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 saria.testing.jsdom = {
