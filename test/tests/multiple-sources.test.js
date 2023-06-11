@@ -18,3 +18,8 @@
  * If not, see <https: *www.gnu.org/licenses/>.                        *
  *                                                                     *
  **********************************************************************/
+
+describe('When messages are wanted from multiple sources', () => {
+	test.todo('each element gets content from the correct source');
+	test.todo('each source is fetched once');
+});
