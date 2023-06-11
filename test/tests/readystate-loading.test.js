@@ -22,38 +22,8 @@
 describe('When document is not ready', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
-	const awaitResult = async result => {
-		await Promise.any([result, new Promise(resolve => setTimeout(resolve, 1000))]);
-	};
-
-	let readyStateMock;
-	let testElement;
-
-	beforeEach(() => {
-		fetch.mockResponse('message content');
-
-		document.head.innerHTML = ''
-			+ '<meta charset="utf-8"/>'
-			+ '<title>Title</title>'
-			+ `<script src="${scriptPath}"></script>`
-		;
-
-		testElement = document.createElement("p");
-		testElement.setAttribute('data-saria-random-message-src', 'messages');
-		testElement.textContent = 'default content';
-
-		document.body.appendChild(testElement);
-
-		readyStateMock = jest.spyOn(document, 'readyState', 'get');
-		readyStateMock.mockReturnValue('loading');
-	});
-
 	afterEach(() => {
-		document.head.innerHTML = '';
-		document.body.innerHTML = '';
-
-		readyStateMock = undefined;
-		testElement = undefined;
+		saria.testing.jsdom.restore();
 
 		fetch.mockClear();
 		jest.restoreAllMocks();
@@ -61,13 +31,33 @@ describe('When document is not ready', () => {
 	});
 
 	test('target element content is unchanged', async () => {
-		awaitResult(require(scriptPath));
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'messages');
+		testElement.textContent = 'default content';
+		document.body.appendChild(testElement);
+
+		fetch.mockResponse('message content');
+
+		jest.spyOn(document, 'readyState', 'get')
+			.mockReturnValue('loading');
+
+		saria.testing.partiallyAwait(require(scriptPath));
 
 		expect(testElement.textContent).toBe('default content');
 	});
 
 	test('no fetches have been attempted', async () => {
-		awaitResult(require(scriptPath));
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+		document.body.innerHTML = '<p data-saria-random-message-src="messages">default content</p>';
+
+		fetch.mockResponse('message content');
+
+		jest.spyOn(document, 'readyState', 'get')
+			.mockReturnValue('loading');
+
+		saria.testing.partiallyAwait(require(scriptPath));
 
 		expect(fetch.mock.calls).toBeArrayOfSize(0);
 	});
