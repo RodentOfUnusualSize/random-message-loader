@@ -25,7 +25,6 @@ describe('When document is not ready', () => {
 	afterEach(() => {
 		saria.testing.jsdom.restore();
 
-		fetch.mockClear();
 		jest.restoreAllMocks();
 		jest.resetModules();
 	});
@@ -38,7 +37,11 @@ describe('When document is not ready', () => {
 		testElement.textContent = 'default content';
 		document.body.appendChild(testElement);
 
-		fetch.mockResponse('message content');
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message content'),
+			});
 
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
@@ -52,7 +55,11 @@ describe('When document is not ready', () => {
 		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
 		document.body.innerHTML = '<p data-saria-random-message-src="messages">default content</p>';
 
-		fetch.mockResponse('message content');
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message content'),
+			});
 
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
