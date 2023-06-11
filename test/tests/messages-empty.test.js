@@ -31,7 +31,6 @@ describe('When messages data is empty', () => {
 	afterEach(() => {
 		saria.testing.jsdom.restore();
 
-		fetch.mockClear();
 		jest.restoreAllMocks();
 		jest.resetModules();
 	});
@@ -46,7 +45,11 @@ describe('When messages data is empty', () => {
 		testElement.textContent = defaultContent;
 		document.body.appendChild(testElement);
 
-		fetch.mockResponse('');
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue(''),
+			});
 
 		await require(scriptPath);
 
@@ -59,7 +62,11 @@ describe('When messages data is empty', () => {
 		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
 		document.body.innerHTML = `<p data-saria-random-message-src="${url}">default content</p>`;
 
-		fetch.mockResponse('');
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue(''),
+			});
 
 		await require(scriptPath);
 
