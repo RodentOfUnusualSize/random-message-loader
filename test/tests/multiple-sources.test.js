@@ -76,5 +76,48 @@ describe('When messages are wanted from multiple sources', () => {
 		});
 	});
 
-	test.todo('each source is fetched once');
+	test('each source is fetched once', async () => {
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const sources = Array.from(Array(3).keys())
+			.map(n => [`path/to/source-${n}`, `message from source ${n}`]);
+
+		for (let i = 0; i < 3; ++i) {
+			sources.forEach(([source, messages]) => {
+				const element = document.createElement("p");
+				element.setAttribute('data-saria-random-message-src', source);
+				element.textContent = 'default content';
+				document.body.appendChild(element);
+			});
+		}
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockImplementation(url => {
+				for (const [source, messages] of sources) {
+					if (source === url) {
+						return Promise.resolve({
+							url        : source,
+							ok         : true,
+							status     : 200,
+							statusText : 'Ok',
+							text       : jest.fn().mockResolvedValue(messages),
+						});
+					}
+				}
+
+				return Promise.reolve({
+					url        : source,
+					ok         : false,
+					status     : 404,
+					statusText : 'Not Found',
+				});
+			});
+
+		await require(scriptPath);
+
+		expect(fetch.mock.calls).toBeArrayOfSize(sources.length);
+
+		expect(fetch.mock.calls.map(call => call[0]))
+			.toIncludeSameMembers(sources.map(source => source[0]));
+	});
 });
