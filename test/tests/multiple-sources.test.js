@@ -20,6 +20,61 @@
  **********************************************************************/
 
 describe('When messages are wanted from multiple sources', () => {
-	test.todo('each element gets content from the correct source');
+	const scriptPath = '../../src/random-message-loader.js';
+
+	afterEach(() => {
+		saria.testing.jsdom.restore();
+
+		jest.restoreAllMocks();
+		jest.resetModules();
+	});
+
+	test('each element gets content from the correct source', async () => {
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const sources = Array.from(Array(3).keys())
+			.map(n => [`path/to/source-${n}`, `message from source ${n}`, []]);
+
+		for (let i = 0; i < 3; ++i) {
+			sources.forEach(([source, messages, elements]) => {
+				const element = document.createElement("p");
+				element.setAttribute('data-saria-random-message-src', source);
+				element.textContent = 'default content';
+				document.body.appendChild(element);
+				elements.push(element);
+			});
+		}
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockImplementation(url => {
+				for (const [source, messages, elements] of sources) {
+					if (source === url) {
+						return Promise.resolve({
+							url        : source,
+							ok         : true,
+							status     : 200,
+							statusText : 'Ok',
+							text       : jest.fn().mockResolvedValue(messages),
+						});
+					}
+				}
+
+				return Promise.reolve({
+					url        : source,
+					ok         : false,
+					status     : 404,
+					statusText : 'Not Found',
+				});
+			});
+
+		await require(scriptPath);
+
+		sources.forEach(([source, message, elements]) => {
+			elements.forEach(element => {
+				expect(element.innerHTML).toBe(message);
+			});
+		});
+	});
+
 	test.todo('each source is fetched once');
 });
