@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: Asynchronous loading</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="basic-usage">
+	<h1>Saria’s random message loader program: Asynchronous loading</h1>
+	<figure data-saria-random-message-src="quotes.txt" async=""></figure>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This page demonstrates the most using Saria’s random message loader program with asynchronous loading.
+		</p>
+		<p>
+			The script is loaded with the following element in the page <code class="lang-html">&lt;head&gt;</code>:
+		</p>
+		<pre><code class="lang-html">&lt;script src="random-message-loader.js" async=""&gt;&lt;/script&gt;</code></pre>
+		<p>
+			Note the <code class="lang-html">async=""</code> attribute.
+			This is the only difference from <a href="basic.html">the basic example</a>.
+		</p>
+		<p>
+			Loading the script asynchronously can make a page more responsive.
+			The page will not wait for the script to execute; it will continue loading.
+			Meanwhile, the script can be loaded in parallel with the page, and other resources (style sheets, images, <abbr>etc.</abbr>).
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>
