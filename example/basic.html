@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: Basic usage</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="basic-usage">
+	<h1>Saria’s random message loader program: Basic usage</h1>
+	<figure data-saria-random-message-src="quotes.txt"></figure>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This page demonstrates the most basic usage of Saria’s random message loader program.
+		</p>
+		<p>
+			The script is loaded with the following element in the page <code class="lang-html">&lt;head&gt;</code>:
+		</p>
+		<pre><code class="lang-html">&lt;script src="random-message-loader.js"&gt;&lt;/script&gt;</code></pre>
+		<p>
+			A <code class="lang-html">&lt;figure&gt;</code> element is used to receive the content:
+		</p>
+		<pre><code class="lang-html">&lt;figure data-saria-random-message-src="quotes.txt"&gt;&lt;/figure&gt;</code></pre>
+		<p>
+			The messages file, located at the <abbr>URL</abbr> <code>quotes.txt</code> contains a collection of quotes, marked up as <abbr>HTML</abbr>:
+		</p>
+		<pre>&lt;blockquote&gt;Isn’t it enough to see that a garden is beautiful without having to believe that there are fairies at the bottom of it, too?&lt;/blockquote&gt;&lt;figcaption&gt;Douglas Adams, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?1773"&gt;The Hitchhiker’s Guide to the Galaxy&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;blockquote&gt;The difference between a conviction and a prejudice is that you can explain a conviction without getting angry.&lt;/blockquote&gt;&lt;figcaption&gt;Gregory Benford, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?1090333"&gt;Deeper than the Darkness&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;blockquote&gt;Four things do not come back: the spoken word, the sped arrow, the past life, and the neglected opportunity.&lt;/blockquote&gt;&lt;figcaption&gt;Ted Chiang, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?40036"&gt;Stories of Your Life and Others&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;blockquote&gt;The difference between the truth and a lie is that both of them can hurt, but only one will take time to heal you afterwards.&lt;/blockquote&gt;&lt;figcaption&gt;Mira Grant, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?1101348"&gt;Feed&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;blockquote&gt;Respect for truth comes close to being the basis for all morality.&lt;/blockquote&gt;&lt;figcaption&gt;Frank Herbert, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?2036"&gt;Dune&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;blockquote&gt;Home is what you take with you, not what you leave behind.&lt;/blockquote&gt;&lt;figcaption&gt;N.K. Jemisin, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?1878015"&gt;The Fifth Season&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;blockquote&gt;Nature never appeals to intelligence until habit and instinct are useless. There is no intelligence where there is no need of change.&lt;/blockquote&gt;&lt;figcaption&gt;H.G. Wells, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?25149"&gt;The Time Machine&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;blockquote&gt;The greatest trick the Devil pulled was convincing the world there was only one of him.&lt;/blockquote&gt;&lt;figcaption&gt;David Wong, &lt;cite&gt;&lt;a href="https://www.isfdb.org/cgi-bin/title.cgi?1142519"&gt;John Dies at the End&lt;/a&gt;&lt;/cite&gt;&lt;/figcaption&gt;
+</pre>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>
