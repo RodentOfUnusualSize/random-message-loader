@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: Multiple messages</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="basic-usage">
+	<h1>Saria’s random message loader program: Multiple messages</h1>
+	<ul>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+		<li data-saria-random-message-src="data/alpha.txt"></li>
+	</ul>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This page demonstrates setting the content of multiple target elements, using a single source.
+		</p>
+		<p>
+			There are eight <code class="lang-html">&lt;li&gt;</code> elements, all the same:
+		</p>
+		<pre><code class="lang-html">&lt;li data-saria-random-message-src="data/alpha.txt"&gt;&lt;/li&gt;</code></pre>
+		<p>
+			Each should be filled with a randomly-selected message with the form “<code class="lang-html">Message [&lt;b&gt;<var>x</var>&lt;/b&gt;]</code>”, where <var>x</var> is a lower-case letter.
+		</p>
+		<p>
+			Each list item should contain a different message, and the messages should be randomly-selected and randomly-ordered.
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>
