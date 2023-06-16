@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: HTTP preloading</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="example">
+	<h1>Saria’s random message loader program: <abbr>HTTP</abbr> preloading</h1>
+	<figure data-saria-random-message-src="data/quotes.txt"></figure>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p class="note">
+			<b>Note:</b>
+			This example requires configuration of the server to produce the proper <abbr>HTTP</abbr> response header field.
+		</p>
+		<p>
+			This page demonstrates using <abbr>HTTP</abbr> preload hints to load the script and/or messages file earlier.
+		</p>
+		<p>
+			In the <abbr>HTTP</abbr> response, the server should include <code class="lang-http">Link</code> fields, with the script and/or message source <abbr>URLs</abbr>.
+		</p>
+		<p>
+			For example, to preload the script, one might use:
+		</p>
+		<pre><code class="lang-http">Link: &lt;random-message-loader.js&gt;; as=script; rel=preload</code></pre>
+		<p>
+			To preload the messages file, one might use:
+		</p>
+		<pre><code class="lang-http">Link: &lt;data/quotes.txt&gt;; as=fetch; rel=preload; crossorigin=anonymous</code></pre>
+		<p>
+			In a supporting browser, depending on the technology being used, you may be able to observe the script and/or messages file being loaded concurrently with the page, or possibly even <em>before</em> the page begins to load.
+		</p>
+		<p class="note">
+			<b>Note:</b>
+			The actual method may be <abbr>HTTP</abbr> preload hints, <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push"><abbr>HTTP/2</abbr> push</a>, or <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103">103 Early Hints</a>, depending on the browser, server configuration, and exact format of the <code>Link</code> field data.
+			The difference doesn’t really matter; the effect will be more or less the same.
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>

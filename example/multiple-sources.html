@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: Multiple sources</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="example">
+	<h1>Saria’s random message loader program: Multiple sources</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Source</th>
+				<th>Result</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td data-saria-random-message-src="data/alpha.txt"></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td data-saria-random-message-src="data/number.txt"></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td data-saria-random-message-src="data/emoji.txt"></td>
+			</tr>
+		</tbody>
+	</table>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This page demonstrates using multiple message sources.
+		</p>
+		<p>
+			The table contains three rows, one for each source.
+			The cell in the result column of each row has the form:
+		</p>
+		<pre><code class="lang-html">&lt;td data-saria-random-message-src="<var>source</var>"&gt;&lt;/td&gt;</code></pre>
+		<p>
+			where <var>source</var> is the <abbr>URL</abbr> of a source.
+		</p>
+		<p>
+			Each source has different message content:
+		</p>
+		<table>
+			<thead>
+				<tr>
+					<th>Source number</th>
+					<th>Source <abbr>URL</abbr></th>
+					<th>Message format</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td><code>data/alpha.txt</code></td>
+					<td>“<code class="lang-html">Message [&lt;b&gt;<var>x</var>&lt;/b&gt;]</code>”, where <var>x</var> is a lower-case letter</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td><code>data/number.txt</code></td>
+					<td>“<code class="lang-html">Message #<var>NNNN</var></code>”, where <var>NNNN</var> is a 4-digit number (range [0000–9999], inclusive)</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td><code>data/emoji.txt</code></td>
+					<td>Emojis</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			The result cell of each row should contain a randomly-selected entry from the source.
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>

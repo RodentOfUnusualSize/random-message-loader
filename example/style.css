@@ -1,0 +1,92 @@
+/***********************************************************************
+ * Saria’s random message loader program examples                      *
+ *                                                                     *
+ * This is just some very basic styling to make the examples more      *
+ * readable.                                                           *
+ *                                                                     *
+ **********************************************************************/
+
+body {
+	font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+#explanation {
+	background: rgba(240, 140, 240, 0.2);
+	border: 0.2rem solid rgba(200, 100, 200, 1);
+	border-radius: 1rem;
+	margin-block-start: 1rem;
+	padding-inline-start: 1rem;
+	padding-inline-end: 1rem;
+}
+
+figure {
+	background: rgba(240, 140, 240, 0.2);
+	border: 0.2rem solid rgba(200, 100, 200, 1);
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+figure > blockquote {
+	font-family: "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville, "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond", "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia, serif;
+	font-size: 1.2rem;
+	font-style: italic;
+	line-height: 1.4;
+	quotes: '“' '”';
+	margin: 0;
+}
+
+figure > blockquote::before {
+	content: open-quote;
+}
+
+figure > blockquote::after {
+	content: close-quote;
+}
+
+figcaption {
+	font-size: 0.8rem;
+	margin-block-start: 1rem;
+	text-align: end;
+}
+
+figcaption::before {
+	content: '—';
+}
+
+table {
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0.2rem;
+	margin-inline-start: 1rem;
+	margin-inline-end: 1rem;
+	width: calc(100% - 2rem);
+}
+
+tr:nth-child(odd) {
+	background: rgba(240, 140, 240, 0.2);
+}
+
+tr:nth-child(even) {
+	background: rgba(200, 100, 200, 0.2);
+}
+
+th, td {
+	padding: 0.1rem 0.25rem;
+}
+
+th {
+	background: rgba(20, 10, 20, 0.2);
+}
+
+pre {
+	background: rgba(240, 140, 240, 0.2);
+	margin-inline-start: 1rem;
+	margin-inline-end: 1rem;
+	overflow: auto;
+	padding-block: 0.75rem;
+	padding-inline: 1rem;
+}

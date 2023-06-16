@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: HTML preloading</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+	<link rel="preload" href="data/quotes.txt" as="fetch" crossorigin="anonymous"/>
+</head>
+<body class="example">
+	<h1>Saria’s random message loader program: <abbr>HTML</abbr> preloading</h1>
+	<figure data-saria-random-message-src="data/quotes.txt"></figure>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This page demonstrates using <abbr>HTML</abbr> preload hints to load the messages file earlier.
+		</p>
+		<p>
+			In the page <code class="lang-html">&lt;head&gt;</code>, there is a <code class="lang-html">&lt;link&gt;</code> element requesting the messages source file be preloaded:
+		</p>
+		<pre><code class="lang-html">&lt;link rel="preload" href="data/quotes.txt" as="fetch" crossorigin="anonymous"/&gt;</code></pre>
+		<p>
+			In a supporting browser, you can observe the messages file being loaded concurrently with the script, before it even has a chance to execute, meaning the messages will already be available when the script finally needs them.
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>

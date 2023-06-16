@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: Message loading failure</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="example">
+	<h1>Saria’s random message loader program: Message loading failure</h1>
+	<p data-saria-random-message-src="nonexistent">[this is the default content]</p>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This example shows what happens when the messages fail to load.
+		</p>
+		<p>
+			The target element is a <code class="lang-html">&lt;p&gt;</code> element:
+		</p>
+		<pre><code class="lang-html">&lt;p data-saria-random-message-src="nonexistent"&gt;[this is the default content]&lt;/p&gt;</code></pre>
+		<p>
+			The url “<code>nonexistent</code>” does not exist, so the fetch attempt returns a “404 Not Found” error.
+		</p>
+		<p>
+			Because the messages were not found, the content in the element is not replaced.
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>
