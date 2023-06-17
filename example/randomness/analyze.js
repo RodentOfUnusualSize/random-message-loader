@@ -67,7 +67,7 @@ function generateHistogram(samples) {
 	samples.forEach(sample => histogram.set(sample, histogram.get(sample) + 1));
 
 	for (const [value, count] of histogram.entries()) {
-		const relativeDeviation = Math.min(1, Math.max(0, Math.abs(count - 49.5) / 49.5));
+		const relativeDeviation = Math.min(1, Math.max(0, Math.abs(count - 100) / 100));
 		const scaledDeviation = Math.round(255 * relativeDeviation);
 
 		let r = '88';
