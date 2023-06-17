@@ -51,8 +51,8 @@ function generateStats(samples) {
 		return modes.join(', ');
 	})();
 
-	document.getElementById('stats-mean').textContent = mean;
-	document.getElementById('stats-stddev').textContent = stddev;
+	document.getElementById('stats-mean').textContent = Math.round(mean * 1000) / 1000;
+	document.getElementById('stats-stddev').textContent = Math.round(stddev * 1000) / 1000;
 	document.getElementById('stats-mode').textContent = mode;
 	document.getElementById('stats-min').textContent = min;
 	document.getElementById('stats-max').textContent = max;
