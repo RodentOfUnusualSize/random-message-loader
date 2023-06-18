@@ -19,15 +19,84 @@
  *                                                                     *
  **********************************************************************/
 
-// Defaults.
-const DEFAULT_SHOW_STATS = true;
-const DEFAULT_SHOW_HISTOGRAM = true;
-const DEFAULT_SHOW_PLOT = true;
-const DEFAULT_SHOW_EXPLANATION = true;
-const DEFAULT_DATA_SRC = 'data.txt';
-const DEFAULT_DATA_VALUES = 100;
-const DEFAULT_SAMPLES_PER_VALUE = 100;
+////////////////////////////////////////////////////////////////////////
+// Configuration ///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
+class srml_Config {
+	showStats = true;
+	showHistogram = true;
+	showPlot = true;
+	showExplanation = true;
+	dataSrc = 'data.txt';
+	dataValues = 100;
+	samplesPerValue = 100;
+	mainContainer;
+	dataContainer;
+
+	constructor(doc) {
+		const getBoolAttribute = (name, dfault = undefined) => {
+			const val = doc.currentScript?.getAttribute(name);
+			if (val === null)
+				return dfault;
+
+			switch (val.toLowerCase()) {
+				case 'true':
+					return true;
+				case 'false':
+					return false;
+			}
+
+			console.log(`Malformed boolean attribute '${name}': ${val}`);
+			return undefined;
+		};
+
+		const getIntAttribute = (name, dfault = undefined) => {
+			const val = doc.currentScript?.getAttribute(name);
+			if (val === null)
+				return dfault;
+
+			const n = parseInt(val);
+			if (!isNaN(n))
+				return n;
+
+			console.log(`Malformed integer attribute '${name}': ${val}`);
+			return undefined;
+		};
+
+		this.showStats = getBoolAttribute('data-show-stats', this.showStats);
+		this.showHistogram = getBoolAttribute('data-show-histogram', this.showHistogram);
+		this.showPlot = getBoolAttribute('data-show-plot', this.showPlot);
+		this.showExplanation = getBoolAttribute('data-show-explanation', this.showExplanation);
+
+		this.dataSrc = doc.currentScript?.getAttribute('data-src') ?? this.dataSrc;
+		this.dataValues = getIntAttribute('data-values', this.dataValues);
+
+		this.samplesPerValue = getIntAttribute('data-samples-per-value', this.samplesPerValue);
+
+		this.mainContainer = doc.querySelector(doc.currentScript?.getAttribute('data-main-container-selector') ?? 'main') ?? doc.body;
+
+		this.dataContainer = doc.querySelector(doc.currentScript?.getAttribute('data-data-container-selector') ?? '#srml-data');
+		if (this.dataContainer === undefined || this.dataContainer === null) {
+			this.dataContainer = doc.createElement('div');
+			this.dataContainer.setAttribute('hidden', 'true');
+			doc.body.append(this.dataContainer);
+		}
+	}
+
+	get numberOfSamples() {
+		return this.dataValues * this.samplesPerValue;
+	}
+}
+
+
+// Initialize the configuration information.
+globalThis.srml_config = new srml_Config(document);
+
+
+////////////////////////////////////////////////////////////////////////
+// Statistics //////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 class srml_Stats {
 	#_fragment;
@@ -37,10 +106,7 @@ class srml_Stats {
 	#_min;
 	#_max;
 
-	constructor(doc = undefined) {
-		if (doc === undefined)
-			doc = document;
-
+	constructor(doc) {
 		this.#_fragment = doc.createDocumentFragment();
 
 		const table = doc.createElement('table');
@@ -54,17 +120,11 @@ class srml_Stats {
 			['Maximum value', 'max'],
 		].forEach(([name, field]) => {
 			const tr = doc.createElement('tr');
-
-			const th = doc.createElement('th');
-			th.textContent = name;
+			tr.innerHTML = `<th>${name}</th>`;
 
 			const td = doc.createElement('td');
-
-			const span = doc.createElement('span');
-			span.setAttribute('class', 'no-data');
-			td.append(span);
-
-			tr.append(th, td);
+			td.innerHTML = '<span class="no-data">[no data]</span>';
+			tr.append(td);
 
 			tbody.append(tr);
 
@@ -113,32 +173,43 @@ class srml_Stats {
 		if (vMax === undefined)
 			vMax = (numberOfValues - 1) + vMin;
 
-		const mean = Math.round(((vMax - vMin) / 2) * 1000) / 1000;
+		const mean = Math.round((((vMax - vMin) / 2) + vMin) * 1000) / 1000;
 		this.#_mean.innerHTML = `
 			<math xmlns="http://www.w3.org/1998/Math/MathML">
-				<mfrac>
-					<mrow>
-						<msub>
-							<mi>v</mi>
-							<ms>max</ms>
-						</msub>
-						<mo>−</mo>
-						<msub>
-							<mi>v</mi>
-							<ms>min</ms>
-						</msub>
-					</mrow>
-					<mn>2</mn>
-				</mfrac>
+				<mrow>
+					<mfrac>
+						<mrow>
+							<msub>
+								<mi>v</mi>
+								<ms>max</ms>
+							</msub>
+							<mo>−</mo>
+							<msub>
+								<mi>v</mi>
+								<ms>min</ms>
+							</msub>
+						</mrow>
+						<mn>2</mn>
+					</mfrac>
+					<mo>+</mo>
+					<msub>
+						<mi>v</mi>
+						<ms>min</ms>
+					</msub>
+				</mrow>
 				<mo>=</mo>
-				<mfrac>
-					<mrow>
-						<mn>${vMax}</mn>
-						<mo>−</mo>
-						<mn>${vMin}</mn>
-					</mrow>
-					<mn>2</mn>
-				</mfrac>
+				<mrow>
+					<mfrac>
+						<mrow>
+							<mn>${vMax}</mn>
+							<mo>−</mo>
+							<mn>${vMin}</mn>
+						</mrow>
+						<mn>2</mn>
+					</mfrac>
+					<mo>+</mo>
+					<mn>${vMin}</mn>
+				</mrow>
 				<mo>=</mo>
 			</math>
 			${mean}`;
@@ -185,9 +256,22 @@ class srml_Stats {
 }
 
 
+////////////////////////////////////////////////////////////////////////
+// Histogram ///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
 class srml_Histogram {
+	constructor(doc) {
+	}
+
+	setIDs() {
+	}
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// Plot ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 class srml_Plot {
 	#_fragment;
@@ -198,6 +282,7 @@ class srml_Plot {
 	#_samples;
 
 	constructor(doc, numValues, samplesPerValue, vMin = undefined, vMax = undefined) {
+		// Determine the range of values for the value axis of the plot.
 		if (vMin === undefined)
 			vMin = 0;
 		if (vMax === undefined)
@@ -209,6 +294,7 @@ class srml_Plot {
 		this.#_vMin = vMin;
 		this.#_vMax = vMax;
 
+		// Create the plot chart.
 		this.#_fragment = doc.createDocumentFragment();
 
 		this.#_svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -249,6 +335,9 @@ class srml_Plot {
 				<text y="400">0</text>
 			</g>`;
 
+		this.#_fragment.append(this.#_svg);
+
+		// Create the actual plot container element.
 		this.#_element = doc.createElementNS('http://www.w3.org/2000/svg', 'g');
 		this.#_element.setAttribute('stroke', '#f00');
 		this.#_element.setAttribute('stroke-width', '0.25');
@@ -258,8 +347,7 @@ class srml_Plot {
 
 		this.#_svg.append(this.#_element);
 
-		this.#_fragment.append(this.#_svg);
-
+		// Start with no samples (an empty plot).
 		this.samples = null;
 	}
 
@@ -289,9 +377,14 @@ class srml_Plot {
 
 	set samples(data) {
 		if (data === undefined || data === null) {
+			// The sample data given was nullish, so there is no
+			// sample data.
+
+			// Clear out the plot.
 			this.#_samples = null;
 			this.#_element.replaceChildren();
 
+			// Add the “no data” marker.
 			if (!this.#_svg.lastElementChild.classList.contains('no-data')) {
 				const e = this.#_fragment.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 				e.setAttribute('class', 'no-data');
@@ -307,82 +400,80 @@ class srml_Plot {
 		}
 		else {
 			if (typeof data === 'number') {
+				// The sample data given was a single number, so
+				// interpret that as the number of samples to randomly
+				// generate.
 				this.#_samples = Array.from(Array(data).keys())
 					.map(index => [index, Math.floor(Math.random() * (this.#_vMax - this.#_vMin + 1) + this.#_vMin)]);
 			}
 			else {
-				this.#_samples = data
+				// The sample data given is assumed to be an iterable
+				// of some kind.
+				//
+				// If each element of the iterable is a single number,
+				// assume it is a value, and combine it with its index.
+				//
+				// Otherwise, assume the element is an iterable with at
+				// least two elements: an index and a value.
+				this.#_samples = Array.from(data)
 					.map((value, index) => ((typeof value === 'number') ? [index, value] : [value[0], value[1]]));
 			}
 
+			// Create the plot element.
 			const e = this.#_element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'polyline');
 			e.setAttribute('vector-effect', 'non-scaling-stroke');
 
+			// Transform the samples to a string of points.
 			const points = this.#_samples.map(([index, value]) => index + ',' + value).join(' ');
 			e.setAttribute('points', points);
 
+			// Replace any existing plot with this one.
 			this.#_element.replaceChildren(e);
 
+			// If there is a “no data” marker, remove it.
 			if (this.#_svg.lastElementChild.classList.contains('no-data'))
 				this.#_svg.lastElementChild.remove();
 		}
 	}
-};
 
-
-// Determine whether the required properties already exist.
-[
-	'srml_src',
-	'srml_values',
-	'srml_samples',
-	'srml_dataContainer',
-	'srml_statsMeanElement',
-	'srml_statsStddevElement',
-	'srml_statsModeElement',
-	'srml_statsMinElement',
-	'srml_statsMaxElement',
-	'srml_histogramElement',
-	'srml_plotElement',
-].forEach(prop => {
-	if (prop in globalThis)
-		throw new Error(`property ${prop} already exists`);
-});
-
-// Get the configuration.
-const getConfiguration = (name, type) => {
-	if (('currentScript' in document) && (document.currentScript !== null)) {
-		const value = document.currentScript.getAttribute(`data-${name}`);
-		if (value !== null) {
-			switch (type) {
-				case 'int':
-					return parseInt(value);
-				case 'boolean':
-					return (value === 'true');
-				case undefined:
-					return value;
-			}
-		}
+	setIDs() {
+		this.#_element.setAttribute('id', 'plot-data');
 	}
 };
 
-const showStats = getConfiguration('show-stats', 'boolean') ?? DEFAULT_SHOW_STATS;
-const showHistogram = getConfiguration('show-histogram', 'boolean') ?? DEFAULT_SHOW_HISTOGRAM;
-const showPlot = getConfiguration('show-plot', 'boolean') ?? DEFAULT_SHOW_PLOT;
-const showExplanation = getConfiguration('show-plot', 'boolean') ?? DEFAULT_SHOW_PLOT;
-const dataSrc = getConfiguration('data-src') ?? DEFAULT_DATA_SRC;
-const dataValues = getConfiguration('data-values', 'int') ?? DEFAULT_DATA_VALUES;
-const samplesPerValue = getConfiguration('samples-per-value', 'int') ?? DEFAULT_SAMPLES_PER_VALUE;
-const numberOfSamples = samplesPerValue * dataValues;
 
-// Validate configuration.
+////////////////////////////////////////////////////////////////////////
+// Information sections ////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
-// Initialize info about data.
-Object.defineProperty(globalThis, 'srml_src', () => 'data.txt', 'get');
-Object.defineProperty(globalThis, 'srml_values', () => 100, 'get');
+[
+	[srml_config.showStats, 'statistics', 'Statistics', srml_Stats, []],
+	[srml_config.showHistogram, 'histogram', 'Histogram', srml_Histogram, []],
+	[srml_config.showPlot, 'plot', 'Plot', srml_Plot, [srml_config.dataValues, srml_config.samplesPerValue]],
+].forEach(([flag, id, title, className, args]) => {
+	if (flag) {
+		const section = document.createElement('section');
+		section.setAttribute('id', id);
 
+		section.appendChild(document.createElement('h2'))
+			.innerHTML = title;
 
-// Create explanations /////////////////////////////////////////////////
-if (showExplanation) {
+		const obj = new className(document, ...args);
+		obj.setIDs();
+		section.append(obj.fragment);
+
+		srml_config.mainContainer.append(section);
+	}
+});
+
+////////////////////////////////////////////////////////////////////////
+// Explanations ////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+if (srml_config.showExplanation) {
+
+	// Create explanations container element, if necessary.
+
 	if (document.getElementById('explanation') === null) {
 		const section = document.createElement('section');
 		section.setAttribute('id', 'explanation');
@@ -399,7 +490,9 @@ if (showExplanation) {
 
 	const explanation = document.getElementById('explanation');
 
-	if (showStats && (document.getElementById('stats-explanation') === null)) {
+	// Create statistics explanation.
+
+	if (srml_config.showStats && (document.getElementById('stats-explanation') === null)) {
 		const section = document.createElement('section');
 		section.setAttribute('id', 'stats-explanation');
 
@@ -416,15 +509,17 @@ if (showExplanation) {
 				+ 'same number of times.'
 			;
 
-		const stats = new srml_Stats();
-		stats.fillInExampleInfo(dataValues);
+		const stats = new srml_Stats(document);
+		stats.fillInExampleInfo(srml_config.dataValues);
 
 		section.append(stats.fragment);
 
 		explanation.append(section);
 	}
 
-	if (showHistogram && (document.getElementById('histogram-explanation') === null)) {
+	// Create histogram explanation.
+
+	if (srml_config.showHistogram && (document.getElementById('histogram-explanation') === null)) {
 		const section = document.createElement('section');
 		section.setAttribute('id', 'histogram-explanation');
 
@@ -473,22 +568,22 @@ if (showExplanation) {
 				</g>
 			</g>
 			<g transform="translate(25,10) scale(1,10)" fill-opacity="0.8">
-				<rect y="0" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="1" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="2" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="3" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="4" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="5" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="6" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="7" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="8" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="9" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="10" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="11" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="12" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="13" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="14" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
-				<rect y="15" width="100" height="1" fill="#00ff00"><title>${samplesPerValue}</title></rect>
+				<rect y="0" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="1" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="2" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="3" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="4" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="5" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="6" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="7" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="8" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="9" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="10" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="11" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="12" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="13" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="14" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
+				<rect y="15" width="100" height="1" fill="#00ff00"><title>${srml_config.samplesPerValue}</title></rect>
 			</g>
 			<g transform="translate(25,15)">
 				<use href="#histogram-default-bar" y="0"/>
@@ -542,19 +637,25 @@ if (showExplanation) {
 		explanation.append(section);
 	}
 
-	if (showPlot && (document.getElementById('plot-explanation') === null)) {
+	// Create plot explanation.
+
+	if (srml_config.showPlot && (document.getElementById('plot-explanation') === null)) {
 		const section = document.createElement('section');
 		section.setAttribute('id', 'plot-explanation');
 
 		section.appendChild(document.createElement('h3'))
 			.textContent = 'Plot';
 
+		// Create example plot of truly random data.
+
 		section.appendChild(document.createElement('p'))
 			.textContent = 'The plot of the messages selected should look like noise (specifically: white noise), similar to:';
 
-		const plotRandom = new srml_Plot(document, dataValues, samplesPerValue);
-		plotRandom.samples = dataValues * samplesPerValue;
+		const plotRandom = new srml_Plot(document, srml_config.dataValues, srml_config.samplesPerValue);
+		plotRandom.samples = srml_config.numberOfSamples;
 		section.append(plotRandom.fragment);
+
+		// Create example plot of a constant value.
 
 		section.appendChild(document.createElement('p'))
 			.textContent = 'Any sort of pattern in the plot indicates a problem with the random number generation.';
@@ -562,19 +663,21 @@ if (showExplanation) {
 		section.appendChild(document.createElement('p'))
 			.textContent = 'For example, the following plot would suggest that only a single message, message #25, is always being selected:';
 
-		const plotConst = new srml_Plot(document, dataValues, samplesPerValue);
-		plotConst.samples = [ [0, 25], [dataValues * samplesPerValue, 25] ];
+		const plotConst = new srml_Plot(document, srml_config.dataValues, srml_config.samplesPerValue);
+		plotConst.samples = [ [0, 25], [srml_config.numberOfSamples - 1, 25] ];
 		section.append(plotConst.fragment);
+
+		// Create example plot of sequentially-selected values.
 
 		section.appendChild(document.createElement('p'))
 			.textContent = 'The following plot would suggest that messages are being selected sequentially:';
 
-		const plotSeq = new srml_Plot(document, dataValues, samplesPerValue);
+		const plotSeq = new srml_Plot(document, srml_config.dataValues, srml_config.samplesPerValue);
 
 		const plotSeqSamples = [];
-		for (let i = 0; i < samplesPerValue; ++i) {
-			plotSeqSamples.push([i * dataValues, plotSeq.vMin]);
-			plotSeqSamples.push([(i + 1) * dataValues, plotSeq.vMax]);
+		for (let i = 0; i < srml_config.samplesPerValue; ++i) {
+			plotSeqSamples.push([i * plotSeq.numberOfValues, plotSeq.vMin]);
+			plotSeqSamples.push([(i + 1) * plotSeq.numberOfValues, plotSeq.vMax]);
 		}
 
 		plotSeq.samples = plotSeqSamples;

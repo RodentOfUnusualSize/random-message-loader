@@ -19,52 +19,9 @@
  *                                                                     *
  **********************************************************************/
 
-// Container element ID for test elements.
-const CONTAINER_ID = 'data';
+for (let i = 0; i < srml_config.numberOfSamples; ++i) {
+	const e = srml_config.dataContainer.ownerDocument.createElement('p');
+	e.setAttribute('data-saria-random-message-src', srml_config.dataSrc);
 
-// Source of randomly-selected messages.
-const DATA_SRC = 'data.txt';
-
-// Attribute giving number of samples.
-const SAMPLES_ATTRIBUTE = 'data-samples';
-
-// Default number of samples.
-//const DEFAULT_NUMBER_OF_SAMPLES = 100;
-
-
-// Get the element with the 'data' ID.
-//
-// If it does not exist, create it.
-const dataDiv = (() => {
-	let e = document.getElementById(CONTAINER_ID);
-
-	if (e === null) {
-		e = document.createElement('div');
-		e.setAttribute('id', CONTAINER_ID);
-		e.setAttribute('hidden', 'true');
-
-		document.body.appendChild(e);
-	}
-
-	return e;
-})();
-
-
-// Get the desired number of samples.
-/*const numberOfSamples = (() => {
-	let n = DEFAULT_NUMBER_OF_SAMPLES;
-
-	const attrib = dataDiv.getAttribute(SAMPLES_ATTRIBUTE);
-	if (attrib !== null) 
-		n = parseInt(attrib);
-
-	return n;
-})();*/
-
-// Create the sample elements.
-for (let i = 0; i < numberOfSamples; ++i) {
-	const e = document.createElement('p');
-	e.setAttribute('data-saria-random-message-src', DATA_SRC);
-
-	dataDiv.appendChild(e);
+	srml_config.dataContainer.append(e);
 }

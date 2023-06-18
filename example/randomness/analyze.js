@@ -19,6 +19,17 @@
  *                                                                     *
  **********************************************************************/
 
+function getSampleData() {
+	const samples = Array.from(srml_config.dataContainer.children)
+		.map(element => parseInt(element.textContent));
+
+	// Delete the data for efficiency; we no longer need it.
+	srml_config.dataContainer.remove();
+
+	return samples;
+}
+
+
 function generateStats(samples) {
 	const sum = samples.reduce((a, b) => a + b);
 	const mean = sum / samples.length;
@@ -121,16 +132,7 @@ function generatePlot(samples) {
 
 
 document.addEventListener('saria:random-message-loader:done', () => {
-	const samples = [];
-
-	// Read sample data.
-	const dataDiv = document.getElementById('data');
-	for (const element of dataDiv.children) {
-		samples.push(parseInt(element.textContent));
-	}
-
-	// Delete the data for efficiency; we no longer need it.
-	dataDiv.remove();
+	const samples = getSampleData();
 
 	generateStats(samples);
 	generateHistogram(samples);
@@ -140,5 +142,6 @@ document.addEventListener('saria:random-message-loader:done', () => {
 	for (const element of document.querySelectorAll('.no-data'))
 		element.remove();
 });
+
 
 import('../random-message-loader.js');
