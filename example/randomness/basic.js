@@ -29,7 +29,7 @@ const DATA_SRC = 'data.txt';
 const SAMPLES_ATTRIBUTE = 'data-samples';
 
 // Default number of samples.
-const DEFAULT_NUMBER_OF_SAMPLES = 100;
+//const DEFAULT_NUMBER_OF_SAMPLES = 100;
 
 
 // Get the element with the 'data' ID.
@@ -51,7 +51,7 @@ const dataDiv = (() => {
 
 
 // Get the desired number of samples.
-const numberOfSamples = (() => {
+/*const numberOfSamples = (() => {
 	let n = DEFAULT_NUMBER_OF_SAMPLES;
 
 	const attrib = dataDiv.getAttribute(SAMPLES_ATTRIBUTE);
@@ -59,7 +59,7 @@ const numberOfSamples = (() => {
 		n = parseInt(attrib);
 
 	return n;
-})();
+})();*/
 
 // Create the sample elements.
 for (let i = 0; i < numberOfSamples; ++i) {
