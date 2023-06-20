@@ -19,12 +19,29 @@
  *                                                                     *
  **********************************************************************/
 
+/**
+ * Randomness demonstration statistical analysis module.
+ */
 export class srml_Stats {
+	/**
+	 * The ID to use for the section.
+	 * @readonly
+	 */
 	static sectionID = 'statistics';
+	/**
+	 * The title to use for the section.
+	 * @readonly
+	 */
 	static sectionName = 'Statistics';
 
 	static #noDataContent = '<span class="no-data">[no data]</span>';
 
+	/**
+	 * Generates the explanation for this analysis module.
+	 *
+	 * @param {!Element} parent The element that will contain the
+	 *                          generated analysis data.
+	 */
 	static generateExplanation(parent) {
 		parent.appendChild(parent.ownerDocument.createElement('p'))
 			.textContent = [
@@ -92,26 +109,38 @@ export class srml_Stats {
 		`;
 	}
 
-	#_mean;
-	#_stddev;
-	#_mode;
-	#_min;
-	#_max;
-	#_container;
-	#_meanElement;
-	#_stddevElement;
-	#_modeElement;
-	#_minElement;
-	#_maxElement;
+	#container;
 
+	#meanElement;
+	#stddevElement;
+	#modeElement;
+	#minElement;
+	#maxElement;
+
+	#mean;
+	#stddev;
+	#mode;
+	#min;
+	#max;
+
+	/**
+	 * Generates a statistical analysis.
+	 *
+	 * The analysis is generated in the `parent` element.
+	 *
+	 * The analysis is empty until `calculate()` is called with a set of
+	 * sample data.
+	 *
+	 * @param {!Element} parent The element to generate the analysis in.
+	 */
 	constructor(parent) {
 		const fragment = parent.ownerDocument.createDocumentFragment();
 
-		this.#_container = parent.ownerDocument.createElement('table');
-		fragment.append(this.#_container);
+		this.#container = parent.ownerDocument.createElement('table');
+		fragment.append(this.#container);
 
 		const tbody = parent.ownerDocument.createElement('tbody');
-		this.#_container.append(tbody);
+		this.#container.append(tbody);
 
 		[
 			['Mean', 'mean'],
@@ -129,12 +158,25 @@ export class srml_Stats {
 
 			tbody.append(tr);
 
-			eval('this.#_' + field + 'Element = td');
+			eval('this.#' + field + 'Element = td');
 		});
 
 		parent.append(fragment);
 	}
 
+	/**
+	 * Calculates a statistical analysis on the sample data, and outputs
+	 * the results.
+	 *
+	 * Any previously calculated statistical analysis is cleared.
+	 *
+	 * If the sample data is empty (or `null` or `undefined`), no
+	 * analysis is performed, and the output is populated with “no data”
+	 * markers.
+	 *
+	 * @param {!Array<number>} samples The samples to perform the
+	 *                                 analysis on.
+	 */
 	calculate(samples) {
 		if (samples === undefined || samples === null || samples.length == 0) {
 			this.mean.innerHTML = srml_Stats.#noDataContent;
@@ -166,11 +208,41 @@ export class srml_Stats {
 		}
 	}
 
-	get mean()   { return this.#_mean; }
-	get stddev() { return this.#_stddev; }
-	get mode()   { return this.#_mode; }
-	get min()    { return this.#_max; }
-	get max()    { return this.#_min; }
+	/**
+	 * The mean of the calculated sample data, or `null` if there was no
+	 * sample data.
+	 * @type {?number}
+	 */
+	get mean()   { return this.#mean; }
+	/**
+	 * The standard deviation of the calculated sample data, or `null`
+	 * if there was no sample data.
+	 * @type {?number}
+	 */
+	get stddev() { return this.#stddev; }
+	/**
+	 * The mode or modes of the calculated sample data, or `null` if
+	 * there was no sample data.
+	 *
+	 * The mode is returned as a string, with up to 5 modes separated by
+	 * commas. If there were more than 5 modes in the sample data, or no
+	 * mode at all, then the string `'no mode'` is returned.
+	 *
+	 * @type {?string}
+	 */
+	get mode()   { return this.#mode; }
+	/**
+	 * The minimum value of the sample data, or `null` if there was no
+	 * sample data.
+	 * @type {?number}
+	 */
+	get min()    { return this.#max; }
+	/**
+	 * The maximum value of the sample data, or `null` if there was no
+	 * sample data.
+	 * @type {?number}
+	 */
+	get max()    { return this.#min; }
 
 	set mean(value)   { this.#setStat('mean', value); }
 	set stddev(value) { this.#setStat('stddev', value); }
@@ -180,11 +252,11 @@ export class srml_Stats {
 
 	#setStat(name, value) {
 		if (value === null || value === undefined)
-			eval(`this.#_${name}Element.innerHTML = srml_Stats.#noDataContent;`);
+			eval(`this.#${name}Element.innerHTML = srml_Stats.#noDataContent;`);
 		else
-			eval(`this.#_${name}Element.innerHTML = value;`);
+			eval(`this.#${name}Element.innerHTML = value;`);
 
-		eval(`this.#_${name} = value;`);
+		eval(`this.#${name} = value;`);
 	}
 
 	#calculateModes(samples, min, max) {

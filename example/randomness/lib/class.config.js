@@ -150,7 +150,7 @@ export class srml_Config {
 	 * This is also the stem of the script that generates the sample
 	 * data. For example, if `srml_config.name<` is `foo`, then the file
 	 * `../foo.js` will be run.
-	 * 
+	 *
 	 * This must be set by the `content` of a `<meta>` element in the
 	 * document with `name` set to `srml.name`.
 	 *
@@ -225,7 +225,7 @@ export class srml_Config {
 	/**
 	 * A flag indicating whether to show the statistics of the generated
 	 * sample data.
-	 * 
+	 *
 	 * This can be set by a `<meta>` element with name
 	 * `srml.show-stats`.
 	 *
@@ -237,7 +237,7 @@ export class srml_Config {
 	/**
 	 * A flag indicating whether to show the histogram of the generated
 	 * sample data.
-	 * 
+	 *
 	 * This can be set by a `<meta>` element with name
 	 * `srml.show-histogram`.
 	 *
@@ -249,7 +249,7 @@ export class srml_Config {
 	/**
 	 * A flag indicating whether to show the plot of the generated
 	 * sample data.
-	 * 
+	 *
 	 * This can be set by a `<meta>` element with name
 	 * `srml.show-plot`.
 	 *
@@ -285,7 +285,7 @@ export class srml_Config {
 	 * `srml.data-container-selector`, it should contain a CSS selector.
 	 * It will be used on the document, and the first result will be
 	 * selected. If no selector was given, `#data` will be used.
-	 * 
+	 *
 	 * If no matching element was found, then a new hidden `<div>` will
 	 * be created in the `<body>`.
 	 *
@@ -297,7 +297,7 @@ export class srml_Config {
 	/**
 	 * A flag indicating whether to show explanations of the analyses
 	 * generated.
-	 * 
+	 *
 	 * This can be set by a `<meta>` element with name
 	 * `srml.show-explanation`.
 	 *
@@ -309,13 +309,13 @@ export class srml_Config {
 	/**
 	 * The demonstration page element that should contain the
 	 * explanations.
-	 * 
+	 *
 	 * If there is a `<meta>` element with name
 	 * `explanation-container-selector`, it should contain a CSS
 	 * selector. It will be used on the document, and the first result
 	 * will be selected. If no selector was given, `#explanation` will
 	 * be used.
-	 * 
+	 *
 	 * If no matching element was found, this property will be
 	 * `null`. In that case, if `srml_config.show_explanation` is
 	 * `true`, a `<section>` element will be created, and appended to
