@@ -181,7 +181,7 @@ export class srml_Histogram {
 		}
 		else {
 			const histogram = new Map();
-			for (let i = srml_config.valueMinimum; i <= srml_config.valueMaximum; ++i)
+			for (let i = srml_config.dataValueMinimum; i <= srml_config.dataValueMaximum; ++i)
 				histogram.set(i, 0);
 
 			samples.forEach(sample => histogram.set(sample, histogram.get(sample) + 1));
@@ -208,8 +208,8 @@ export class srml_Histogram {
 			const bars = Array.from(histogram.entries())
 				.map(([value, [count, colour]]) => {
 					const bar = this.#_element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'rect');
-					bar.setAttribute('y', value - srml_config.valueMinimum);
-					bar.setAttribute('width', count * (100 / srml_config.numberOfValues));
+					bar.setAttribute('y', value - srml_config.dataValueMinimum);
+					bar.setAttribute('width', count * (100 / srml_config.dataValueCount));
 					bar.setAttribute('height', 1);
 					bar.setAttribute('fill', colour);
 					bar.innerHTML = `<title>${count}</title>`;

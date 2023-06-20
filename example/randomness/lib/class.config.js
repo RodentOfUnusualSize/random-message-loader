@@ -22,130 +22,155 @@
 /**
  * Configuration for randomness demonstrations.
  *
- * On construction, the given document will be scanned. There must be an
- * attribute named <code>data-name</code> on the
- * <code>&lt;body&gt;</code> element containing the name of the
- * demonstration.
+ * On construction, the given document will be scanned. There must be a
+ * `<meta>` element` with `name` attribute `srml.name`, and `content`
+ * attribute containing the name of the demonstration.
  *
  * The demonstration name will be used to determine the name of a script
- * to run, which must populate <code>srml_config.dataContainer</code>
- * with <code>srml_config.numberOfSamples</code> elements, each of which
- * must have an attribute <code>data-saria-random-message-src</code>
- * with the value <code>srml_config.dataSrc</code>.
+ * to run, which must populate `srml_config.dataContainer` with
+ * `srml_config.numberOfSamples` elements, each of which must have an
+ * attribute `data-saria-random-message-src`  with the value
+ * `srml_config.dataSrc`.
  *
  * Then the actual random message loader script will be run, and the
  * results will be analyzed and displayed.
  */
 export class srml_Config {
-	static #_scriptName = 'analyze-randomness.js';
+	static #configDefaults = new Map([
+		// [name,                          [type,       default]       ]
+		['main-container-selector',        ['selector', 'main']        ],
+		['data-container-selector',        ['selector', null]          ],
+		['show-stats',                     ['boolean',  true]          ],
+		['show-histogram',                 ['boolean',  true]          ],
+		['show-plot',                      ['boolean',  true]          ],
+		['show-explanation',               ['boolean',  true]          ],
+		['explanation-container-selector', ['selector', '#explanation']],
+	]);
 
-	static #_getCurrentScript(doc) {
-		const candidates = Array.from(doc.querySelectorAll(`script[type=module][src$='${srml_Config.#_scriptName}']`))
-			.filter(e => {
-				const src = e.getAttribute('src');
-				if (src.length === srml_Config.#_scriptName.length)
-					return true;
-				return ['/', '\\'].includes(src.at(-srml_Config.#_scriptName.length - 1));
-			});
+	static #extractMetadata(doc) {
+		const meta = new Map(
+			Array.from(srml_Config.#configDefaults.entries())
+				.map(([name, [type, dfault]]) => [name, dfault])
+		);
 
-		if (candidates.length === 1)
-			return candidates[0];
+		doc.querySelectorAll(`meta[name^='srml.']`)
+			.forEach(e => meta.set(...srml_Config.#parseMetadata(e.getAttribute('name').substring('srml.'.length), e.getAttribute('content'))));
 
-		throw new Error('Could not determine current script element.');
+		return meta;
 	}
 
-	// Helper function to extract boolean-valued data attributes.
-	static #_getBoolAttribute(element, name, dfault = undefined) {
-		const value = element.getAttribute(name);
-		if (value === null)
-			return dfault;
-
-		switch (value.toLowerCase()) {
-			case 'true':
-				return true;
-			case 'false':
-				return false;
+	static #parseMetadata(name, value) {
+		if (srml_Config.#configDefaults.has(name)) {
+			const type = srml_Config.#configDefaults.get(name)[0];
+			switch (type) {
+				case 'boolean':
+					return [name, srml_Config.#parseMetadataBoolean(value, name)];
+			}
 		}
 
-		console.error(`malformed boolean attribute '${name}': ${value}`);
-		return undefined;
+		return [name, value];
 	}
 
-	#_name;
+	static #parseMetadataBoolean(value, name = undefined) {
+		if (value !== null) {
+			switch (typeof value) {
+				case 'boolean':
+					return value;
+				case 'string':
+					switch (value.toLowerCase()) {
+						case 'true':
+							return true;
+						case 'false':
+							return false;
+						default:
+							console.error(`malformed boolean value '${name}': ${value}`);
+					}
+					break;
+				default:
+					console.error(`not sure how to convert '${name}', which is a ${typeof value}, to boolean`);
+			}
+		}
 
-	#_src = 'lib/data.txt';
+		return null;
+	}
 
-	#_vMin = 0;
-	#_vMax = 99;
-	#_samplesPerValue = 100;
+	#name;
 
-	#_showStats     = true;
-	#_showHistogram = true;
-	#_showPlot      = true;
+	#dataSrc = 'lib/data.txt';
+	#dataValueMin = 0;
+	#dataValueMax = 99;
 
-	#_showExplanation = true;
-	#_explanationContainer;
+	#samplesPerValue = 100;
 
-	#_mainContainer;
+	#mainContainer;
+	#dataContainer;
 
-	#_dataContainer;
+	#showStats     = true;
+	#showHistogram = true;
+	#showPlot      = true;
+
+	#showExplanation = true;
+	#explanationContainer;
 
 	/**
 	 * @param {!Document} doc The demonstration document.
 	 */
 	constructor(doc) {
-		const currentScript = srml_Config.#_getCurrentScript(doc);
+		const config = srml_Config.#extractMetadata(doc);
 
-		this.#_name = currentScript.getAttribute('data-name');
-		if (this.#_name === undefined || this.#_name === null)
-			throw new Error(`Required attribute 'data-name' with the test name is missing.`);
+		// Configure demonstration name.
+		if (!config.has('name'))
+			throw new Error(`Required meta element 'srml.name' with the test name is missing.`);
+		this.#name = config.get('name');
 
-		this.#_showStats     = srml_Config.#_getBoolAttribute(currentScript, 'data-show-stats',     this.#_showStats);
-		this.#_showHistogram = srml_Config.#_getBoolAttribute(currentScript, 'data-show-histogram', this.#_showHistogram);
-		this.#_showPlot      = srml_Config.#_getBoolAttribute(currentScript, 'data-show-plot',      this.#_showPlot);
+		// Configure demonstration output containers.
+		this.#mainContainer = doc.querySelector(config.get('main-container-selector') ?? 'main') ?? document.body;
 
-		this.#_mainContainer = doc.querySelector(currentScript.getAttribute('data-main-container-selector') ?? 'main') ?? document.body;
-
-		this.#_dataContainer = doc.querySelector(currentScript.getAttribute('data-data-container-selector') ?? '#data');
-		if (this.#_dataContainer === undefined || this.#_dataContainer === null) {
-			this.#_dataContainer = doc.createElement('div');
-			this.#_dataContainer.setAttribute('hidden', 'true');
-			doc.body.append(this.#_dataContainer);
+		this.#dataContainer = doc.querySelector(config.get('data-container-selector') ?? '#data');
+		if (this.#dataContainer === null) {
+			this.#dataContainer = doc.createElement('div');
+			this.#dataContainer.setAttribute('hidden', 'true');
+			doc.body.append(this.#dataContainer);
 		}
 
-		this.#_showExplanation = srml_Config.#_getBoolAttribute(currentScript, 'data-show-explanation', this.#_showExplanation);
-		if (this.#_showExplanation)
-			this.#_explanationContainer = doc.querySelector(currentScript.getAttribute('data-explanation-container-selector') ?? '#explanation');
+		// Configure desired output flags.
+		this.#showStats     = config.get('show-stats');
+		this.#showHistogram = config.get('show-histogram');
+		this.#showPlot      = config.get('show-plot');
+
+		// Configure optional explanation generation.
+		this.#showExplanation = config.get('show-explanation');
+		if (this.#showExplanation)
+			this.#explanationContainer = doc.querySelector(config.get('explanation-container-selector') ?? '#explanation');
 	}
 
 	/**
 	 * The name of this demonstration.
 	 *
 	 * This is also the stem of the script that generates the sample
-	 * data. For example, if <code>srml_config.name</code> is
-	 * <code>'foo'</code>, then the file <code>'../foo.js'</code> will
-	 * be run.
+	 * data. For example, if `srml_config.name<` is `foo`, then the file
+	 * `../foo.js` will be run.
 	 * 
-	 * This must be set by the data attribute <code>'data-name'</code>
-	 * on the <code>&lt;body&gt;</code> element.
+	 * This must be set by the `content` of a `<meta>` element in the
+	 * document with `name` set to `srml.name`.
 	 *
 	 * @type {string}
 	 * @readonly
 	 */
-	get name() { return this.#_name; }
+	get name() { return this.#name; }
 
 	/**
 	 * The URL of the sample messages data that must be used.
 	 *
 	 * The data file contains numeric messages. The range of the numbers
-	 * is [<code>srml_config.valueMinimum</code>,
-	 * <code>srml_config.valueMaximum</code>].
+	 * is [`srml_config.dataValueMinimum`,
+	 * `srml_config.dataValueMaximum`].
 	 *
 	 * @type {string}
 	 * @default 'lib/data.txt'
 	 * @readonly
 	 */
-	get dataSrc() { return this.#_src; }
+	get dataSrc() { return this.#dataSrc; }
 
 	/**
 	 * The minimum value of the sample values.
@@ -154,7 +179,7 @@ export class srml_Config {
 	 * @default 0
 	 * @readonly
 	 */
-	get valueMinimum() { return this.#_vMin; }
+	get dataValueMinimum() { return this.#dataValueMin; }
 	/**
 	 * The maximum value of the sample values.
 	 *
@@ -162,19 +187,19 @@ export class srml_Config {
 	 * @default 99
 	 * @readonly
 	 */
-	get valueMaximum() { return this.#_vMax; }
+	get dataValueMaximum() { return this.#dataValueMax; }
 	/**
 	 * The number of different sample values.
 	 *
 	 * This will always be equal to
-	 * “(<code>srml_config.valueMaximum</code> −
-	 * <code>srml_config.valueMinimum</code>) + 1”.
+	 * “(`srml_config.dataValueMaximum` −
+	 * `srml_config.dataValueMinimum`) + 1”.
 	 *
 	 * @type {number}
 	 * @default 100
 	 * @readonly
 	 */
-	get numberOfValues() { return (this.#_vMax - this.#_vMin) + 1; }
+	get dataValueCount() { return (this.dataValueMaximum - this.dataValueMinimum) + 1; }
 
 	/**
 	 * The number of samples per sample value that should be generated.
@@ -183,128 +208,121 @@ export class srml_Config {
 	 * @default 100
 	 * @readonly
 	 */
-	get samplesPerValue() { return this.#_samplesPerValue; }
+	get samplesPerValue() { return this.#samplesPerValue; }
 	/**
 	 * The total number of samples that should be generated.
 	 *
 	 * This will always be equal to
-	 * “<code>srml_config.numberOfValues</code> ×
-	 * <code>srml_config.samplesPerValue</code>”
+	 * “`srml_config.dataValueCount` ×
+	 * `srml_config.samplesPerValue`”
 	 *
 	 * @type {number}
 	 * @default 10000
 	 * @readonly
 	 */
-	get numberOfSamples() { return this.numberOfValues * this.#_samplesPerValue; }
+	get sampleCount() { return this.dataValueCount * this.samplesPerValue; }
 
 	/**
 	 * A flag indicating whether to show the statistics of the generated
 	 * sample data.
 	 * 
-	 * This can be set by the <code>'data-show-stats'</code> attribute
-	 * on the <code>&lt;body&gt;</code> element.
+	 * This can be set by a `<meta>` element with name
+	 * `srml.show-stats`.
 	 *
 	 * @type {boolean}
 	 * @default true
 	 * @readonly
 	 */
-	get showStats()     { return this.#_showStats; }
+	get showStats()     { return this.#showStats; }
 	/**
 	 * A flag indicating whether to show the histogram of the generated
 	 * sample data.
 	 * 
-	 * This can be set by the <code>'data-show-histogram'</code>
-	 * attribute on the <code>&lt;body&gt;</code> element.
+	 * This can be set by a `<meta>` element with name
+	 * `srml.show-histogram`.
 	 *
 	 * @type {boolean}
 	 * @default true
 	 * @readonly
 	 */
-	get showHistogram() { return this.#_showHistogram; }
+	get showHistogram() { return this.#showHistogram; }
 	/**
 	 * A flag indicating whether to show the plot of the generated
 	 * sample data.
 	 * 
-	 * This can be set by the <code>'data-show-plot'</code>
-	 * attribute on the <code>&lt;body&gt;</code> element.
+	 * This can be set by a `<meta>` element with name
+	 * `srml.show-plot`.
 	 *
 	 * @type {boolean}
 	 * @default true
 	 * @readonly
 	 */
-	get showPlot()      { return this.#_showPlot; }
+	get showPlot()      { return this.#showPlot; }
 
 	/**
 	 * The demonstration page element that should contain the analysis
 	 * information.
 	 *
-	 * If there is a data attribute
-	 * <code>data-main-container-selector</code> on the
-	 * <code>&lt;body&gt;</code> element, it should contain a CSS
-	 * selector. It will be used on the document, and the first result
-	 * will be selected.
+	 * If there is a `<meta>` element with name
+	 * `srml.main-container-selector`, it should contain a CSS selector.
+	 * It will be used on the document, and the first result will be
+	 * selected.
 	 *
 	 * Otherwise (or if nothing matches the selector), the first
-	 * <code>&lt;main&gt;</code> element will be used. If there is no
-	 * <code>&lt;main&gt;</code> element, then the
-	 * <code>&lt;body&gt;</code> element will be used.
+	 * `<main>` element will be used. If there is no `<main>` element,
+	 * then the `<body>` element will be used.
 	 *
 	 * @type {!Element}
 	 * @readonly
 	 */
-	get mainContainer() { return this.#_mainContainer; }
+	get mainContainer() { return this.#mainContainer; }
 
 	/**
 	 * The demonstration page element that should contain the generated
 	 * sample data.
 	 *
-	 * If there is a data attribute
-	 * <code>data-data-container-selector</code> on the
-	 * <code>&lt;body&gt;</code> element, it should contain a CSS
-	 * selector. It will be used on the document, and the first result
-	 * will be selected. If no selector was given,
-	 * <code>'#data'</code> will be used.
+	 * If there is a `<meta>` element with name
+	 * `srml.data-container-selector`, it should contain a CSS selector.
+	 * It will be used on the document, and the first result will be
+	 * selected. If no selector was given, `#data` will be used.
 	 * 
-	 * If no matching element was found, then a new hidden
-	 * <code>&lt;div&gt;</code> will be created in the
-	 * <code>&lt;body&gt;</code>.
+	 * If no matching element was found, then a new hidden `<div>` will
+	 * be created in the `<body>`.
 	 *
 	 * @type {!Element}
 	 * @readonly
 	 */
-	get dataContainer() { return this.#_dataContainer; }
+	get dataContainer() { return this.#dataContainer; }
 
 	/**
 	 * A flag indicating whether to show explanations of the analyses
 	 * generated.
 	 * 
-	 * This can be set by the <code>'data-show-explanation'</code>
-	 * attribute on the <code>&lt;body&gt;</code> element.
+	 * This can be set by a `<meta>` element with name
+	 * `srml.show-explanation`.
 	 *
 	 * @type {boolean}
 	 * @default true
 	 * @readonly
 	 */
-	get showExplanation() { return this.#_showExplanation; }
+	get showExplanation() { return this.#showExplanation; }
 	/**
 	 * The demonstration page element that should contain the
 	 * explanations.
-	 *
-	 * If there is a data attribute
-	 * <code>data-explanation-container-selector</code> on the
-	 * <code>&lt;body&gt;</code> element, it should contain a CSS
+	 * 
+	 * If there is a `<meta>` element with name
+	 * `explanation-container-selector`, it should contain a CSS
 	 * selector. It will be used on the document, and the first result
-	 * will be selected. If no selector was given,
-	 * <code>'#explanation'</code> will be used.
+	 * will be selected. If no selector was given, `#explanation` will
+	 * be used.
 	 * 
 	 * If no matching element was found, this property will be
-	 * <code>null</code>. In that case, if
-	 * <code>srml_config.show_explanation</code> is <code>true</code>,
-	 * a <code>&lt;section&gt;</code> element will be created, and
-	 * appended to <code>srml_config.mainContainer</code>.
+	 * `null`. In that case, if `srml_config.show_explanation` is
+	 * `true`, a `<section>` element will be created, and appended to
+	 * `srml_config.mainContainer`.
 	 *
 	 * @type {Element}
 	 * @readonly
 	 */
-	get explanationContainer() { return this.#_explanationContainer; }
+	get explanationContainer() { return this.#explanationContainer; }
 };

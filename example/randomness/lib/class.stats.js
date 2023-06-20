@@ -32,8 +32,8 @@ export class srml_Stats {
 				'The expected results below are for a theoretically “perfect” run, where every message in the data source is used, and each is used exactly the same number of times.',
 			].join(' ');
 
-		const vMin = srml_config.valueMinimum;
-		const vMax = srml_config.valueMaximum;
+		const vMin = srml_config.dataValueMinimum;
+		const vMax = srml_config.dataValueMaximum;
 
 		const round = value => Math.round(value * 1000) / 1000;
 

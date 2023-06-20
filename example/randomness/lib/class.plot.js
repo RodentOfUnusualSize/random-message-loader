@@ -24,10 +24,10 @@ export class srml_Plot {
 	static sectionName = 'Plot';
 
 	static generateExplanation(parent) {
-		const vMin = 0;
-		const vMax = 99;
-		const numberOfValues = (vMax - vMin) + 1;
-		const samplesPerValue = 100;
+		const vMin = srml_config.dataValueMinimum;
+		const vMax = srml_config.dataValueMaximum;
+		const numberOfValues = srml_config.dataValueCount;
+		const samplesPerValue = srml_config.samplesPerValue;
 
 		parent.appendChild(parent.ownerDocument.createElement('p'))
 			.textContent = [

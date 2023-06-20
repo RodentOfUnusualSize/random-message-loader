@@ -19,7 +19,7 @@
  *                                                                     *
  **********************************************************************/
 
-for (let i = 0; i < srml_config.numberOfSamples; ++i) {
+for (let i = 0; i < srml_config.sampleCount; ++i) {
 	const e = srml_config.dataContainer.ownerDocument.createElement('p');
 	e.setAttribute('data-saria-random-message-src', srml_config.dataSrc);
 
