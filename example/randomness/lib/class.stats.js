@@ -40,7 +40,7 @@ export class srml_Stats {
 	 * Generates the explanation for this analysis module.
 	 *
 	 * @param {!Element} parent The element that will contain the
-	 *                          generated analysis data.
+	 *                          explanation.
 	 */
 	static generateExplanation(parent) {
 		parent.appendChild(parent.ownerDocument.createElement('p'))

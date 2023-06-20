@@ -19,10 +19,27 @@
  *                                                                     *
  **********************************************************************/
 
+/**
+ * Randomness demonstration plot module.
+ */
 export class srml_Plot {
+	/**
+	 * The ID to use for the section.
+	 * @readonly
+	 */
 	static sectionID = 'plot';
+	/**
+	 * The title to use for the section.
+	 * @readonly
+	 */
 	static sectionName = 'Plot';
 
+	/**
+	 * Generates the explanation for this analysis module.
+	 *
+	 * @param {!Element} parent The element that will contain the
+	 *                          explanation.
+	 */
 	static generateExplanation(parent) {
 		const vMin = srml_config.dataValueMinimum;
 		const vMax = srml_config.dataValueMaximum;
@@ -56,7 +73,7 @@ export class srml_Plot {
 			].join(' ');
 
 		const plotSeq = new srml_Plot(parent);
-		
+
 		const plotSeqSamples = [];
 		for (let i = 0; i < samplesPerValue; ++i) {
 			plotSeqSamples.push([i * numberOfValues, vMin]);
@@ -66,18 +83,28 @@ export class srml_Plot {
 		plotSeq.calculate(plotSeqSamples);
 	}
 
-	#_container;
-	#_element;
+	#container;
+	#element;
 
+	/**
+	 * Generates a plot.
+	 *
+	 * The plot is generated in the `parent` element.
+	 *
+	 * The plot is empty until `calculate()` is called with a set of
+	 * sample data.
+	 *
+	 * @param {!Element} parent The element to generate the plot in.
+	 */
 	constructor(parent) {
 		const fragment = parent.ownerDocument.createDocumentFragment();
 
-		this.#_container = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'svg');
-		this.#_container.setAttribute('version', '1.1');
-		this.#_container.setAttribute('width', '545');
-		this.#_container.setAttribute('height', '215');
-		this.#_container.setAttribute('viewBox', '0 0 1090 430');
-		this.#_container.innerHTML = `
+		this.#container = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		this.#container.setAttribute('version', '1.1');
+		this.#container.setAttribute('width', '545');
+		this.#container.setAttribute('height', '215');
+		this.#container.setAttribute('viewBox', '0 0 1090 430');
+		this.#container.innerHTML = `
 			<rect x="40" y="10" width="1000" height="400" fill="#fff" class="plot-background"/>
 			<g stroke="#000" stroke-linecap="square" transform="translate(40,10)">
 				<g>
@@ -108,22 +135,33 @@ export class srml_Plot {
 				<text y="360">10</text>
 				<text y="400">0</text>
 			</g>`;
-		fragment.append(this.#_container);
+		fragment.append(this.#container);
 
-		this.#_element = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
-		this.#_element.setAttribute('stroke', '#f00');
-		this.#_element.setAttribute('stroke-width', '0.25');
-		this.#_element.setAttribute('fill', 'none');
-		this.#_element.setAttribute('transform', 'translate(40,410) scale(0.1,-4)');
-		this.#_element.setAttribute('stroke', '#f00');
+		this.#element = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		this.#element.setAttribute('stroke', '#f00');
+		this.#element.setAttribute('stroke-width', '0.25');
+		this.#element.setAttribute('fill', 'none');
+		this.#element.setAttribute('transform', 'translate(40,410) scale(0.1,-4)');
+		this.#element.setAttribute('stroke', '#f00');
 
-		this.#_container.append(this.#_element);
+		this.#container.append(this.#element);
 
 		this.#drawNoDataBox();
 
 		parent.append(fragment);
 	}
 
+	/**
+	 * Calculates and charts a plot using the sample data.
+	 *
+	 * Any previously plotted data is cleared.
+	 *
+	 * If the sample data is empty (or `null` or `undefined`), the
+	 * plot is cleared and a “no data” marker is added.
+	 *
+	 * @param {!Array<number>} samples The samples to generate the plot
+	 *                                 for.
+	 */
 	calculate(samples) {
 		if (samples === undefined || samples === null) {
 			this.#drawNoDataBox();
@@ -142,31 +180,31 @@ export class srml_Plot {
 				.map(([index, value]) => `${index},${value}`)
 				.join(' ');
 
-			const polyline = this.#_element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			const polyline = this.#element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'polyline');
 			polyline.setAttribute('vector-effect', 'non-scaling-stroke');
 			polyline.setAttribute('points', points);
 
-			this.#_element.replaceChildren(polyline);
+			this.#element.replaceChildren(polyline);
 
 			this.#clearNoDataBox();
 		}
 	}
 
 	#drawNoDataBox() {
-		if (!this.#_container.lastElementChild.classList.contains('no-data')) {
-			const g = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		if (!this.#container.lastElementChild.classList.contains('no-data')) {
+			const g = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 			g.setAttribute('class', 'no-data');
 			g.setAttribute('transform', 'translate(545,215)');
 			g.innerHTML = `
 				<rect x="-150" y="-50" width="300" height="100" rx="20" ry="20" stroke="#f00" stroke-width="10" fill="#fff"/>
 				<text y="18" font-size="50" font-weight="bold" text-anchor="middle">NO DATA</text>'
 			`;
-			this.#_container.append(g);
+			this.#container.append(g);
 		}
 	}
 
 	#clearNoDataBox() {
-		if (this.#_container.lastElementChild.classList.contains('no-data'))
-			this.#_container.lastElementChild.remove();
+		if (this.#container.lastElementChild.classList.contains('no-data'))
+			this.#container.lastElementChild.remove();
 	}
 };
