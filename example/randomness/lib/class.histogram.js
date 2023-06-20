@@ -19,10 +19,27 @@
  *                                                                     *
  **********************************************************************/
 
+/**
+ * Randomness demonstration histogram module.
+ */
 export class srml_Histogram {
+	/**
+	 * The ID to use for the section.
+	 * @readonly
+	 */
 	static sectionID = 'histogram';
+	/**
+	 * The title to use for the section.
+	 * @readonly
+	 */
 	static sectionName = 'Histogram';
 
+	/**
+	 * Generates the explanation for this analysis module.
+	 *
+	 * @param {!Element} parent The element that will contain the
+	 *                          generated analysis data.
+	 */
 	static generateExplanation(parent) {
 		parent.appendChild(parent.ownerDocument.createElement('p'))
 			.textContent = [
@@ -145,25 +162,36 @@ export class srml_Histogram {
 		parent.append(svg);
 	}
 
-	#_container;
-	#_element;
+	#container;
+	#element;
 
+	/**
+	 * Generates a histogram.
+	 *
+	 * The histogram is generated in the `parent` element.
+	 *
+	 * The histogram is empty until `calculate()` is called with a set
+	 * of sample data.
+	 *
+	 * @param {!Element} parent The element to generate the histogram
+	 *                          in.
+	 */
 	constructor(parent) {
 		const fragment = parent.ownerDocument.createDocumentFragment();
 
-		this.#_container = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'svg');
-		this.#_container.setAttribute('version', '1.1');
-		this.#_container.setAttribute('width', '500');
-		this.#_container.setAttribute('height', '1030');
-		this.#_container.setAttribute('viewBox', '0 0 500 1030');
-		fragment.append(this.#_container);
+		this.#container = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		this.#container.setAttribute('version', '1.1');
+		this.#container.setAttribute('width', '500');
+		this.#container.setAttribute('height', '1030');
+		this.#container.setAttribute('viewBox', '0 0 500 1030');
+		fragment.append(this.#container);
 
 		this.#drawChartField();
 
-		this.#_element = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
-		this.#_element.setAttribute('fill-opacity', '0.8');
-		this.#_element.setAttribute('transform', 'translate(25,10) scale(1,10)');
-		this.#_container.append(this.#_element);
+		this.#element = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		this.#element.setAttribute('fill-opacity', '0.8');
+		this.#element.setAttribute('transform', 'translate(25,10) scale(1,10)');
+		this.#container.append(this.#element);
 
 		this.#drawTargetBars();
 		this.#drawAxes();
@@ -174,9 +202,20 @@ export class srml_Histogram {
 		parent.append(fragment);
 	}
 
+	/**
+	 * Calculates and populates a histogram using the sample data.
+	 *
+	 * Any previously calculated data is cleared.
+	 *
+	 * If the sample data is empty (or `null` or `undefined`), the
+	 * histogram is cleared and a “no data” marker is added.
+	 *
+	 * @param {!Array<number>} samples The samples to generate the
+	 *                                 histogram for.
+	 */
 	calculate(samples) {
 		if (samples === undefined || samples === null) {
-			this.#_element.replaceChildren();
+			this.#element.replaceChildren();
 			this.#drawNoDataBox();
 		}
 		else {
@@ -207,7 +246,7 @@ export class srml_Histogram {
 
 			const bars = Array.from(histogram.entries())
 				.map(([value, [count, colour]]) => {
-					const bar = this.#_element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'rect');
+					const bar = this.#element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'rect');
 					bar.setAttribute('y', value - srml_config.dataValueMinimum);
 					bar.setAttribute('width', count * (100 / srml_config.dataValueCount));
 					bar.setAttribute('height', 1);
@@ -216,20 +255,20 @@ export class srml_Histogram {
 					return bar;
 				});
 
-			this.#_element.replaceChildren(...bars);
+			this.#element.replaceChildren(...bars);
 
 			this.#clearNoDataBox();
 		}
 	}
 
 	#drawChartField() {
-		const field = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const field = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		field.setAttribute('transform', 'translate(25,10)');
-		this.#_container.append(field);
+		this.#container.append(field);
 
 		field.innerHTML = '<rect width="200" height="1000" fill="#fff"/>';
 
-		const gridMinor = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const gridMinor = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		gridMinor.setAttribute('stroke', '#000');
 		gridMinor.setAttribute('stroke-dasharray', '2.5');
 		gridMinor.setAttribute('stroke-dashoffset', '2.5');
@@ -239,7 +278,7 @@ export class srml_Histogram {
 			.filter(n => (n % 5) != 0)
 			.map(n => n * 10)
 			.forEach(n => {
-				const line = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'line');
+				const line = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'line');
 				line.setAttribute('x1', n);
 				line.setAttribute('x2', n);
 				line.setAttribute('y1', '-5');
@@ -247,7 +286,7 @@ export class srml_Histogram {
 				gridMinor.append(line);
 			});
 
-		const gridMajor = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const gridMajor = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		gridMajor.setAttribute('stroke', '#000');
 		gridMajor.setAttribute('stroke-dasharray', '2.5');
 		gridMajor.setAttribute('stroke-dashoffset', '2.5');
@@ -255,7 +294,7 @@ export class srml_Histogram {
 		Array.from(Array(4).keys())
 			.map(n => (n + 1) * 50)
 			.forEach(n => {
-				const line = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'line');
+				const line = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'line');
 				line.setAttribute('x1', n);
 				line.setAttribute('x2', n);
 				line.setAttribute('y1', '-5');
@@ -263,14 +302,14 @@ export class srml_Histogram {
 				gridMajor.append(line);
 			});
 
-		const ticks = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const ticks = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		ticks.setAttribute('stroke', '#000');
 		ticks.setAttribute('stroke-linecap', 'square');
 
 		Array.from(Array(4).keys())
 			.map(n => (n + 1) * 50)
 			.forEach(n => {
-				const line = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'line');
+				const line = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'line');
 				line.setAttribute('x1', n);
 				line.setAttribute('x2', n);
 				line.setAttribute('y1', '1000');
@@ -282,16 +321,16 @@ export class srml_Histogram {
 	}
 
 	#drawTargetBars() {
-		const g = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const g = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		g.setAttribute('fill', '#00f');
 		g.setAttribute('fill-opacity', '0.5');
 		g.setAttribute('transform', 'translate(25,17.5)');
-		this.#_container.append(g);
+		this.#container.append(g);
 
 		Array.from(Array(100).keys())
 			.map(n => n * 10)
 			.forEach(n => {
-				const bar = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'rect');
+				const bar = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'rect');
 				bar.setAttribute('y', n);
 				bar.setAttribute('width', 100);
 				bar.setAttribute('height', 2.5);
@@ -300,7 +339,7 @@ export class srml_Histogram {
 	}
 
 	#drawAxes() {
-		const g = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const g = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		g.setAttribute('stroke', '#000');
 		g.setAttribute('stroke-linecap', 'square');
 		g.setAttribute('transform', 'translate(25,10)');
@@ -308,18 +347,18 @@ export class srml_Histogram {
 			<line x1="0" x2="0" y1="-5" y2="1005"/>
 			<line x1="0" x2="200" y1="1000" y2="1000"/>
 		`;
-		this.#_container.append(g);
+		this.#container.append(g);
 	}
 
 	#drawLabels() {
-		const g = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const g = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		g.setAttribute('font-size', '8px');
-		this.#_container.append(g);
+		this.#container.append(g);
 
-		const hLabels = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const hLabels = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		hLabels.setAttribute('text-anchor', 'middle');
 		hLabels.setAttribute('transform', 'translate(25,1025)');
-		const vLabels = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		const vLabels = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 		vLabels.setAttribute('text-anchor', 'end');
 		vLabels.setAttribute('transform', 'translate(20, 20)');
 
@@ -328,7 +367,7 @@ export class srml_Histogram {
 		Array.from(Array(5).keys())
 			.map(n => n * 50)
 			.forEach(n => {
-				const text = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'text');
+				const text = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('x', n);
 				text.textContent = n;
 				hLabels.append(text);
@@ -336,7 +375,7 @@ export class srml_Histogram {
 
 		Array.from(Array(100).keys())
 			.forEach(n => {
-				const text = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'text');
+				const text = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('y', n * 10);
 				text.textContent = n;
 				vLabels.append(text);
@@ -344,20 +383,20 @@ export class srml_Histogram {
 	}
 
 	#drawNoDataBox() {
-		if (!this.#_container.lastElementChild.classList.contains('no-data')) {
-			const g = this.#_container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+		if (!this.#container.lastElementChild.classList.contains('no-data')) {
+			const g = this.#container.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
 			g.setAttribute('class', 'no-data');
 			g.setAttribute('transform', 'translate(125,515)');
 			g.innerHTML = `
 				<rect x="-75" y="-25" width="150" height="50" rx="10" ry="10" stroke="#f00" stroke-width="5" fill="#fff"/>
 				<text y="9" font-size="25" font-weight="bold" text-anchor="middle">NO DATA</text>
 			`;
-			this.#_container.append(g);
+			this.#container.append(g);
 		}
 	}
 
 	#clearNoDataBox() {
-		if (this.#_container.lastElementChild.classList.contains('no-data'))
-			this.#_container.lastElementChild.remove();
+		if (this.#container.lastElementChild.classList.contains('no-data'))
+			this.#container.lastElementChild.remove();
 	}
 };
