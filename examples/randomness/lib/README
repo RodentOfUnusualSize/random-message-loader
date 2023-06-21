@@ -1,0 +1,74 @@
+# Randomness demonstration library
+
+This library helps simplify the creation of randomness demonstrations
+for Saria’s random message loader program.
+
+To demonstrate randomness, you need two files:
+
+*  A web page.
+*  A Javascript file.
+
+When the web page is loaded, the demonstration library will:
+
+1.  Perform some initialization.
+2.  Run the Javascript file mentioned above.
+3.  Run the actual random message loader program.
+4.  Perform an analysis on the results.
+5.  Produce charts and other data showing the results of the analysis.
+
+## The web page
+
+The web page can be very minimal. Beyond the bare minimal markup needed
+to be valid HTML5, only two other things are needed:
+
+1.  A `<script>` element to load the randomness demonstration library.
+2.  A `<meta>` element with name `srml.name`. The content is the stem
+    of the script filename.
+
+For example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Randomness demonstration</title>
+        <script src="lib/analyze-randomness.js" type="module"></script>
+        <meta name="srml.name" content="foo">
+    </head>
+    <body>
+        <h1>Randomness demonstration</h1>
+    </body>
+ </html>
+```
+
+In the example above, the script must be named `foo.js`.
+
+It is possible to set other configuration options with `<meta>` tags.
+See the library source code for details.
+
+## The script
+
+The purpose of the script is to generate the samples that will be
+analyzed by the library, to produce the demonstration output.
+
+The script must produce a specific number of samples. The number of
+samples to generate is in the `srml_config.sampleCount` configuration
+variable.
+
+Each sample is an element that must have a
+`data-saria-random-message-src` attribute set to the value of the
+`srml_config.dataSrc` configuration variable.
+
+The samples must be appended to the element referred to by the
+`srml_config.dataContainer` configuration variable.
+
+For example:
+
+```Javascript
+const sampleHTML = `<p data-saria-random-message-src="${srml_config.dataSrc}"></p>`;
+
+for (let i = 0; i < srml_config.sampleCount; ++i)
+    srml_config.innerHTML += sampleHTML;
+```
+
+<!-- vim: syntax=Markdown -->

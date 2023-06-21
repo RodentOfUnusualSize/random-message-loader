@@ -10,6 +10,12 @@ body {
 	font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
 }
 
+hgroup > p {
+	font-size: 1.25rem;
+	font-weight: bold;
+	margin-top: -1rem;
+}
+
 a {
 	text-decoration: none;
 }
@@ -89,4 +95,9 @@ pre {
 	overflow: auto;
 	padding-block: 0.75rem;
 	padding-inline: 1rem;
+}
+
+.no-data {
+	color: red;
+	font-weight: bold;
 }
