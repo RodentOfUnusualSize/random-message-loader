@@ -38,7 +38,7 @@ describe('When document is becoming ready', () => {
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
 
-		saria.testing.partiallyAwait(require(scriptPath));
+		require(scriptPath);
 
 		expect(document.addEventListener.mock.calls).toBeArrayOfSize(1);
 
@@ -62,15 +62,15 @@ describe('When document is becoming ready', () => {
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
 
-		const result = require(scriptPath);
-		saria.testing.partiallyAwait(result);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
 
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('interactive');
 
 		document.dispatchEvent(new Event('DOMContentLoaded', { bubbles : true }));
 
-		await result;
+		await completion;
 
 		expect(testElement.innerHTML).toBe('message content');
 	});
@@ -88,15 +88,15 @@ describe('When document is becoming ready', () => {
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
 
-		const result = require(scriptPath);
-		saria.testing.partiallyAwait(result);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
 
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('interactive');
 
 		document.dispatchEvent(new Event('DOMContentLoaded', { bubbles : true }));
 
-		await result;
+		await completion;
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
 
