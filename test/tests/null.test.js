@@ -69,7 +69,9 @@ describe('When the script does effectively nothing', () => {
 
 		jest.spyOn(window, 'addEventListener');
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(window.addEventListener.mock.calls).toBeArrayOfSize(0);
 	});
@@ -78,9 +80,12 @@ describe('When the script does effectively nothing', () => {
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
 
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+
 		jest.spyOn(document, 'addEventListener');
 
-		await require(scriptPath);
+		require(scriptPath);
+		await completion;
 
 		expect(document.addEventListener.mock.calls).toBeArrayOfSize(0);
 	});
@@ -89,7 +94,9 @@ describe('When the script does effectively nothing', () => {
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(document.head.innerHTML).toBe(expectedContent.head);
 	});
@@ -98,7 +105,9 @@ describe('When the script does effectively nothing', () => {
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(document.body.innerHTML).toBe(expectedContent.body);
 	});
@@ -107,7 +116,9 @@ describe('When the script does effectively nothing', () => {
 		document.head.innerHTML = headContent;
 		document.body.innerHTML = bodyContent;
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(document.documentElement.outerHTML).toBe(expectedContent.document);
 	});
@@ -118,7 +129,9 @@ describe('When the script does effectively nothing', () => {
 
 		jest.spyOn(globalThis, 'fetch');
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(fetch.mock.calls).toBeArrayOfSize(0);
 	});

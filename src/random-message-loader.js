@@ -16,6 +16,9 @@
  *                                                                     *
  **********************************************************************/
 
+// Use strict mode.
+"use strict";
+
 
 /**
  * Name of attribute that holds URL of random messages file.
@@ -72,7 +75,7 @@ function doItToIt(document) {
 			tasks.push(createTask(url, elementGroups));
 
 		return Promise.all(tasks)
-			.then(() => document.dispatchEvent(new CustomEvent("saria:random-message-loader:done")));
+			.finally(() => document.dispatchEvent(new CustomEvent("saria:random-message-loader:done")));
 	}
 	catch (err) {
 		return Promise.reject(err);
@@ -155,7 +158,7 @@ function groupTaskData(taskDataSet) {
 
 
 /**
- * Create a task for a given URL and elements
+ * Create a task for a given URL and elements.
  *
  * @param {URL} url - The URL of the messages data.
  * @param {Array<Array<Element>>} Element groups.
@@ -187,23 +190,15 @@ function createTask(url, elementGroups) {
 
 /**
  * Replaces content in marked elements with randomly-selected messages
- * from a URL
- *
- * @returns {Promise} A promise for the program's completion.
+ * from a URL.
  */
 function run() {
-	const result = waitForDocument(document)
+	waitForDocument(document)
 		.then(document => doItToIt(document))
 		.catch(error => {
 			console.error(`Random message loader error: ${error.message}`);
-			//return Promise.reject(error);
 		})
 	;
-
-	if (typeof exports === "object")
-		module.exports = result;
-
-	return result;
 }
 
 

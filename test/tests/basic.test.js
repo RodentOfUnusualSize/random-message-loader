@@ -44,7 +44,9 @@ describe('In the script\'s most basic synchronous operation', () => {
 				text : jest.fn().mockResolvedValue(message),
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(testElement.innerHTML).toBe(message);
 	});
@@ -61,7 +63,9 @@ describe('In the script\'s most basic synchronous operation', () => {
 				text : jest.fn().mockResolvedValue('message content'),
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
 

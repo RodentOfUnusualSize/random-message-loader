@@ -97,7 +97,9 @@ describe('When multiple messages are wanted from a single source', () => {
 						),
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		for (const element of elements) {
 			expect(element.innerHTML).toMatch(/^message #[0-9]+$/);
@@ -122,7 +124,9 @@ describe('When multiple messages are wanted from a single source', () => {
 						),
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
 

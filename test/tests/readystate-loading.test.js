@@ -22,6 +22,8 @@
 describe('When document is not ready', () => {
 	const scriptPath = '../../src/random-message-loader.js';
 
+	const millisecondsBeforeTimeout = 1000;
+
 	afterEach(() => {
 		saria.testing.jsdom.restore();
 
@@ -46,7 +48,10 @@ describe('When document is not ready', () => {
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
 
-		saria.testing.partiallyAwait(require(scriptPath));
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		const timeout = new Promise(resolve => setTimeout(resolve, millisecondsBeforeTimeout));
+		require(scriptPath);
+		await Promise.any([completion, timeout]);
 
 		expect(testElement.textContent).toBe('default content');
 	});
@@ -64,7 +69,10 @@ describe('When document is not ready', () => {
 		jest.spyOn(document, 'readyState', 'get')
 			.mockReturnValue('loading');
 
-		saria.testing.partiallyAwait(require(scriptPath));
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		const timeout = new Promise(resolve => setTimeout(resolve, millisecondsBeforeTimeout));
+		require(scriptPath);
+		await Promise.any([completion, timeout]);
 
 		expect(fetch.mock.calls).toBeArrayOfSize(0);
 	});
