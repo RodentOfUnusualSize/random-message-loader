@@ -53,7 +53,9 @@ describe('When messages cannot be retrieved', () => {
 				statusText : 'Not Found',
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(testElement.innerHTML).toBe(defaultContent);
 	});
@@ -72,7 +74,9 @@ describe('When messages cannot be retrieved', () => {
 				statusText : 'Not Found',
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(fetch.mock.calls).toBeArrayOfSize(1);
 
