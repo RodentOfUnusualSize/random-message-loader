@@ -16,6 +16,9 @@
  *                                                                     *
  **********************************************************************/
 
+// Use strict mode.
+"use strict";
+
 
 /**
  * Name of attribute that holds URL of random messages file.
