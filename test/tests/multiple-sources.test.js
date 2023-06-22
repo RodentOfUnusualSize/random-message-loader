@@ -67,7 +67,9 @@ describe('When messages are wanted from multiple sources', () => {
 				});
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		sources.forEach(([source, message, elements]) => {
 			elements.forEach(element => {
@@ -113,7 +115,9 @@ describe('When messages are wanted from multiple sources', () => {
 				});
 			});
 
-		await require(scriptPath);
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
 
 		expect(fetch.mock.calls).toBeArrayOfSize(sources.length);
 
