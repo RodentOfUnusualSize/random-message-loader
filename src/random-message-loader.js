@@ -72,7 +72,7 @@ function doItToIt(document) {
 			tasks.push(createTask(url, elementGroups));
 
 		return Promise.all(tasks)
-			.then(() => document.dispatchEvent(new CustomEvent("saria:random-message-loader:done")));
+			.finally(() => document.dispatchEvent(new CustomEvent("saria:random-message-loader:done")));
 	}
 	catch (err) {
 		return Promise.reject(err);
