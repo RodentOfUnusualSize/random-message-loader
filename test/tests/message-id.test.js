@@ -29,7 +29,28 @@ describe('When a message ID is used', () => {
 		jest.resetModules();
 	});
 
-	test.todo('it changes the content of the target element');
+	test('it changes the content of the target element', async () => {
+		const message = 'message';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const testElement = document.createElement("p");
+		testElement.setAttribute('data-saria-random-message-src', 'url');
+		testElement.setAttribute('data-saria-random-message-id', 'id');
+		document.body.appendChild(testElement);
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue(message),
+			});
+
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
+
+		expect(testElement.innerHTML).toBe(message);
+	});
 
 	test.todo('it fetches the message file');
 
