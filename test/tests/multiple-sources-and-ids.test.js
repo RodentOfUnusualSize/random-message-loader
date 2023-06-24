@@ -154,5 +154,55 @@ describe('When multiple message sources and IDs are used', () => {
 		});
 	});
 
-	test.todo('only a single fetch is made for each URL');
+	test('only a single fetch is made for each URL', async () => {
+		const urls = ['url-1', 'url-2', 'url-3'];
+
+		const sources = new Map(
+			urls.map(url => [url, Array.from(Array(10).keys()).map(i => `${url}: #${i}`)])
+		);
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const cartesian = (...a) => a.reduce((b, c) => b.flatMap(d => c.map(e => [...d, e])), [[]]);
+		cartesian(urls, ['id-1', 'id-2', 'id-3'])
+			.forEach(([url, id]) => {
+				for (let i = 0; i < 3; ++i) {
+					const elem = document.createElement('p');
+					elem.setAttribute('data-saria-random-message-src', url);
+					elem.setAttribute('data-saria-random-message-id', id);
+					document.body.append(elem);
+				}
+			})
+		;
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockImplementation(url => {
+				if (sources.has(url)) {
+					return Promise.resolve({
+						'url'        : url,
+						'ok'         : true,
+						'status'     : 200,
+						'statusText' : 'Ok',
+						'text'       : jest.fn().mockResolvedValue(sources.get(url).join('\n')),
+					});
+				}
+				else {
+					return Promise.reolve({
+						'url'        : url,
+						'ok'         : false,
+						'status'     : 404,
+						'statusText' : 'Not Found',
+					});
+				}
+			});
+
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
+
+		expect(fetch.mock.calls).toBeArrayOfSize(sources.size);
+
+		expect(fetch.mock.calls.map(call => call[0]))
+			.toIncludeSameMembers(Array.from(sources.keys()));
+	});
 });
