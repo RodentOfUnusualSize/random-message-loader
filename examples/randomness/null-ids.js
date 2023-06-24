@@ -18,3 +18,11 @@
  * If not, see <https: *www.gnu.org/licenses/>.                        *
  *                                                                     *
  **********************************************************************/
+
+for (let i = 0; i < srml_config.sampleCount; ++i) {
+	const e = srml_config.dataContainer.ownerDocument.createElement('p');
+	e.setAttribute('data-saria-random-message-src', srml_config.dataSrc);
+	e.setAttribute('data-saria-random-message-id', '');
+
+	srml_config.dataContainer.append(e);
+}
