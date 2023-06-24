@@ -74,5 +74,74 @@ describe('When a message ID is used', () => {
 		expect(fetch.mock.calls[0][0]).toBe(url);
 	});
 
-	test.todo('the same message is used in every element');
+	test('the same message is used in every element', async () => {
+		const url = 'url';
+		const id = 'id';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const firstElement = document.createElement('p');
+		firstElement.setAttribute('data-saria-random-message-src', url);
+		firstElement.setAttribute('data-saria-random-message-id', id);
+		document.body.append(firstElement);
+
+		const elements = [];
+
+		for (let i = 0; i < 3; ++i) {
+			const p = document.createElement('p');
+			p.setAttribute('data-saria-random-message-src', url);
+			p.setAttribute('data-saria-random-message-id', id);
+
+			elements.push(p);
+
+			document.body.append(p);
+		}
+
+		const list = document.createElement('ul');
+		for (let i = 0; i < 3; ++i) {
+			const li = document.createElement('li');
+			li.setAttribute('data-saria-random-message-src', url);
+			li.setAttribute('data-saria-random-message-id', id);
+			li.textContent = `list item #${i + 1}`;
+
+			elements.push(li);
+
+			list.append(li);
+		}
+		document.body.append(list);
+
+		const table = document.createElement('table');
+		const tbody = document.createElement('tbody');
+		for (let i = 0; i < 3; ++i) {
+			const tr = document.createElement('tr');
+
+			const td = document.createElement('td');
+			td.setAttribute('data-saria-random-message-src', url);
+			td.setAttribute('data-saria-random-message-id', id);
+			td.textContent = `table cell #${i + 1}`;
+
+			elements.push(td);
+
+			tr.innerHTML = `<td>${i + 1}</td>`;
+			tr.append(td);
+
+			tbody.append(tr);
+		}
+		table.innerHTML = '<thead><tr><th>Row</th><th>Message</th></tr></thead>';
+		table.append(tbody);
+		document.body.append(table);
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue(Array.from(Array(10).keys()).map(n => `message <b>${n}</b>`).join('\n')),
+			});
+
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
+
+		for (const element of elements)
+			expect(element.innerHTML).toBe(firstElement.innerHTML);
+	});
 });
