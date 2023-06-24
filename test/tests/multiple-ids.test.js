@@ -85,5 +85,29 @@ describe('When multiple message IDs are used', () => {
 		});
 	});
 
-	test.todo('only one fetch is done');
+	test('only one fetch is done', async () => {
+		const url = 'url';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const ids = ['id-1', 'id-2', 'id-3'];
+		const tr = '<tr>' +  ids.map(id => `<td data-saria-random-message-src="${url}" data-saria-random-message-id="${id}"></td>`).join('');
+
+		document.body.innerHTML = '<table><tbody>' + tr + tr + tr + '</tbody></table>'
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message'),
+			});
+
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
+
+		expect(fetch.mock.calls).toBeArrayOfSize(1);
+
+		expect(fetch.mock.calls[0]).toBeArrayOfSize(1);
+		expect(fetch.mock.calls[0][0]).toBe(url);
+	});
 });
