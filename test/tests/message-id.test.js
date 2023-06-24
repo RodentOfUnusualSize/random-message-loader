@@ -52,7 +52,27 @@ describe('When a message ID is used', () => {
 		expect(testElement.innerHTML).toBe(message);
 	});
 
-	test.todo('it fetches the message file');
+	test('it fetches the message file', async () => {
+		const url = 'url';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+		document.body.innerHTML = `<p data-saria-random-message-src="${url}" data-saria-random-message-id="id"></p>`;
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue('message content'),
+			});
+
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
+
+		expect(fetch.mock.calls).toBeArrayOfSize(1);
+
+		expect(fetch.mock.calls[0]).toBeArrayOfSize(1);
+		expect(fetch.mock.calls[0][0]).toBe(url);
+	});
 
 	test.todo('the same message is used in every element');
 });
