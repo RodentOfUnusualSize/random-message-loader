@@ -144,4 +144,42 @@ describe('When a message ID is used', () => {
 		for (const element of elements)
 			expect(element.innerHTML).toBe(firstElement.innerHTML);
 	});
+
+	test('whitespace around the ID does not matter', async () => {
+		const url = 'url';
+		const id = 'id';
+
+		document.head.innerHTML = `<script src="${scriptPath}"></script>`;
+
+		const whitespace = [' ', '\t', '\n'];
+		const randomWhitespace = length => Array.from(Array(length).keys()).map(i => whitespace[Math.floor(Math.random() * whitespace.length)]).join('');
+		const elements = Array.from(Array(100).keys())
+			.map(i => {
+				const prefix = randomWhitespace(Math.floor(Math.random() * 10));
+				const suffix = randomWhitespace(Math.floor(Math.random() * 10));
+
+				const element = document.createElement('p');
+				element.setAttribute('data-saria-random-message-src', url);
+				element.setAttribute('data-saria-random-message-id', prefix + id + suffix);
+
+				document.body.append(element);
+
+				return element;
+			})
+		;
+
+		jest.spyOn(globalThis, 'fetch')
+			.mockResolvedValue({
+				ok   : true,
+				text : jest.fn().mockResolvedValue(Array.from(Array(10).keys()).map(n => `message <b>${n}</b>`).join('\n')),
+			});
+
+		const completion = new Promise(resolve => document.addEventListener('saria:random-message-loader:done', () => resolve()));
+		require(scriptPath);
+		await completion;
+
+		elements.forEach(element => 
+			expect(element.innerHTML).toBe(elements[0].innerHTML)
+		);
+	});
 });
