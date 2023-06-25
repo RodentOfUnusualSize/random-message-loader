@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: Message IDs</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="example">
+	<h1>Saria’s random message loader program: Message <abbr>IDs</abbr></h1>
+	<figure data-saria-random-message-src="data/quotes.txt" data-saria-random-message-id="id"></figure>
+	<figure data-saria-random-message-src="data/quotes.txt" data-saria-random-message-id="id"></figure>
+	<figure data-saria-random-message-src="data/quotes.txt" data-saria-random-message-id="id"></figure>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This page demonstrates how a randomly-selected message can be repeated, via the use of message <abbr>IDs</abbr>.
+		</p>
+		<p>
+			The script is loaded just as in <a href="basic.html">the basic example</a>.
+			The <code class="lang-html">&lt;figure&gt;</code> element used to receive the content is almost identical, except for the addition of the <code>data-saria-random-message-id</code> attribute:
+		</p>
+		<pre><code class="lang-html">&lt;figure data-saria-random-message-src="data/quotes.txt" data-saria-random-message-id="id"&gt;&lt;/figure&gt;</code></pre>
+		<p>
+			The above element is repeated three times to show that the same message is repeated.
+			(Compare this to <a href="multiple-messages.html">the multiple messages example</a>, where multiple elements <em>without</em> <abbr>IDs</abbr> each get different randomly-selected messages.)
+		</p>
+		<p>
+			The <abbr>ID</abbr> value can be anything (here it is just “<code>id</code>”).
+			All elements that have the same source <abbr>URL</abbr> and the same <abbr>ID</abbr> will receive the same randomly-selected message.
+			<abbr>IDs</abbr> are compared after leading and trailing whitespace is removed, but no other transformations are done (this means the comparison is case-sensitive: “<code>foo</code>” and “<code>Foo</code>” are two different <abbr>IDs</abbr>).
+		</p>
+		<p>
+			Empty message <abbr>IDs</abbr> are the same as no message <abbr>IDs</abbr>.
+			Every element with an empty <abbr>ID</abbr> or no <abbr>ID</abbr> will get a different randomly-selected message.
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>
