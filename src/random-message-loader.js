@@ -152,11 +152,13 @@ class RandomMessageLoaderTask {
 
 		// Get all the elements with IDs, grouped by ID.
 		const elementsWithID = new Map();
-		elements.forEach(element => {
-			if (!elementsWithID.has(element.id))
-				elementsWithID.set(element.id, []);
-			elementsWithID.get(element.id).push(element);
-		});
+		elements
+			.filter(element => element.id !== '')
+			.forEach(element => {
+				if (!elementsWithID.has(element.id))
+					elementsWithID.set(element.id, []);
+				elementsWithID.get(element.id).push(element);
+			});
 
 		// Combine both sets of elements into a single array of element
 		// groups.
