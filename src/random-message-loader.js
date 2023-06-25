@@ -190,7 +190,7 @@ class RandomMessageLoaderTask {
 				const elementsUpdated = [];
 
 				for (const elementGroup of this.#elementGroups) {
-					const index = 0;
+					const index = Math.floor(Math.random() * messages.length);
 
 					const elements = elementGroup.map(element => element.element);
 
