@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-CA" xml:lang="en-CA">
+<head>
+	<meta charset="utf-8" />
+	<title>Saria’s random message loader program: Multiple IDs and sources</title>
+	<link rel="stylesheet" href="style.css"/>
+	<script src="random-message-loader.js"></script>
+</head>
+<body class="example">
+	<h1>Saria’s random message loader program: Multiple <abbr>IDs</abbr> and sources</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Message <abbr>ID</abbr></th>
+				<th>Source 1</th>
+				<th>Source 2</th>
+				<th>Source 3</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td rowspan="4">No <abbr>ID</abbr> attribute</td>
+				<td data-saria-random-message-src="data/alpha.txt"></td>
+				<td data-saria-random-message-src="data/number.txt"></td>
+				<td data-saria-random-message-src="data/emoji.txt"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt"></td>
+				<td data-saria-random-message-src="data/number.txt"></td>
+				<td data-saria-random-message-src="data/emoji.txt"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt"></td>
+				<td data-saria-random-message-src="data/number.txt"></td>
+				<td data-saria-random-message-src="data/emoji.txt"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt"></td>
+				<td data-saria-random-message-src="data/number.txt"></td>
+				<td data-saria-random-message-src="data/emoji.txt"></td>
+			</tr>
+			<tr>
+				<td rowspan="4">Empty <abbr>ID</abbr></td>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id=""></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id=""></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id=""></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id=""></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id=""></td>
+			</tr>
+			<tr>
+				<td rowspan="4">“<code>foo</code>”</td>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="foo"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="foo"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="foo"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="foo"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="foo"></td>
+			</tr>
+			<tr>
+				<td rowspan="4">“<code>bar</code>”</td>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="bar"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="bar"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="bar"></td>
+			</tr>
+			<tr>
+				<td data-saria-random-message-src="data/alpha.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/number.txt" data-saria-random-message-id="bar"></td>
+				<td data-saria-random-message-src="data/emoji.txt" data-saria-random-message-id="bar"></td>
+			</tr>
+		</tbody>
+	</table>
+	<section id="explanation">
+		<h2>Explanation</h2>
+		<p>
+			This page demonstrates how message sources and message <abbr>IDs</abbr> interact.
+		</p>
+		<p>
+			Each cell in the table loads a randomly-selected message.
+			The message source is determined by the column.
+			The three sources used are described in <a href="multiple-sources.html">the “multiple sources” example</a>.
+		</p>
+		<p>
+			The row determines which message <abbr>ID</abbr> will be used, if any:
+		</p>
+		<ul>
+			<li>Cells in the “No <abbr>ID</abbr> attribute” rows do not have the <code>data-saria-random-message-id</code> attribute at all.</li>
+			<li>Cells in the “Empty <abbr>ID</abbr>” rows have the <code>data-saria-random-message-id</code> attribute, but it is empty (or whitespace-only, which is the same as empty).</li>
+			<li>Cells in rows with an <abbr>ID</abbr> value all have the <code>data-saria-random-message-id</code> attribute set to that value.</li>
+		</ul>
+		<p>
+			Wherever the source and <abbr>ID</abbr> are the same, and the <abbr>ID</abbr> is present and not empty, the cell content should be the same.
+		</p>
+	</section>
+	<footer>
+		<p><a href="./">back to examples index</a></p>
+	</footer>
+</body>
+</html>
