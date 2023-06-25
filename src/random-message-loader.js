@@ -30,6 +30,181 @@
 const ATTRIBUTE_SRC = 'data-saria-random-message-src';
 
 
+function _constructError(obj, message = undefined) {
+	obj.name = obj.constructor.name;
+
+	if (typeof message !== 'undefined')
+		obj.message = message;
+}
+
+
+class RandomMessageLoaderError extends Error {
+	constructor(...params) {
+		super(...params);
+		_constructError(this);
+	}
+}
+
+
+class RandomMessageLoaderElementError extends RandomMessageLoaderError {
+	#element;
+
+	constructor(element, ...params) {
+		super(...params);
+		_constructError(this, 'Element is not a random message target element');
+
+		this.#element = element;
+	}
+
+	get element() { return this.#element; }
+}
+
+
+class RandomMessageLoaderTaskError extends RandomMessageLoaderError {
+	constructor(...params) {
+		super(...params);
+		_constructError(this);
+	}
+}
+
+
+class RandomMessageLoaderTaskURLError extends RandomMessageLoaderTaskError {
+	#element;
+	#url;
+
+	constructor(element, url, ...params) {
+		super(...params);
+		_constructError(this, 'Element s not a random message target element');
+
+		this.#element = element;
+		this.#url     = url;
+	}
+
+	get element() { return this.#element; }
+
+	get url() { return this.#url; }
+}
+
+
+class RandomMessageLoaderMessagesError extends RandomMessageLoaderError {
+	constructor(...params) {
+		super(...params);
+		_constructError(this);
+	}
+}
+
+
+class RandomMessageLoaderMessagesEmptyError extends RandomMessageLoaderMessagesError {
+	#url;
+
+	constructor(url, ...params) {
+		super(...params);
+		_constructError(this, `Message source is empty: ${url}`);
+
+		this.#url = url;
+	}
+
+	get url() { return this.#url; }
+}
+
+
+class RandomMessageLoaderElement {
+	static #attributeSrc = 'data-saria-random-message-src';
+	static #attributeID  = 'data-saria-random-message-id';
+
+	static isValidElement(element) {
+		return element.hasAttribute(RandomMessageLoaderElement.#attributeSrc);
+	}
+
+	#element;
+
+	constructor(element) {
+		if (!RandomMessageLoaderElement.isValidElement(element))
+			throw new RandomMessageElementError(element);
+
+		this.#element = element;
+	}
+
+	get element() { return this.#element; }
+
+	get url() {
+		return this.#element.getAttribute(RandomMessageLoaderElement.#attributeSrc);
+	}
+
+	get id() {
+		return (this.#element.getAttribute(RandomMessageLoaderElement.#attributeID) ?? '').trim();
+	}
+}
+
+
+class RandomMessageLoaderTask {
+	#elementGroups;
+
+	constructor(url, elements) {
+		// Make sure all the elements are valid.
+		elements.forEach(element => {
+			if (element.url != url)
+				throw new RandomMessageLoaderTaskURLError(element, url);
+		});
+
+		// Get all the elements without IDs.
+		const elementsWithoutID = elements.filter(element => element.id === '');
+
+		// Get all the elements with IDs, grouped by ID.
+		const elementsWithID = new Map();
+		elements.forEach(element => {
+			if (!elementsWithID.has(element.id))
+				elementsWithID.set(element.id, []);
+			elementsWithID.get(element.id).push(element);
+		});
+
+		// Combine both sets of elements into a single array of element
+		// groups.
+		this.#elementGroups = elementsWithoutID
+			.map(element => [element])
+			.concat(Array.from(elementsWithID.values()))
+		;
+	}
+
+	run() {
+		if (this.#elementGroups.length === 0)
+			return Promise.resolve([]);
+
+		const url = this.#elementGroups[0][0].url;
+
+		return fetch(url)
+			.then(response => {
+				if (!response.ok)
+					throw new Error(`HTTP error for URL ${response.url}: ${response.status} ${response.statusText}`);
+				return response.text();
+			})
+			.then(content => {
+				const messages = content
+					.split('\n')
+					.filter(message => message.length > 0)
+				;
+
+				if (messages.length == 0)
+					throw new RandomMessageLoaderMessagesEmptyError(url);
+
+				const elementsUpdated = [];
+
+				for (const elementGroup of this.#elementGroups) {
+					const index = 0;
+
+					const elements = elementGroup.map(element => element.element);
+
+					elements.forEach(element => { element.innerHTML = messages[index]; });
+
+					elementsUpdated.concat(elements);
+				}
+
+				return elementsUpdated;
+			});
+	}
+}
+
+
 /**
  * Returns a promise that resolves when the document's DOM content is
  * ready.
@@ -48,159 +223,38 @@ function waitForDocument(document) {
 
 /**
  * Replaces content in marked elements with randomly-selected messages
- * from a URL
- *
- * @param {Document} The document to run the program on.
- * @returns {Promise} A promise for the program's completion.
- */
-function doItToIt(document) {
-	try {
-		const query = `[${ATTRIBUTE_SRC}]`;
-
-		// Collect all elements that want random content, and extract
-		// the source URL and other relevant data.
-		const taskDataSet = Array.from(document.querySelectorAll(query))
-			.filter(isTargetElement)
-			.map(element => createTaskData(element))
-		;
-
-		// Group all collected elements by source URL.
-		const taskGroups = groupTaskData(taskDataSet);
-
-		// Create a promised task for each unique source URL, that 
-		// fetches the message data and sets the elements' content to
-		// randomly selected messages.
-		const tasks = [];
-		for (const [url, elementGroups] of taskGroups)
-			tasks.push(createTask(url, elementGroups));
-
-		return Promise.all(tasks)
-			.finally(() => document.dispatchEvent(new CustomEvent("saria:random-message-loader:done")));
-	}
-	catch (err) {
-		return Promise.reject(err);
-	}
-}
-
-
-/**
- * Tests whether the element is a target for a random message
- *
- * @param {Element} The element to test.
- * @return {boolean} Whether the element is a target for a random
- *                   message.
- */
-function isTargetElement(element) {
-	return element.hasAttribute(ATTRIBUTE_SRC);
-}
-
-
-/**
- * Gets the body of a response as a string.
- *
- * @oaram {Response} The response.
- * @resturns {string} The text content of the response.
- */
-function getResponseText(response) {
-	if (!response.ok)
-		throw new Error(`HTTP error for URL ${response.url}: ${response.status} ${response.statusText}`);
-
-	return response.text();
-}
-
-
-/**
- * Transform an element that wants random content into task data.
- *
- * @param {Element} element - The element to parse.
- * @returns {Object} Task data for the element.
- */
-function createTaskData(element) {
-	return {
-		element : element,
-		url     : element.getAttribute(ATTRIBUTE_SRC),
-	};
-}
-
-
-/**
- * Group task data by URL.
- *
- * @param {Object} taskDataSet - Collection of task data.
- * @returns {Map<URL, Array<Array<Element>>} Task data elements grouped
- *                                           by URL.
- */
-function groupTaskData(taskDataSet) {
-	const taskGroups = new Map();
-
-	for (const taskData of taskDataSet) {
-		if (!taskGroups.has(taskData.url))
-			taskGroups.set(taskData.url, new Map());
-
-		const urlGroup = taskGroups.get(taskData.url);
-		if (!urlGroup.has(''))
-			urlGroup.set('', []);
-
-		urlGroup.get('').push(taskData.element);
-	}
-
-	for (const [url, group] of taskGroups) {
-		const elementGroups = [];
-
-		for (const [id, elements] of group)
-			elementGroups.push(elements);
-
-		taskGroups.set(url, elementGroups);
-	}
-
-	return taskGroups;
-}
-
-
-/**
- * Create a task for a given URL and elements.
- *
- * @param {URL} url - The URL of the messages data.
- * @param {Array<Array<Element>>} Element groups.
- * @param {Promise} A promise that resolves when the messages have been
- *                  fetched, and all elements have been given their
- *                  messages.
- */
-function createTask(url, elementGroups) {
-	return fetch(url)
-		.then(response => getResponseText(response))
-		.then(content => {
-			const messages = content
-				.split('\n')
-				.filter(message => message.length > 0)
-			;
-
-			if (messages.length == 0)
-				throw new Error('no messages');
-
-			for (const elementGroup of elementGroups) {
-				const index = 0;
-
-				for (const element of elementGroup)
-					element.innerHTML = messages[index];
-			}
-		});
-}
-
-
-/**
- * Replaces content in marked elements with randomly-selected messages
  * from a URL.
  */
-function run() {
-	waitForDocument(document)
-		.then(document => doItToIt(document))
+function run(document) {
+	return waitForDocument(document)
+		.then(document => {
+			const query = `[${ATTRIBUTE_SRC}]`;
+
+			const elements = Array.from(document.querySelectorAll(query))
+				.filter(RandomMessageLoaderElement.isValidElement)
+				.map(element => new RandomMessageLoaderElement(element))
+			;
+
+			const sources = Array.from((new Set(elements.map(element => element.url))).values());
+
+			const tasks = sources.map(source =>
+				new RandomMessageLoaderTask(
+					source,
+					elements.filter(element => element.url === source)
+				)
+			);
+
+			return Promise.all(tasks.map(task => task.run()));
+		})
 		.catch(error => {
 			console.error(`Random message loader error: ${error.message}`);
+		})
+		.finally(() => {
+			document.dispatchEvent(new Event("saria:random-message-loader:done"));
 		})
 	;
 }
 
 
 // Run the program.
-run();
+run(document);
