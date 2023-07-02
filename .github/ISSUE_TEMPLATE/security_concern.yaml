@@ -1,0 +1,18 @@
+name: Security concern
+description: Notify us about a potential security vulnerability
+labels: security
+assignees: RodentOfUnusualSize
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **NOTE:** This report will be public.
+        If this is a concern, you can opt for private communication instead.
+        See [the security policy](/RodentOfUnusualSize/random-message-loader/security/policy) for details.
+    validations:
+      required: true
+
+  - type: textarea
+    id: report
+    attributes:
+      label: What is the nature of the security concern?
