@@ -372,7 +372,7 @@ See [the project licence file][license-url] for details.
 [license-shield]: https://img.shields.io/github/license/RodentOfUnusualSize/random-message-loader.svg
 [tests-url]: https://github.com/RodentOfUnusualSize/random-message-loader/actions/workflows/run-tests.yml
 [tests-shield]: https://img.shields.io/github/actions/workflow/status/RodentOfUnusualSize/random-message-loader/run-tests.yml
-[security-policy-url]: ../SECURITY.md
+[security-policy-url]: ../.github/SECURITY.md
 [language-shield]: https://img.shields.io/github/languages/top/RodentOfUnusualSize/random-message-loader.svg
 [script]: ../src/random-message-loader.js
 [csp]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy

@@ -20,4 +20,4 @@
 ########################################################################
 
 # Exclude tests from language detection.
-/test/ -linguist-detectable
+/test/** -linguist-detectable
