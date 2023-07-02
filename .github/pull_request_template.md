@@ -1,7 +1,13 @@
-Fixes #
+Description.
 
-## Proposed Changes
+## Proposed changes
 
-  -
-  -
-  -
+  * Change.
+  * Change.
+  * Change.
+
+## Resolved issues
+
+  * Resolves #
+  * Fixes #
+  * Closes #
